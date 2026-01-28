@@ -192,5 +192,12 @@
       "alt": "AMPATH"
     }
   },
-  "@ampath/esm-morgue-app": {}
+  "@ampath/esm-morgue-app": {},
+  "@openmrs/esm-dispensing-app": {
+    "locationBehavior": {
+      "locationFilter": {
+        "enabled": true
+      }
+    }
+  }
 }
