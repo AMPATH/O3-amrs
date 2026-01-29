@@ -4,18 +4,14 @@
     "showUpcomingAppointments": true,
     "extensionSlots": {
       "action-menu-patient-chart-items-slot": {
-        "order": [
-          "order-basket-action-menu"
-        ]
+        "order": ["order-basket-action-menu"]
       }
     }
   },
   "@openmrs/esm-ward-app": {
     "extensionSlots": {
       "action-menu-ward-patient-items-slot": {
-        "add": [
-          "order-basket-action-menu"
-        ]
+        "add": ["order-basket-action-menu"]
       }
     },
     "Translation overrides": {
@@ -198,6 +194,18 @@
       "locationFilter": {
         "enabled": true
       }
+    }
+  },
+  "@openmrs/esm-patient-allergies-app": {
+    "concepts": {
+      "drugAllergenUuid": "01533151-0970-4453-b90a-4c0cdaf35cec",
+      "environmentalAllergenUuid": "20597a49-8273-4433-9e3c-b7ed7bb49399",
+      "foodAllergenUuid": "cb5007bc-2ca3-46d1-9bcd-1a2cdffc8f0d",
+      "mildReactionUuid": "a89efccc-1350-11df-a1f1-0026b9348838",
+      "moderateReactionUuid": "a89efdee-1350-11df-a1f1-0026b9348838",
+      "severeReactionUuid": "a89eff1a-1350-11df-a1f1-0026b9348838",
+      "allergyReactionUuid": "cfc65c25-3872-47c7-9274-ff11742bd5a9",
+      "otherConceptUuid": "a899c59a-1350-11df-a1f1-0026b9348838"
     }
   }
 }
