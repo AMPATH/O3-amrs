@@ -194,7 +194,8 @@
       "locationFilter": {
         "enabled": true
       }
-    }
+    },
+    "completeOrderWithThisDispense": true
   },
   "@openmrs/esm-patient-allergies-app": {
     "concepts": {
