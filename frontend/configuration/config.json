@@ -195,6 +195,14 @@
         "enabled": true
       }
     },
+    "valueSets": {
+      "reasonForPause": {
+        "uuid": "8b518396-da03-482e-b270-2ff90abb05a4"
+      },
+      "reasonForClose": {
+        "uuid": "8b518396-da03-482e-b270-2ff90abb05a4"
+      }
+    },
     "completeOrderWithThisDispense": true,
     "medicationRequestExpirationPeriodInDays": 1
   },
