@@ -66,6 +66,39 @@
                                 ]
                             },
                             {
+                                "tabName": "nutritionAssessment",
+                                "hasFilter": false,
+                                "headerTitle": "nutritionAssessment",
+                                "displayText": "nutritionAssessment",
+                                "encounterType": "3cd9dd0a-a5d1-4482-9f45-a0fea4f5e556",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Nutrition Assessment Form v1.0",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Nutrition Assessment Form v1.0",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "acbbc172-2c87-3594-8fd8-4148a3dd5e62"
+                                    }
+                                ]
+                            },
+                            {
                                 "tabName": "cadex",
                                 "hasFilter": false,
                                 "headerTitle": "cadex",
@@ -110,6 +143,7 @@
                             "en": {
                                 "vitals": "Vitals",
                                 "tbScreening": "TB Screening",
+                                "nutritionAssessment": "Nutrition Assessment",
                                 "cadex": "CADEx"
                             }
                         }
