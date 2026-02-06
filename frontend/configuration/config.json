@@ -205,7 +205,8 @@
       }
     },
     "completeOrderWithThisDispense": true,
-    "medicationRequestExpirationPeriodInDays": 1
+    "medicationRequestExpirationPeriodInDays": 1,
+    "dispenserProviderRoles": [""]
   },
   "@openmrs/esm-patient-allergies-app": {
     "concepts": {
