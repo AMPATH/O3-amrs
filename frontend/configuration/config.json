@@ -76,7 +76,11 @@
     "showPasswordOnSeparateScreen": false
   },
   "@openmrs/esm-patient-medications-app": {
-    "drugOrderTypeUUID": "53eb466e-1359-11df-a1f1-0026b9348838"
+    "drugOrderTypeUUID": "53eb466e-1359-11df-a1f1-0026b9348838",
+    "daysDurationUnit": {
+      "display": "",
+      "uuid": "52e8a934-d57c-4ef0-9fb7-7c15d816b723"
+    }
   },
   "@openmrs/esm-patient-tests-app": {
     "resultsViewerConcepts": [
