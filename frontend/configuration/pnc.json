@@ -1,0 +1,54 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "pnc-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "pncInitial",
+                "hasFilter": false,
+                "headerTitle": "pncInitial",
+                "displayText": "pncInitial",
+                "encounterType": "ded4ecf7-8129-4a9e-8aa3-a21a7adb7759",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC PNC Initial Visit Form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC PNC Initial Visit Form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "7f6f8c71-84b4-3730-8daf-28e887970519"}]
+              },
+              {
+                "tabName": "pncReturn",
+                "hasFilter": false,
+                "headerTitle": "pncReturn",
+                "displayText": "pncReturn",
+                "encounterType": "db215741-de99-424a-a109-1f23eb3b680b",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC PNC Return Visit Form v 1.1", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC PNC Return Visit Form v 1.1", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "d4439939-5642-3d65-8c15-df9a590f2e4f"}]
+              }
+            ],
+            "Translation overrides": {"en": {"pncInitial": "PNC Initial", "pncReturn": "PNC Return"}}
+          }
+        }
+      }
+    }
+  }
+}

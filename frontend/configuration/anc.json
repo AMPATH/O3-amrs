@@ -1,0 +1,54 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "anc-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "ancInitial",
+                "hasFilter": false,
+                "headerTitle": "ancInitial",
+                "displayText": "ancInitial",
+                "encounterType": "f5702679-6a16-43bd-8629-4b44c7a78ff1",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC ANC Initial Encounter Form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC ANC Initial Encounter Form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "885ea751-a210-392f-be9c-d2abf78511e2"}]
+              },
+              {
+                "tabName": "ancReturn",
+                "hasFilter": false,
+                "headerTitle": "ancReturn",
+                "displayText": "ancReturn",
+                "encounterType": "226bfc6b-728d-41ab-90c5-e101af46d06d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC ANC Return Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC ANC Return Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "1cd8dc61-9b92-37c1-9186-0a1b0114d64e"}]
+              }
+            ],
+            "Translation overrides": {"en": {"ancInitial": "ANC Initial", "ancReturn": "ANC Return"}}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "family-planning-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "familyPlanning",
+                "hasFilter": false,
+                "headerTitle": "familyPlanning",
+                "displayText": "familyPlanning",
+                "encounterType": "a8ab57df-a539-4a37-9eba-8f9ebd96809e",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "AMPATH POC Family Planning Screening Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "AMPATH POC Family Planning Screening Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "538e38aa-b062-4388-882a-53272542bb54"}]
+              }
+            ],
+            "Translation overrides": {"en": {"familyPlanning": "Family Planning"}}
+          }
+        }
+      }
+    }
+  }
+}

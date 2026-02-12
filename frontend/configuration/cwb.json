@@ -1,0 +1,35 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "cwb-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "cwb",
+                "hasFilter": false,
+                "headerTitle": "cwb",
+                "displayText": "cwb",
+                "encounterType": "5e019c94-0f80-49b7-8593-28100eb4f787",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "CWB Form", "label": "viewDetails", "mode": "view"},
+                      {"formName": "CWB Form", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "73b9bb98-d470-4aae-93f7-765afd374f39"}]
+              }
+            ],
+            "Translation overrides": {"en": {"cwb": "CWB"}}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "immunisation-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "immunisation",
+                "hasFilter": false,
+                "headerTitle": "immunisation",
+                "displayText": "immunisation",
+                "encounterType": "39d11cc0-300e-42a0-9b13-03661f45d264",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC MNCH Immunization Form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC MNCH Immunization Form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "242089db-a197-3948-90e4-230342859ba8"}]
+              }
+            ],
+            "Translation overrides": {"en": {"immunisation": "Immunisation"}}
+          }
+        }
+      }
+    }
+  }
+}

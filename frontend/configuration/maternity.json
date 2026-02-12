@@ -1,0 +1,54 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "maternity-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "maternityAdmission",
+                "hasFilter": false,
+                "headerTitle": "maternityAdmission",
+                "displayText": "maternityAdmission",
+                "encounterType": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Maternity Admission Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Admission Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "3a9cbd83-4e6b-3f94-97be-e994680e3522"}]
+              },
+              {
+                "tabName": "maternityDischarge",
+                "hasFilter": false,
+                "headerTitle": "maternityDischarge",
+                "displayText": "maternityDischarge",
+                "encounterType": "e3c2a17f-4d58-4725-b702-a5d75a2231d0",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Maternity Discharge Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Discharge Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3"}]
+              }
+            ],
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "maternityDischarge": "Maternity Discharge"}}
+          }
+        }
+      }
+    }
+  }
+}

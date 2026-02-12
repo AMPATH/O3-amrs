@@ -1,0 +1,35 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "dental-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "dental",
+                "hasFilter": false,
+                "headerTitle": "dental",
+                "displayText": "dental",
+                "encounterType": "1c475619-98c2-482a-a6e9-e518923a7978",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Dental Clinical Form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Dental Clinical Form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "37eedbc6-8bd4-3592-992a-9d10d185574e"}]
+              }
+            ],
+            "Translation overrides": {"en": {"dental": "Dental"}}
+          }
+        }
+      }
+    }
+  }
+}
