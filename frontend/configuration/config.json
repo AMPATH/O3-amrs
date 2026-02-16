@@ -168,7 +168,8 @@
       "homepage-dashboard-slot": {
         "remove": [
           "patient-lists-dashboard-link",
-          "service-queues-dashboard-link"
+          "service-queues-dashboard-link",
+          "ward-dashboard-link"
         ]
       }
     }
