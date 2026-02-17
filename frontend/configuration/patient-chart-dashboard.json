@@ -2,86 +2,222 @@
   "@openmrs/esm-patient-chart-app": {
     "extensionSlots": {
       "patient-chart-dashboard-slot": {
-        "add": ["nav-group#GeneralMedicine", "nav-group#MNCH"],
-        "order": ["nav-group#GeneralMedicine", "nav-group#MNCH"],
+        "add": [
+          "nav-group#GeneralMedicine",
+          "nav-group#MNCH",
+          "nav-group#NCD",
+          "nav-group#HTS"
+        ],
+        "order": [
+          "nav-group#GeneralMedicine",
+          "nav-group#MNCH",
+          "nav-group#NCD",
+          "nav-group#HTS"
+        ],
         "configure": {
           "nav-group#GeneralMedicine": {
             "title": "generalMedicine",
             "slotName": "general-medicine-group-slot",
             "isExpanded": true,
-            "Translation overrides": {"en": {"generalMedicine": "General Medicine"}}
+            "Translation overrides": {
+              "en": {
+                "generalMedicine": "General Medicine"
+              }
+            }
           },
           "nav-group#MNCH": {
             "title": "mnch",
             "slotName": "mnch-group-slot",
             "isExpanded": true,
-            "Translation overrides": {"en": {"mnch": "MNCH"}}
+            "Translation overrides": {
+              "en": {
+                "mnch": "MNCH"
+              }
+            }
+          },
+          "nav-group#NCD": {
+            "title": "ncd",
+            "slotName": "ncd-group-slot",
+            "isExpanded": true,
+            "Translation overrides": {
+              "en": {
+                "ncd": "NCD"
+              }
+            }
+          },
+          "nav-group#HTS": {
+            "title": "hts",
+            "slotName": "hts-group-slot",
+            "isExpanded": true,
+            "Translation overrides": {
+              "en": {
+                "hts": "HTS"
+              }
+            }
           }
         }
       },
       "general-medicine-group-slot": {
-        "add": ["dashboard#general-opd-triage", "dashboard#general-opd-consultation", "dashboard#dental"],
-        "order": ["dashboard#general-opd-triage", "dashboard#general-opd-consultation", "dashboard#dental"],
+        "add": [
+          "dashboard#general-opd-triage",
+          "dashboard#general-opd-consultation",
+          "dashboard#dental"
+        ],
+        "order": [
+          "dashboard#general-opd-triage",
+          "dashboard#general-opd-consultation",
+          "dashboard#dental"
+        ],
         "configure": {
           "dashboard#general-opd-triage": {
             "title": "generalOpdTriage",
             "path": "general-opd-triage",
             "slot": "general-opd-triage-dashboard-slot",
-            "Translation overrides": {"en": {"generalOpdTriage": "Triage"}}
+            "Translation overrides": {
+              "en": {
+                "generalOpdTriage": "Triage"
+              }
+            }
           },
           "dashboard#general-opd-consultation": {
             "title": "generalOpdConsultation",
             "path": "general-opd-consultation",
             "slot": "general-opd-consultation-dashboard-slot",
-            "Translation overrides": {"en": {"generalOpdConsultation": "Consultation"}}
+            "Translation overrides": {
+              "en": {
+                "generalOpdConsultation": "Consultation"
+              }
+            }
           },
           "dashboard#dental": {
             "title": "dental",
             "path": "dental",
             "slot": "dental-dashboard-slot",
-            "Translation overrides": {"en": {"dental": "Dental"}}
+            "Translation overrides": {
+              "en": {
+                "dental": "Dental"
+              }
+            }
           }
         }
       },
       "mnch-group-slot": {
-        "add": ["dashboard#cwb", "dashboard#anc", "dashboard#pnc", "dashboard#immunisation", "dashboard#family-planning", "dashboard#maternity"],
-        "order": ["dashboard#cwb", "dashboard#anc", "dashboard#pnc", "dashboard#immunisation", "dashboard#family-planning", "dashboard#maternity"],
+        "add": [
+          "dashboard#cwc",
+          "dashboard#anc",
+          "dashboard#pnc",
+          "dashboard#immunisation",
+          "dashboard#family-planning",
+          "dashboard#maternity"
+        ],
+        "order": [
+          "dashboard#cwc",
+          "dashboard#anc",
+          "dashboard#pnc",
+          "dashboard#immunisation",
+          "dashboard#family-planning",
+          "dashboard#maternity"
+        ],
         "configure": {
-          "dashboard#cwb": {
-            "title": "cwb",
-            "path": "cwb",
-            "slot": "cwb-dashboard-slot",
-            "Translation overrides": {"en": {"cwb": "CWB"}}
+          "dashboard#cwc": {
+            "title": "cwc",
+            "path": "cwc",
+            "slot": "cwc-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "cwc": "CWC"
+              }
+            }
           },
           "dashboard#anc": {
             "title": "anc",
             "path": "anc",
             "slot": "anc-dashboard-slot",
-            "Translation overrides": {"en": {"anc": "ANC"}}
+            "Translation overrides": {
+              "en": {
+                "anc": "ANC"
+              }
+            }
           },
           "dashboard#pnc": {
             "title": "pnc",
             "path": "pnc",
             "slot": "pnc-dashboard-slot",
-            "Translation overrides": {"en": {"pnc": "PNC"}}
+            "Translation overrides": {
+              "en": {
+                "pnc": "PNC"
+              }
+            }
           },
           "dashboard#immunisation": {
             "title": "immunisation",
             "path": "immunisation",
             "slot": "immunisation-dashboard-slot",
-            "Translation overrides": {"en": {"immunisation": "Immunisation"}}
+            "Translation overrides": {
+              "en": {
+                "immunisation": "Immunisation"
+              }
+            }
           },
           "dashboard#family-planning": {
             "title": "familyPlanning",
             "path": "family-planning",
             "slot": "family-planning-dashboard-slot",
-            "Translation overrides": {"en": {"familyPlanning": "Family Planning"}}
+            "Translation overrides": {
+              "en": {
+                "familyPlanning": "Family Planning"
+              }
+            }
           },
           "dashboard#maternity": {
             "title": "maternity",
             "path": "maternity",
             "slot": "maternity-dashboard-slot",
-            "Translation overrides": {"en": {"maternity": "Maternity"}}
+            "Translation overrides": {
+              "en": {
+                "maternity": "Maternity"
+              }
+            }
+          }
+        }
+      },
+      "ncd-group-slot": {
+        "add": [
+          "dashboard#ncd"
+        ],
+        "order": [
+          "dashboard#ncd"
+        ],
+        "configure": {
+          "dashboard#ncd": {
+            "title": "ncd",
+            "path": "ncd",
+            "slot": "ncd-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "ncd": "NCD"
+              }
+            }
+          }
+        }
+      },
+      "hts-group-slot": {
+        "add": [
+          "dashboard#hts"
+        ],
+        "order": [
+          "dashboard#hts"
+        ],
+        "configure": {
+          "dashboard#hts": {
+            "title": "hts",
+            "path": "hts",
+            "slot": "hts-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "hts": "HTS"
+              }
+            }
           }
         }
       }

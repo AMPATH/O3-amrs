@@ -1,0 +1,59 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "ncd-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "ncdEnrollment",
+                "hasFilter": false,
+                "headerTitle": "ncdEnrollment",
+                "displayText": "ncdEnrollment",
+                "encounterType": "5444d069-1317-4838-addf-f2bca42a48a2",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC NCD Enrollment Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC NCD Enrollment Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "9f6694d0-5f6f-3304-b6af-166d23209a69"}]
+              },
+              {
+                "tabName": "ncdFollowUp",
+                "hasFilter": false,
+                "headerTitle": "ncdFollowUp",
+                "displayText": "ncdFollowUp",
+                "encounterType": "04f60e38-70cd-4b8d-aa7e-9c408b349271",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC NCD Follow Up Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC NCD Follow Up Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "9c75d77f-1a27-3528-9065-703a8f816c2f"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "ncdEnrollment": "NCD Enrollment",
+                "ncdFollowUp": "NCD Follow Up"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

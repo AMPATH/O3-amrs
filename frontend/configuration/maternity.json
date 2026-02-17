@@ -43,9 +43,28 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3"}]
+              },
+              {
+                "tabName": "maternityLabourDelivery",
+                "hasFilter": false,
+                "headerTitle": "maternityLabourDelivery",
+                "displayText": "maternityLabourDelivery",
+                "encounterType": "2b928d9b-84ce-4777-9658-3fba6248b3bc",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "45779c69-2ab4-3418-9846-5462c0ee04cf"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "maternityDischarge": "Maternity Discharge"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "maternityDischarge": "Maternity Discharge", "maternityLabourDelivery": "Maternity Labour And Delivery"}}
           }
         }
       }

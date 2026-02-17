@@ -1,0 +1,119 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "hts-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "htsEligibilityScreening",
+                "hasFilter": false,
+                "headerTitle": "htsEligibilityScreening",
+                "displayText": "htsEligibilityScreening",
+                "encounterType": "9c0a7a57-62ff-4f75-babe-5835b0e921b7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC HTS Eligibility Screening Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC HTS Eligibility Screening Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "3fd233d7-f9ea-4235-9790-0a6055bbbe7e"}]
+              },
+              {
+                "tabName": "htsInitialTest",
+                "hasFilter": false,
+                "headerTitle": "htsInitialTest",
+                "displayText": "htsInitialTest",
+                "encounterType": "9c0a7a57-62ff-4f75-babe-5835b0e921b7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC HTS Initial Test form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC HTS Initial Test form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "00000000-0000-0000-0000-000000000000"}]
+              },
+              {
+                "tabName": "htsRetest",
+                "hasFilter": false,
+                "headerTitle": "htsRetest",
+                "displayText": "htsRetest",
+                "encounterType": "9c0a7a57-62ff-4f75-babe-5835b0e921b7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC HTS Retest Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC HTS Retest Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "6097a619-e04b-430f-a403-f0b3d3e1ae7e"}]
+              },
+              {
+                "tabName": "htsReferral",
+                "hasFilter": false,
+                "headerTitle": "htsReferral",
+                "displayText": "htsReferral",
+                "encounterType": "9c0a7a57-62ff-4f75-babe-5835b0e921b7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC HTS Referral form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC HTS Referral form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "5af9791b-05e9-4ed8-a872-4e2d8c3b475f"}]
+              },
+              {
+                "tabName": "htsLinkage",
+                "hasFilter": false,
+                "headerTitle": "htsLinkage",
+                "displayText": "htsLinkage",
+                "encounterType": "9c0a7a57-62ff-4f75-babe-5835b0e921b7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC HTS Linkage form v 1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC HTS Linkage form v 1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "a68a6c7f-733a-45f2-baac-7432135db049"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "htsEligibilityScreening": "Eligibility Screening",
+                "htsInitialTest": "Initial Test",
+                "htsRetest": "Retest",
+                "htsReferral": "Referral",
+                "htsLinkage": "Linkage"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
