@@ -8,6 +8,13 @@
       }
     }
   },
+   "@openmrs/esm-patient-banner": {
+    "extensionSlots": {
+      "patient-banner-tags-slot": {
+        "remove": ["queue-patient-info-queue-entry-status"]
+      }
+    }
+  },
   "@openmrs/esm-ward-app": {
     "extensionSlots": {
       "action-menu-ward-patient-items-slot": {
