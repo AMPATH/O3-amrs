@@ -1,0 +1,35 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "tb-treatment-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "tbTreatment",
+                "hasFilter": false,
+                "headerTitle": "tbTreatment",
+                "displayText": "tbTreatment",
+                "encounterType": "5c6813bd-b1f5-308b-b074-d9fb44626af4",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "TB Treatment Form", "label": "viewDetails", "mode": "view"},
+                      {"formName": "TB Treatment Form", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "5c6813bd-b1f5-308b-b074-d9fb44626af4"}]
+              }
+            ],
+            "Translation overrides": {"en": {"tbTreatment": "TB Treatment"}}
+          }
+        }
+      }
+    }
+  }
+}

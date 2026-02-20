@@ -61,11 +61,13 @@
         "add": [
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
+          "dashboard#tb-treatment",
           "dashboard#dental"
         ],
         "order": [
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
+          "dashboard#tb-treatment",
           "dashboard#dental"
         ],
         "configure": {
@@ -86,6 +88,16 @@
             "Translation overrides": {
               "en": {
                 "generalOpdConsultation": "Consultation"
+              }
+            }
+          },
+          "dashboard#tb-treatment": {
+            "title": "tbTreatment",
+            "path": "tb-treatment",
+            "slot": "tb-treatment-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "tbTreatment": "TB Treatment"
               }
             }
           },
