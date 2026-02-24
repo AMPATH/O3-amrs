@@ -202,5 +202,8 @@
       "allergyReactionUuid": "cfc65c25-3872-47c7-9274-ff11742bd5a9",
       "otherConceptUuid": "a899c59a-1350-11df-a1f1-0026b9348838"
     }
+  },
+  "@ampath/esm-clinical-reminders-app": {
+      "etlBaseUrl": "/etl"
   }
 }
