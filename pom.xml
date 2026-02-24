@@ -249,5 +249,11 @@
         <module>frontend</module>
       </modules>
     </profile>
+    <profile>
+      <id>odoo-docker</id>
+      <modules>
+        <module>odoo-docker</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

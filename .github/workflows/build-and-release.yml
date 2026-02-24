@@ -18,6 +18,8 @@ env:
   GATEWAY_IMAGE: gateway
   FRONTEND_IMAGE: frontend
   BACKEND_IMAGE: backend
+  ODOO_POSTGRES_IMAGE: o3-amrs-odoo-postgres
+  ODOO_IMAGE: o3-amrs-odoo
 
 jobs:
   build-and-release:
@@ -107,5 +109,32 @@ jobs:
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.BACKEND_IMAGE }}:${{ steps.vars.outputs.SHORT_SHA }}
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.BACKEND_IMAGE }}:latest
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.BACKEND_IMAGE }}:${{ env.RELEASE_VERSION }}
+
+      - name: Prepare Odoo Docker build context (Ozone distro + configs)
+        run: mvn -Podoo-docker clean generate-resources
+
+      - name: Build and push Odoo PostgreSQL image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./odoo-docker/target/odoo-build
+          file: ./odoo-docker/target/odoo-build/postgresql/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.ODOO_POSTGRES_IMAGE }}:${{ steps.vars.outputs.SHORT_SHA }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.ODOO_POSTGRES_IMAGE }}:latest
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.ODOO_POSTGRES_IMAGE }}:${{ env.RELEASE_VERSION }}
+
+      - name: Build and push Odoo image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./odoo-docker/target/odoo-build
+          file: ./odoo-docker/target/odoo-build/odoo/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.ODOO_IMAGE }}:${{ steps.vars.outputs.SHORT_SHA }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.ODOO_IMAGE }}:latest
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.ODOO_IMAGE }}:${{ env.RELEASE_VERSION }}
 
     

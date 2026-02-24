@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.openmrs</groupId>
+    <artifactId>distro-emr</artifactId>
+    <version>3.6.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>odoo-docker</artifactId>
+  <name>Odoo Docker Images</name>
+  <description>Builds PostgreSQL and Odoo Docker images with Ozone configs, binaries and SQL scripts. Uses Ozone distro from Mekom Nexus (same approach as openmrs-distro-his).</description>
+  <packaging>pom</packaging>
+
+  <properties>
+    <ozone.distro.version>1.0.0-alpha.15</ozone.distro.version>
+    <odoo.initializer.version>2.4.0-SNAPSHOT</odoo.initializer.version>
+    <odoo.postgres.image>ghcr.io/ampath/o3-amrs-odoo-postgres</odoo.postgres.image>
+    <odoo.image>ghcr.io/ampath/o3-amrs-odoo</odoo.image>
+    <skip.docker.build>false</skip.docker.build>
+  </properties>
+
+  <dependencies>
+    <!-- Ozone distro (packaged and deployed to Mekom Nexus by ozone-his/ozone) -->
+    <dependency>
+      <groupId>com.ozonehis</groupId>
+      <artifactId>ozone-distro</artifactId>
+      <version>${ozone.distro.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Odoo add-ons (Ozone uses these; unpack into binaries/odoo/addons) -->
+    <dependency>
+      <groupId>net.mekomsolutions.odoo</groupId>
+      <artifactId>odoo-initializer</artifactId>
+      <version>${odoo.initializer.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Unpack Ozone distro from Mekom Nexus (same as openmrs-distro-his / Ozone maven-parent) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>unpack-ozone-distro</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/ozone-distro</outputDirectory>
+              <includeArtifactIds>ozone-distro</includeArtifactIds>
+              <includeScope>provided</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Copy Odoo/PostgreSQL parts from Ozone distro into odoo-build (Docker context) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-ozone-odoo-assets</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="odoo.build" value="${project.build.directory}/odoo-build" />
+                <mkdir dir="${odoo.build}" />
+                <!-- Ozone distro zip has configs/, data/, binaries/ at top level -->
+                <copy todir="${odoo.build}/configs/odoo" overwrite="true" failonerror="true">
+                  <fileset dir="${project.build.directory}/ozone-distro/configs/odoo" />
+                </copy>
+                <copy todir="${odoo.build}/data/postgresql" overwrite="true" failonerror="true">
+                  <fileset dir="${project.build.directory}/ozone-distro/data/postgresql" />
+                </copy>
+                <copy todir="${odoo.build}/binaries/odoo" overwrite="true" failonerror="true">
+                  <fileset dir="${project.build.directory}/ozone-distro/binaries/odoo" />
+                </copy>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Unpack Odoo initializer addon into binaries/odoo/addons (merge with distro addons) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>unpack-odoo-initializer</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/odoo-build/binaries/odoo/addons</outputDirectory>
+              <includeArtifactIds>odoo-initializer</includeArtifactIds>
+              <includeScope>provided</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Copy Dockerfiles into build context -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>copy-dockerfiles</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/odoo-build</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}</directory>
+                  <includes>
+                    <include>postgresql/Dockerfile</include>
+                    <include>odoo/Dockerfile</include>
+                  </includes>
+                  <targetPath>.</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Build PostgreSQL image (use -Dskip.docker.build=true to skip) -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>docker-build-postgres</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skip.docker.build}</skip>
+              <executable>docker</executable>
+              <arguments>
+                <argument>build</argument>
+                <argument>-f</argument>
+                <argument>postgresql/Dockerfile</argument>
+                <argument>-t</argument>
+                <argument>${odoo.postgres.image}:${project.version}</argument>
+                <argument>-t</argument>
+                <argument>${odoo.postgres.image}:latest</argument>
+                <argument>.</argument>
+              </arguments>
+              <workingDirectory>${project.build.directory}/odoo-build</workingDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Build Odoo image (use -Dskip.docker.build=true to skip) -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>docker-build-odoo</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skip.docker.build}</skip>
+              <executable>docker</executable>
+              <arguments>
+                <argument>build</argument>
+                <argument>-f</argument>
+                <argument>odoo/Dockerfile</argument>
+                <argument>-t</argument>
+                <argument>${odoo.image}:${project.version}</argument>
+                <argument>-t</argument>
+                <argument>${odoo.image}:latest</argument>
+                <argument>.</argument>
+              </arguments>
+              <workingDirectory>${project.build.directory}/odoo-build</workingDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
