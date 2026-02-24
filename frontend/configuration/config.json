@@ -151,11 +151,12 @@
       }
     }
   },
-  "@openmrs/esm-laboratory-app": {
+  "@ampath/esm-laboratory-app": {
     "concepts": {
       "laboratoryOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838"
     },
-    "laboratoryOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838"
+    "laboratoryOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838",
+    "filterByCurrentLocation": true
   },
   "@openmrs/esm-stock-management-app": {
     "dispensingUnitsUUID": "cde07652-a157-4ee9-bb34-75ca8252cfb3",
@@ -172,10 +173,11 @@
     }
   },
   "@ampath/esm-morgue-app": {},
-  "@openmrs/esm-dispensing-app": {
+  "@ampath/esm-dispensing-app": {
     "locationBehavior": {
       "locationFilter": {
-        "enabled": true
+        "enabled": true,
+        "useCurrentLocation": true
       }
     },
     "refreshInterval": 5000,
@@ -189,7 +191,8 @@
     },
     "completeOrderWithThisDispense": true,
     "medicationRequestExpirationPeriodInDays": 1,
-    "dispenserProviderRoles": [""]
+    "dispenserProviderRoles": [""],
+    "endActiveVisitOnCompletingOrder": true
   },
   "@openmrs/esm-patient-allergies-app": {
     "concepts": {
