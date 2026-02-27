@@ -193,7 +193,9 @@
     "completeOrderWithThisDispense": true,
     "medicationRequestExpirationPeriodInDays": 1,
     "dispenserProviderRoles": [""],
-    "endActiveVisitOnCompletingOrder": true
+    "dispenseBehavior": {
+      "endActiveVisitOnCompletingOrder": true
+    }
   },
   "@openmrs/esm-patient-allergies-app": {
     "concepts": {
