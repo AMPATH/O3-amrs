@@ -42,7 +42,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "00000000-0000-0000-0000-000000000000"}]
+                "formList": [{"uuid": "8cdc534b-4bd3-496e-967d-98378ed24d47"}]
               },
               {
                 "tabName": "htsRetest",
