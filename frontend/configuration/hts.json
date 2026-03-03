@@ -23,7 +23,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "3fd233d7-f9ea-4235-9790-0a6055bbbe7e"}]
+                "formList": [{"uuid": "7a16a346-0991-48ac-b339-aacd463a7845"}]
               },
               {
                 "tabName": "htsInitialTest",
@@ -42,7 +42,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "8cdc534b-4bd3-496e-967d-98378ed24d47"}]
+                "formList": [{"uuid": "edb264d4-91fc-4d16-bb34-a413eef2b865"}]
               },
               {
                 "tabName": "htsRetest",
@@ -61,7 +61,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "6097a619-e04b-430f-a403-f0b3d3e1ae7e"}]
+                "formList": [{"uuid": "9b1258a3-e181-4dec-af70-8538c4735e38"}]
               },
               {
                 "tabName": "htsReferral",
@@ -80,7 +80,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "5af9791b-05e9-4ed8-a872-4e2d8c3b475f"}]
+                "formList": [{"uuid": "3b688533-0de1-4c3e-b75a-c5b865080d80"}]
               },
               {
                 "tabName": "htsLinkage",
@@ -99,7 +99,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "a68a6c7f-733a-45f2-baac-7432135db049"}]
+                "formList": [{"uuid": "6c82c396-45dc-476b-abc4-84c2b71992c5"}]
               }
             ],
             "Translation overrides": {
