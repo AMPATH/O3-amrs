@@ -83,7 +83,7 @@
                 <property name="odoo.build" value="${project.build.directory}/odoo-build" />
                 <mkdir dir="${odoo.build}" />
                 <!-- Ozone distro zip has configs/, data/, binaries/ at top level -->
-                <copy todir="${odoo.build}/configs/odoo" overwrite="true" failonerror="true">
+                <copy todir="${odoo.build}/config/odoo" overwrite="true" failonerror="true">
                   <fileset dir="${project.build.directory}/ozone-distro/configs/odoo" />
                 </copy>
                 <copy todir="${odoo.build}/data/postgresql" overwrite="true" failonerror="true">
@@ -97,8 +97,8 @@
                   <fileset dir="${project.build.directory}/ozone-distro/binaries/eip-odoo-openmrs" />
                 </copy>
                 <!-- Distro Odoo configs overwrite Maven dependency (ozone-distro); distro takes precedence -->
-                <copy todir="${odoo.build}/configs/odoo" overwrite="true" failonerror="false">
-                  <fileset dir="${project.basedir}/../distro/configs/odoo" />
+                <copy todir="${odoo.build}/config/odoo" overwrite="true" failonerror="false">
+                  <fileset dir="${project.basedir}/../distro/config/odoo" />
                 </copy>
               </target>
             </configuration>
