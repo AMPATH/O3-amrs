@@ -60,6 +60,7 @@
     <amrs-content.version>1.0.0-SNAPSHOT</amrs-content.version>
     <htmlformentry.version>6.1.0</htmlformentry.version>
     <reference-demo-content.version>1.7.0-SNAPSHOT</reference-demo-content.version>
+    <fhirproxyVersion>1.1.0-SNAPSHOT</fhirproxyVersion>
   </properties>
 
   <dependencies>
@@ -89,6 +90,12 @@
       <artifactId>fhir2-omod</artifactId>
       <version>${fhir2.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openmrs.module</groupId>
+      <artifactId>fhirproxy-omod</artifactId>
+      <version>${fhirproxyVersion}</version>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.openmrs.module</groupId>
