@@ -147,7 +147,8 @@
         "remove": [
           "patient-lists-dashboard-link",
           "service-queues-dashboard-link",
-          "ward-dashboard-link"
+          "ward-dashboard-link",
+          "billing-dashboard-link"
         ]
       }
     }
