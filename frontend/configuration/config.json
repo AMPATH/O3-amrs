@@ -6,6 +6,12 @@
     "extensionSlots": {
       "action-menu-patient-chart-items-slot": {
         "order": ["order-basket-action-menu"]
+      },
+      "extra-visit-attribute-slot": {
+        "remove": ["billing-checkin-form"]
+      },
+      "visit-form-bottom-slot": {
+        "remove": []
       }
     }
   },
@@ -211,6 +217,6 @@
     }
   },
   "@ampath/esm-clinical-reminders-app": {
-      "etlBaseUrl": "/etl"
+    "etlBaseUrl": "/etl"
   }
 }
