@@ -46,7 +46,8 @@
     "@ampath/esm-morgue-app": "next",
     "@ampath/esm-patient-care-workflows-app": "next",
     "@ampath/esm-procedures-app": "next",
-    "@ampath/esm-clinical-reminders-app": "next"
+    "@ampath/esm-clinical-reminders-app": "next",
+    "@ampath/esm-radiology-app": "next"
   },
   "excludedFrontendModules": []
 }
