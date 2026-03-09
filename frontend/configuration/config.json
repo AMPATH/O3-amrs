@@ -164,7 +164,8 @@
       "laboratoryOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838"
     },
     "laboratoryOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838",
-    "filterByCurrentLocation": true
+    "filterByCurrentLocation": true,
+    "laboratoryServiceTypedUuid": "5adeb9de-5545-4272-add4-a661005f727e"
   },
   "@openmrs/esm-stock-management-app": {
     "dispensingUnitsUUID": "cde07652-a157-4ee9-bb34-75ca8252cfb3",
@@ -202,7 +203,8 @@
     "dispenserProviderRoles": [""],
     "dispenseBehavior": {
       "endActiveVisitOnCompletingOrder": true
-    }
+    },
+    "pharmacyServiceTypedUuid": "eb111184-414f-40ae-b8f0-8d52116de72a"
   },
   "@openmrs/esm-patient-allergies-app": {
     "concepts": {
@@ -218,5 +220,8 @@
   },
   "@ampath/esm-clinical-reminders-app": {
     "etlBaseUrl": "/etl"
+  },
+  "@ampath/esm-procedures-app": {
+    "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
   }
 }
