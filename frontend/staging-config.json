@@ -570,7 +570,7 @@
       "phone": {
         "personAttributeUuid": "72a759a8-1359-11df-a1f1-0026b9348838",
         "validation": {
-          "required": false,
+          "required": true,
           "matches": "^0([0-9](?:(?:[0-9][0-9])|(?:0[0-8])|(4[0-1]))[0-9]{6})$"
         }
       },
