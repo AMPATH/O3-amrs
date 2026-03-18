@@ -607,7 +607,9 @@
     "defaultFacilityUrl": "",
     "subDomainUrl": "https://staging.ampath.or.ke",
     "etlBaseUrl": "/etl",
-    "hieBaseUrl": "https://staging.ampath.or.ke/hie"
+    "hieBaseUrl": "https://staging.ampath.or.ke/hie",
+    "claimsBaseUrl": "https://staging.ampath.or.ke/etl-claims/api/hie",
+    "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX"
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "https://staging.ampath.or.ke/hie"
