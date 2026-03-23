@@ -607,7 +607,8 @@
     "defaultFacilityUrl": "",
     "subDomainUrl": "https://ngx.ampath.or.ke",
     "etlBaseUrl": "/etl",
-    "hieBaseUrl": "https://ngx.ampath.or.ke/hie"
+    "hieBaseUrl": "https://ngx.ampath.or.ke/hie",
+    "registrationBillableServices":["da3f7edc-5650-4beb-9942-61eb60315a17"]
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "https://ngx.ampath.or.ke/hie"

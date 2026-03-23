@@ -609,7 +609,8 @@
     "etlBaseUrl": "/etl",
     "hieBaseUrl": "https://staging.ampath.or.ke/hie",
     "claimsBaseUrl": "https://staging.ampath.or.ke/etl-claims/api/hie",
-    "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX"
+    "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
+    "registrationBillableServices":["3675fefd-ce4e-4ed1-9de2-7e70bc01170c"]
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "https://staging.ampath.or.ke/hie"
