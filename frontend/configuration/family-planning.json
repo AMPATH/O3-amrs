@@ -17,13 +17,13 @@
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "AMPATH POC Family Planning Screening Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "AMPATH POC Family Planning Screening Form v1.0", "label": "editForm", "mode": "edit"}
+                      {"formName": "POC Family Planning Encounter Form v1.1", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Family Planning Encounter Form v1.1", "label": "editForm", "mode": "edit"}
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "538e38aa-b062-4388-882a-53272542bb54"}]
+                "formList": [{"uuid": "03a13d00-75a8-37b9-948e-75b6e1339435"}]
               }
             ],
             "Translation overrides": {"en": {"familyPlanning": "Family Planning"}}

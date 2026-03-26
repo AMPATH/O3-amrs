@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 
 /**
  * Provides the set of order-type UUIDs that GenericOrderRouting should process.
- * Hardcoded to the standard Radiology + Procedure UUIDs used at AMPATH.
+ * Hardcoded to the standard Radiology + Procedure + Consultation UUIDs used at AMPATH.
  */
 @Component
 public class AmpathGenericOrderProperties {
 
     private static final String DEFAULT_UUIDS =
-            "ff4485a4-f071-4423-aeb2-db6efce52b83,2315ab24-9a4e-4b36-b189-8e74d2c77394";
+            "ff4485a4-f071-4423-aeb2-db6efce52b83,2315ab24-9a4e-4b36-b189-8e74d2c77394,2da15461-81db-43bc-a2c0-853741bece90";
 
     private final Set<String> uuidSet;
 
