@@ -1,2 +1,2 @@
 id,name,categ_id/id,type,purchase_ok,invoice_policy,lst_price
-init.2da15461-81db-43bc-a2c0-853741bece90,Consultation Cash,init.categ_services_consultation_orders,service,FALSE,Ordered quantities,0.0
+init.ec73e2d6-7e69-47fb-b0af-a5f9c756c12c,Consultation Cash,init.categ_services_consultation_orders,service,FALSE,Ordered quantities,0.0
