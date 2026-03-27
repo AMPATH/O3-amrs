@@ -610,7 +610,13 @@
     "hieBaseUrl": "https://staging.ampath.or.ke/hie",
     "claimsBaseUrl": "https://staging.ampath.or.ke/etl-claims/api/hie",
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
-    "registrationBillableServices": ["3675fefd-ce4e-4ed1-9de2-7e70bc01170c"]
+    "registrationBillableServices": ["3675fefd-ce4e-4ed1-9de2-7e70bc01170c"],
+    "cashConsultationOrderTypeUuid": "2da15461-81db-43bc-a2c0-853741bece90",
+    "cashConsulationConceptUuid": "ec73e2d6-7e69-47fb-b0af-a5f9c756c12c",
+    "shaConsultationOrderTypeUuid": "a6a1b98c-ceaf-4481-ae61-67251e43a128",
+    "shaConsulationConceptUuid": "1764494b-1f0b-491a-8f55-9970be56ce70",
+    "outPatientCareSettingUuid": "6f0c9a92-6f24-11e3-af88-005056821db0",
+    "orderEncounterTypeUuid": "d8e0f981-62e0-4c2a-b3ca-890c51afc350"
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "https://staging.ampath.or.ke/hie"
