@@ -42,7 +42,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3"}]
+                "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               },
               {
                 "tabName": "maternityLabourDelivery",
@@ -62,9 +62,33 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "45779c69-2ab4-3418-9846-5462c0ee04cf"}]
+              },
+              {
+                "tabName": "cadex",
+                "hasFilter": false,
+                "headerTitle": "cadex",
+                "displayText": "cadex",
+                "encounterType": "64e0f9f4-5f25-4098-bbca-ba8db6ce1696",
+                "columns": [
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "AMPATH POC Cardex Form v1.0", "package": "hiv-care-treatment", "label": "viewDetails", "mode": "view"},
+                      {"formName": "AMPATH POC Cardex Form v1.0", "package": "hiv-care-treatment", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "maternityDischarge": "Maternity Discharge", "maternityLabourDelivery": "Maternity Labour And Delivery"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "maternityDischarge": "Maternity Discharge", "maternityLabourDelivery": "Maternity Labour And Delivery", "cadex": "CADEx"}}
           }
         }
       }
