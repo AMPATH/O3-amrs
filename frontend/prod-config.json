@@ -634,5 +634,8 @@
   "@ampath/esm-reporting": {
     "etlBaseUrl": "/etl",
     "subDomainUrl": "https://ngx.ampath.or.ke"
-  }
+  },
+  "@ampath/esm-reports-app": {
+      "etlBaseUrl": "/etl"
+   }
 }
