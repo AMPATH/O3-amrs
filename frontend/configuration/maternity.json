@@ -26,44 +26,6 @@
                 "formList": [{"uuid": "3a9cbd83-4e6b-3f94-97be-e994680e3522"}]
               },
               {
-                "tabName": "maternityDischarge",
-                "hasFilter": false,
-                "headerTitle": "maternityDischarge",
-                "displayText": "maternityDischarge",
-                "encounterType": "e3c2a17f-4d58-4725-b702-a5d75a2231d0",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {"formName": "POC Maternity Discharge Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Discharge Form v1.0", "label": "editForm", "mode": "edit"}
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
-              },
-              {
-                "tabName": "maternityLabourDelivery",
-                "hasFilter": false,
-                "headerTitle": "maternityLabourDelivery",
-                "displayText": "maternityLabourDelivery",
-                "encounterType": "2b928d9b-84ce-4777-9658-3fba6248b3bc",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "editForm", "mode": "edit"}
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "45779c69-2ab4-3418-9846-5462c0ee04cf"}]
-              },
-              {
                 "tabName": "cadex",
                 "hasFilter": false,
                 "headerTitle": "cadex",
@@ -86,9 +48,66 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"}]
+              },
+              {
+                "tabName": "vitals",
+                "hasFilter": false,
+                "headerTitle": "vitals",
+                "displayText": "vitals",
+                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "AMPATH POC Vitals Form v1.0", "package": "hiv-care-treatment", "label": "viewDetails", "mode": "view"},
+                      {"formName": "AMPATH POC Vitals Form v1.0", "package": "hiv-care-treatment", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"}]
+              },
+              {
+                "tabName": "maternityLabourDelivery",
+                "hasFilter": false,
+                "headerTitle": "maternityLabourDelivery",
+                "displayText": "maternityLabourDelivery",
+                "encounterType": "2b928d9b-84ce-4777-9658-3fba6248b3bc",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "45779c69-2ab4-3418-9846-5462c0ee04cf"}]
+              },
+              {
+                "tabName": "maternityDischarge",
+                "hasFilter": false,
+                "headerTitle": "maternityDischarge",
+                "displayText": "maternityDischarge",
+                "encounterType": "e3c2a17f-4d58-4725-b702-a5d75a2231d0",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Maternity Discharge Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Discharge Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "maternityDischarge": "Maternity Discharge", "maternityLabourDelivery": "Maternity Labour And Delivery", "cadex": "CADEx"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge"}}
           }
         }
       }
