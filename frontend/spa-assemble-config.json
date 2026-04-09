@@ -33,7 +33,7 @@
     "@openmrs/esm-patient-vitals-app": "next",
     "@openmrs/esm-primary-navigation-app": "next",
     "@openmrs/esm-service-queues-app": "next",
-    "@openmrs/esm-stock-management-app": "2.0.3",
+    "@openmrs/esm-stock-management-app": "3.1.0",
     "@openmrs/esm-system-admin-app": "next",
     "@openmrs/esm-user-onboarding-app": "next",
     "@openmrs/esm-ward-app": "next",
