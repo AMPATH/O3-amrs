@@ -21,13 +21,13 @@
             "field_rules": {}
         },
         {
-            "model_name": "stock.warehouse",
-            "folder": "warehouse",
+            "model_name": "stock.location",
+            "folder": "stock_location",
             "field_rules": {}
         },
         {
-            "model_name": "stock.location",
-            "folder": "stock_location",
+            "model_name": "stock.warehouse",
+            "folder": "warehouse",
             "field_rules": {}
         },
         {

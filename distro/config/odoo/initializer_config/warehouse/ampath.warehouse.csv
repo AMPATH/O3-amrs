@@ -1,0 +1,2 @@
+"id","name","code","company_id/id","partner_id/id","view_location_id/id","lot_stock_id/id","wh_input_stock_loc_id/id","wh_output_stock_loc_id/id","wh_pack_stock_loc_id/id"
+"init.ampath_wh_main","AMPATH Kenya Main Warehouse","AMW","base.main_company","base.main_partner","init.ampath_wh_view","init.ampath_wh_lot","init.ampath_wh_in","init.ampath_wh_out","init.ampath_wh_pack"
