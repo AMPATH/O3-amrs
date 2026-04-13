@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,7 @@ public class OdooClient {
     private static final String SERVER_OBJECT_URL = "%s/xmlrpc/2/object";
 
     private static final String SERVER_COMMON_URL = "%s/xmlrpc/2/common";
+    private static final Pattern INVALID_FIELD_PATTERN = Pattern.compile("Invalid field '([^']+)' on model '([^']+)'");
 
     public OdooClient(String url, String database, String username, String password) {
         this.url = url;
@@ -132,21 +135,32 @@ public class OdooClient {
     public Object[] searchAndRead(String model, List<Object> criteria, List<String> fields) {
         init();
 
-        try {
-            List<Object> params = new ArrayList<>();
-            params.add(getDatabase());
-            params.add(uid);
-            params.add(getPassword());
-            params.add(model);
-            params.add(Constants.SEARCH_READ_METHOD);
-            params.add(singletonList(criteria));
-            if (fields != null) {
-                params.add(singletonMap("fields", fields));
-            }
+        List<String> requestedFields = fields == null ? null : new ArrayList<>(fields);
+        while (true) {
+            try {
+                List<Object> params = new ArrayList<>();
+                params.add(getDatabase());
+                params.add(uid);
+                params.add(getPassword());
+                params.add(model);
+                params.add(Constants.SEARCH_READ_METHOD);
+                params.add(singletonList(criteria));
+                if (requestedFields != null && !requestedFields.isEmpty()) {
+                    params.add(singletonMap("fields", requestedFields));
+                }
 
-            return (Object[]) client.execute("execute_kw", params);
-        } catch (XmlRpcException e) {
-            throw new RuntimeException("Error occurred while searchAndRead from odoo server error", e);
+                return (Object[]) client.execute("execute_kw", params);
+            } catch (XmlRpcException e) {
+                String invalidField = extractInvalidFieldName(e);
+                if (invalidField == null || requestedFields == null || !requestedFields.remove(invalidField)) {
+                    throw new RuntimeException("Error occurred while searchAndRead from odoo server error", e);
+                }
+
+                log.warn(
+                        "Field '{}' is invalid on model '{}' during search_read. Retrying without it.",
+                        invalidField,
+                        model);
+            }
         }
     }
 
@@ -166,5 +180,18 @@ public class OdooClient {
         } catch (XmlRpcException e) {
             throw new RuntimeException("Error occurred while searching from odoo server error", e);
         }
+    }
+
+    private String extractInvalidFieldName(XmlRpcException ex) {
+        String message = ex.getMessage();
+        if (message == null) {
+            return null;
+        }
+
+        Matcher matcher = INVALID_FIELD_PATTERN.matcher(message);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 }

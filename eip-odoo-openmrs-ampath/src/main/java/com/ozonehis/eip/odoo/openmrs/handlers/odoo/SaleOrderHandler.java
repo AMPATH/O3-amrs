@@ -70,6 +70,7 @@ public class SaleOrderHandler {
     public List<String> orderDefaultAttributes;
 
     public SaleOrder getDraftSaleOrderIfExistsByVisitId(String visitId) {
+        List<String> baseOrderAttributes = asList("id", "client_order_ref", "partner_id", "state", "order_line");
         orderDefaultAttributes = asList(
                 "id",
                 "client_order_ref",
@@ -79,10 +80,27 @@ public class SaleOrderHandler {
                 odooCustomerWeightField,
                 odooCustomerDobField,
                 odooCustomerIdField);
-        Object[] records = odooClient.searchAndRead(
-                Constants.SALE_ORDER_MODEL,
-                List.of(asList("client_order_ref", "=", visitId), asList("state", "=", "draft")),
-                orderDefaultAttributes);
+        Object[] records;
+        try {
+            records = odooClient.searchAndRead(
+                    Constants.SALE_ORDER_MODEL,
+                    List.of(asList("client_order_ref", "=", visitId), asList("state", "=", "draft")),
+                    orderDefaultAttributes);
+        } catch (RuntimeException ex) {
+            if (!isInvalidConfiguredSaleOrderFieldError(ex)) {
+                throw ex;
+            }
+            log.warn(
+                    "Configured optional sale.order field is missing (weight='{}', dob='{}', id='{}'). "
+                            + "Retrying search_read with base fields only.",
+                    odooCustomerWeightField,
+                    odooCustomerDobField,
+                    odooCustomerIdField);
+            records = odooClient.searchAndRead(
+                    Constants.SALE_ORDER_MODEL,
+                    List.of(asList("client_order_ref", "=", visitId), asList("state", "=", "draft")),
+                    baseOrderAttributes);
+        }
         if (records == null) {
             throw new EIPException(
                     String.format("Got null response while fetching for Sale order with client_order_ref %s", visitId));
@@ -232,5 +250,33 @@ public class SaleOrderHandler {
 
         return observation.getValueQuantity().getValue() + " "
                 + observation.getValueQuantity().getUnit();
+    }
+
+    private boolean isInvalidConfiguredSaleOrderFieldError(RuntimeException ex) {
+        String allMessages = allThrowableMessages(ex).toLowerCase();
+        boolean invalidSaleOrderModel = allMessages.contains("on model 'sale.order'");
+        boolean invalidWeightField = odooCustomerWeightField != null
+                && !odooCustomerWeightField.isBlank()
+                && allMessages.contains("invalid field '" + odooCustomerWeightField.toLowerCase() + "'");
+        boolean invalidDobField = odooCustomerDobField != null
+                && !odooCustomerDobField.isBlank()
+                && allMessages.contains("invalid field '" + odooCustomerDobField.toLowerCase() + "'");
+        boolean invalidIdField = odooCustomerIdField != null
+                && !odooCustomerIdField.isBlank()
+                && allMessages.contains("invalid field '" + odooCustomerIdField.toLowerCase() + "'");
+        return invalidSaleOrderModel && (invalidWeightField || invalidDobField || invalidIdField);
+    }
+
+    private String allThrowableMessages(Throwable throwable) {
+        StringBuilder all = new StringBuilder();
+        Throwable current = throwable;
+        while (current != null) {
+            String message = current.getMessage();
+            if (message != null) {
+                all.append(message).append(' ');
+            }
+            current = current.getCause();
+        }
+        return all.toString();
     }
 }
