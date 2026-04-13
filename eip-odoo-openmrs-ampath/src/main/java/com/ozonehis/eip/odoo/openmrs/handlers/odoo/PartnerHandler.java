@@ -49,6 +49,16 @@ public class PartnerHandler {
     public List<String> partnerDefaultAttributes;
 
     public Partner getPartnerByID(String partnerRefID) {
+        List<String> basePartnerAttributes = asList(
+                "id",
+                "name",
+                "ref",
+                "street",
+                "street2",
+                "city",
+                "zip",
+                "active",
+                "comment");
         partnerDefaultAttributes = asList(
                 "id",
                 "name",
@@ -61,8 +71,22 @@ public class PartnerHandler {
                 "comment",
                 odooCustomerDobField,
                 odooCustomerIdField);
-        Object[] records = odooClient.searchAndRead(
-                Constants.PARTNER_MODEL, List.of(asList("ref", "=", partnerRefID)), partnerDefaultAttributes);
+        Object[] records;
+        try {
+            records = odooClient.searchAndRead(
+                    Constants.PARTNER_MODEL, List.of(asList("ref", "=", partnerRefID)), partnerDefaultAttributes);
+        } catch (RuntimeException ex) {
+            if (!isInvalidConfiguredPartnerFieldError(ex)) {
+                throw ex;
+            }
+            log.warn(
+                    "Configured optional partner field is missing on model res.partner (dob='{}', id='{}'). "
+                            + "Retrying search_read with base fields only.",
+                    odooCustomerDobField,
+                    odooCustomerIdField);
+            records = odooClient.searchAndRead(
+                    Constants.PARTNER_MODEL, List.of(asList("ref", "=", partnerRefID)), basePartnerAttributes);
+        }
         if (records == null) {
             throw new EIPException(
                     String.format("Got null response while searching for Partner with reference id %s", partnerRefID));
@@ -101,5 +125,30 @@ public class PartnerHandler {
             headers.put(Constants.HEADER_ODOO_ID_ATTRIBUTE_VALUE, List.of(partner.getPartnerId()));
         }
         producerTemplate.sendBodyAndHeaders(endpointUri, partner, headers);
+    }
+
+    private boolean isInvalidConfiguredPartnerFieldError(RuntimeException ex) {
+        String allMessages = allThrowableMessages(ex).toLowerCase();
+        boolean invalidPartnerModel = allMessages.contains("on model 'res.partner'");
+        boolean invalidDobField = odooCustomerDobField != null
+                && !odooCustomerDobField.isBlank()
+                && allMessages.contains("invalid field '" + odooCustomerDobField.toLowerCase() + "'");
+        boolean invalidIdField = odooCustomerIdField != null
+                && !odooCustomerIdField.isBlank()
+                && allMessages.contains("invalid field '" + odooCustomerIdField.toLowerCase() + "'");
+        return invalidPartnerModel && (invalidDobField || invalidIdField);
+    }
+
+    private String allThrowableMessages(Throwable throwable) {
+        StringBuilder all = new StringBuilder();
+        Throwable current = throwable;
+        while (current != null) {
+            String message = current.getMessage();
+            if (message != null) {
+                all.append(message).append(' ');
+            }
+            current = current.getCause();
+        }
+        return all.toString();
     }
 }
