@@ -46,4 +46,7 @@ public class SaleOrder implements OdooResource {
 
     @JsonProperty("odoo.customer.id.field")
     private String odooCustomerId;
+
+    @JsonProperty("company_id")
+    private Integer companyId;
 }

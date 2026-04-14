@@ -11,6 +11,8 @@ public class Constants {
 
     public static final String PARTNER_MODEL = "res.partner";
 
+    public static final String COMPANY_MODEL = "res.company";
+
     public static final String SALE_ORDER_MODEL = "sale.order";
 
     public static final String SALE_ORDER_LINE_MODEL = "sale.order.line";
