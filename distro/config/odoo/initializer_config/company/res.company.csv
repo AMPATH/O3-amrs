@@ -1,2 +1,2 @@
-"id","name","currency_id/id","email","website","logo","parent_id/id","partner_id/id","sequence","x_location_uuid"
-"base.main_company","AMPATH Kenya","base.KES","ampathkenya.org","https://www.ampathkenya.org/","","","base.main_partner","",""
+"id","name","currency_id/id","email","website","logo","parent_id/id","partner_id/id","sequence"
+"base.main_company","AMPATH Kenya","base.KES","ampathkenya.org","https://www.ampathkenya.org/","","","base.main_partner",""

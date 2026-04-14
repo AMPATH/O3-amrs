@@ -18,16 +18,26 @@ import java.util.Map;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Resolves an Odoo company from an OpenMRS location UUID.
+ *
+ * <p>Convention: every Odoo company that maps to an OpenMRS location must be given an external ID
+ * of the form {@code init.<location-uuid>} in the initializer CSV, e.g.:
+ * <pre>
+ *   "init.090089ea-1352-11df-a1f1-0026b9348838","Kesses","base.KES",...
+ * </pre>
+ * EIP then resolves the location UUID directly via {@code ir.model.data} with no custom fields and
+ * no restart required. To add a new company, simply add a new CSV row with
+ * {@code id = init.<location-uuid>}.
+ */
 @Slf4j
 @Setter
 @Component
 public class CompanyHandler {
 
-    @Value("${odoo.company.location.field:x_location_uuid}")
-    private String companyLocationField;
+    private static final String INIT_MODULE = "init";
 
     @Autowired
     private OdooClient odooClient;
@@ -36,39 +46,50 @@ public class CompanyHandler {
     private OdooUtils odooUtils;
 
     /**
-     * Look up an Odoo company whose {@code x_location_uuid} (or the field configured via
-     * {@code odoo.company.location.field}) matches the given OpenMRS location UUID.
-     *
-     * @param locationUuid the OpenMRS location UUID extracted from the FHIR Encounter
-     * @return the matching {@link Company}, or {@code null} if none found or the field is not configured
+     * Returns the Odoo company whose external ID name equals the given OpenMRS location UUID
+     * (module {@code init}), or {@code null} if no such company exists (the sale order will then
+     * fall back to the user's default company).
      */
     public Company getCompanyByLocationUuid(String locationUuid) {
         if (locationUuid == null || locationUuid.isBlank()) {
             return null;
         }
         try {
-            Object[] records = odooClient.searchAndRead(
-                    Constants.COMPANY_MODEL,
-                    List.of(asList(companyLocationField, "=", locationUuid)),
-                    asList("id", "name", companyLocationField));
-            if (records == null || records.length == 0) {
-                log.warn("No Odoo company found for OpenMRS location UUID '{}'", locationUuid);
+            Object[] imdRecords = odooClient.searchAndRead(
+                    Constants.IR_MODEL,
+                    List.of(
+                            asList("module", "=", INIT_MODULE),
+                            asList("name", "=", locationUuid),
+                            asList("model", "=", "res.company")),
+                    asList("id", "res_id"));
+
+            if (imdRecords == null || imdRecords.length == 0) {
+                log.debug("No Odoo company has external ID 'init.{}' — using default company", locationUuid);
                 return null;
             }
-            if (records.length > 1) {
-                log.warn(
-                        "Multiple Odoo companies found for OpenMRS location UUID '{}'; using the first one",
-                        locationUuid);
-            }
+
             @SuppressWarnings("unchecked")
-            Map<String, Object> record = (Map<String, Object>) records[0];
-            return odooUtils.convertToObject(record, Company.class);
+            int companyResId = (int) ((Map<String, Object>) imdRecords[0]).get("res_id");
+
+            Object[] companyRecords = odooClient.searchAndRead(
+                    Constants.COMPANY_MODEL,
+                    List.of(asList("id", "=", companyResId)),
+                    asList("id", "name"));
+
+            Company company = new Company();
+            company.setCompanyId(companyResId);
+            if (companyRecords != null && companyRecords.length > 0) {
+                @SuppressWarnings("unchecked")
+                String name = (String) ((Map<String, Object>) companyRecords[0]).get("name");
+                company.setCompanyName(name);
+            }
+
+            log.debug("Resolved location UUID '{}' → company '{}' (id={})",
+                    locationUuid, company.getCompanyName(), companyResId);
+            return company;
+
         } catch (Exception e) {
-            log.warn(
-                    "Failed to look up Odoo company by location UUID '{}' (field '{}'): {}",
-                    locationUuid,
-                    companyLocationField,
-                    e.getMessage());
+            log.warn("Failed to resolve company for location UUID '{}': {}", locationUuid, e.getMessage());
             return null;
         }
     }
