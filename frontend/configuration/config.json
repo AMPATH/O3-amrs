@@ -5,10 +5,14 @@
     "showServiceQueueFields": true,
     "extensionSlots": {
       "action-menu-patient-chart-items-slot": {
-        "order": ["order-basket-action-menu"]
+        "order": [
+          "order-basket-action-menu"
+        ]
       },
       "extra-visit-attribute-slot": {
-        "remove": ["billing-checkin-form"]
+        "remove": [
+          "billing-checkin-form"
+        ]
       },
       "visit-form-bottom-slot": {
         "remove": []
@@ -18,14 +22,18 @@
   "@openmrs/esm-patient-banner": {
     "extensionSlots": {
       "patient-banner-tags-slot": {
-        "remove": ["queue-patient-info-queue-entry-status"]
+        "remove": [
+          "queue-patient-info-queue-entry-status"
+        ]
       }
     }
   },
   "@openmrs/esm-ward-app": {
     "extensionSlots": {
       "action-menu-ward-patient-items-slot": {
-        "add": ["order-basket-action-menu"]
+        "add": [
+          "order-basket-action-menu"
+        ]
       }
     },
     "Translation overrides": {
@@ -105,7 +113,9 @@
     ],
     "orders": {
       "labOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838",
-      "labOrderableConcepts": ["0cb778e1-aa83-456f-8099-6b241dbfd647"]
+      "labOrderableConcepts": [
+        "0cb778e1-aa83-456f-8099-6b241dbfd647"
+      ]
     },
     "showReferenceNumberField": false
   },
@@ -140,9 +150,11 @@
       },
       {
         "orderTypeUuid": "2315ab24-9a4e-4b36-b189-8e74d2c77394",
-        "orderableConceptSets": ["eef060d3-d503-4695-a9ba-47f5af44135b"],
+        "orderableConceptSets": [
+          "eef060d3-d503-4695-a9ba-47f5af44135b"
+        ],
         "label": "Procedure Orders",
-        "icon": "omrs-icon-exam-qualification"
+        "icon": "omrs-icon-syringe"
       }
     ],
     "showReferenceNumberField": false
@@ -200,7 +212,9 @@
     },
     "completeOrderWithThisDispense": true,
     "medicationRequestExpirationPeriodInDays": 7,
-    "dispenserProviderRoles": [""],
+    "dispenserProviderRoles": [
+      ""
+    ],
     "dispenseBehavior": {
       "endActiveVisitOnCompletingOrder": true
     },
