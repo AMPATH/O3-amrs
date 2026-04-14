@@ -1,16 +1,6 @@
 {
     "models": [
         {
-            "model_name": "ir.model.fields",
-            "folder": "custom_fields",
-            "field_rules": {}
-        },
-        {
-            "model_name": "ir.model.fields.selection",
-            "folder": "field_selection",
-            "field_rules": {}
-        },
-        {
             "model_name": "res.partner",
             "folder": "partner",
             "field_rules": {}
@@ -63,6 +53,16 @@
         {
             "model_name": "ir.actions.act_window",
             "folder": "act_window",
+            "field_rules": {}
+        },
+        {
+            "model_name": "ir.model.fields",
+            "folder": "custom_fields",
+            "field_rules": {}
+        },
+        {
+            "model_name": "ir.model.fields.selection",
+            "folder": "field_selection",
             "field_rules": {}
         },
         {
