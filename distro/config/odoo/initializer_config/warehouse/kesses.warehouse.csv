@@ -1,3 +1,3 @@
 "id","name","code","company_id/id","partner_id/id","view_location_id/id","lot_stock_id/id","wh_input_stock_loc_id/id","wh_output_stock_loc_id/id","wh_pack_stock_loc_id/id"
-"init.kesses_wh_pharmacy","Kesses Pharmacy","KPH","init.kesses_company","init.kesses_partner","init.kesses_ph_view","init.kesses_ph_lot","init.kesses_ph_in","init.kesses_ph_out","init.kesses_ph_pack"
-"init.kesses_wh_storage","Kesses Main Warehouse","KMW","init.kesses_company","init.kesses_partner","init.kesses_st_view","init.kesses_st_lot","init.kesses_st_in","init.kesses_st_out","init.kesses_st_pack"
+"init.kesses_wh_pharmacy","Kesses Pharmacy","KPH","init.090089ea-1352-11df-a1f1-0026b9348838","init.kesses_partner","init.kesses_ph_view","init.kesses_ph_lot","init.kesses_ph_in","init.kesses_ph_out","init.kesses_ph_pack"
+"init.kesses_wh_storage","Kesses Main Warehouse","KMW","init.090089ea-1352-11df-a1f1-0026b9348838","init.kesses_partner","init.kesses_st_view","init.kesses_st_lot","init.kesses_st_in","init.kesses_st_out","init.kesses_st_pack"

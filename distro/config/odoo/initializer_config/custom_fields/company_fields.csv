@@ -1,2 +1,0 @@
-"id","name","field_description","model_id","ttype","index","store","readonly","relation","size","related"
-"init.field_res_company_x_location_uuid","x_location_uuid","OpenMRS Location UUID","Company","char","True","True","False","","36",""

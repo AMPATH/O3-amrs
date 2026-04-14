@@ -1,2 +1,2 @@
-"id","name","currency_id/id","email","website","logo","parent_id/id","partner_id/id","sequence","x_location_uuid"
-"init.kesses_company","Kesses","base.KES","","","","base.main_company","init.kesses_partner","10","090089ea-1352-11df-a1f1-0026b9348838"
+"id","name","currency_id/id","email","website","logo","parent_id/id","partner_id/id","sequence"
+"init.090089ea-1352-11df-a1f1-0026b9348838","Kesses","base.KES","","","","base.main_company","init.kesses_partner","10"
