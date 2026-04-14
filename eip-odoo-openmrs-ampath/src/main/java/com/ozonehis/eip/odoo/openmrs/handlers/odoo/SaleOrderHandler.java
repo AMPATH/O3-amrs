@@ -12,8 +12,10 @@ import static java.util.Arrays.asList;
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.SaleOrderMapper;
+import com.ozonehis.eip.odoo.openmrs.model.Company;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import com.ozonehis.eip.odoo.openmrs.model.Product;
 import com.ozonehis.eip.odoo.openmrs.model.SaleOrder;
@@ -65,7 +67,13 @@ public class SaleOrderHandler {
     private ObservationHandler observationHandler;
 
     @Autowired
+    private EncounterHandler encounterHandler;
+
+    @Autowired
     private OdooUtils odooUtils;
+
+    @Autowired
+    private CompanyHandler companyHandler;
 
     public List<String> orderDefaultAttributes;
 
@@ -105,7 +113,9 @@ public class SaleOrderHandler {
             throw new EIPException(
                     String.format("Got null response while fetching for Sale order with client_order_ref %s", visitId));
         } else if (records.length == 1) {
-            SaleOrder saleOrder = odooUtils.convertToObject((Map<String, Object>) records[0], SaleOrder.class);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> record = (Map<String, Object>) records[0];
+            SaleOrder saleOrder = odooUtils.convertToObject(record, SaleOrder.class);
             log.debug("Sale order exists with client_order_ref {} sale order {}", visitId, saleOrder);
             return saleOrder;
         } else if (records.length == 0) {
@@ -176,6 +186,19 @@ public class SaleOrderHandler {
         String patientWeight = getPartnerWeight(patientID);
         if (patientWeight != null) {
             newSaleOrder.setPartnerWeight(getPartnerWeight(patientID));
+        }
+        // Resolve company from the visit location UUID
+        String locationUuid = getVisitLocationUuid(encounter);
+        if (locationUuid != null) {
+            Company company = companyHandler.getCompanyByLocationUuid(locationUuid);
+            if (company != null) {
+                log.info(
+                        "Assigning company '{}' (id={}) to sale order for encounter location UUID '{}'",
+                        company.getCompanyName(),
+                        company.getCompanyId(),
+                        locationUuid);
+                newSaleOrder.setCompanyId(company.getCompanyId());
+            }
         }
 
         sendSaleOrder(producerTemplate, "direct:odoo-create-sale-order-route", newSaleOrder);
@@ -265,6 +288,37 @@ public class SaleOrderHandler {
                 && !odooCustomerIdField.isBlank()
                 && allMessages.contains("invalid field '" + odooCustomerIdField.toLowerCase() + "'");
         return invalidSaleOrderModel && (invalidWeightField || invalidDobField || invalidIdField);
+    }
+
+    /**
+     * Fetches the visit (parent encounter) via FHIR and extracts its first location UUID.
+     * The clinical encounter's {@code partOf} reference points to the visit encounter.
+     * Returns {@code null} if no visit or location is present.
+     */
+    private String getVisitLocationUuid(Encounter encounter) {
+        if (encounter == null || !encounter.hasPartOf()) {
+            return null;
+        }
+        try {
+            String visitUuid = encounter.getPartOf().getReference().split("/")[1];
+            Encounter visitEncounter = encounterHandler.getEncounterByEncounterID(visitUuid);
+            if (visitEncounter == null
+                    || visitEncounter.getLocation() == null
+                    || visitEncounter.getLocation().isEmpty()) {
+                log.warn("Visit encounter '{}' has no location set", visitUuid);
+                return null;
+            }
+            String reference = visitEncounter.getLocation().get(0).getLocation().getReference();
+            if (reference == null || !reference.contains("/")) {
+                return null;
+            }
+            String locationUuid = reference.split("/")[1];
+            log.debug("Resolved visit location UUID '{}' from visit '{}'", locationUuid, visitUuid);
+            return locationUuid;
+        } catch (Exception e) {
+            log.warn("Failed to fetch visit location from encounter partOf reference: {}", e.getMessage());
+            return null;
+        }
     }
 
     private String allThrowableMessages(Throwable throwable) {
