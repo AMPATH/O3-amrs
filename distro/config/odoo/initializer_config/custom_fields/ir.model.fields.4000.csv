@@ -1,0 +1,3 @@
+"id","name","field_description","model_id","ttype","index","store","readonly","relation","size","related"
+"init.a3f1c2d4-1111-4abc-b001-000000000001","x_patient_uuid","Patient UUID","Sales Order","char","","True","False","","",""
+"init.a3f1c2d4-1111-4abc-b001-000000000002","x_openmrs_order_id","OpenMRS Order ID","Sales Order Line","char","","True","False","","",""
