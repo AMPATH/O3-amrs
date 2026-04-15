@@ -11,48 +11,60 @@
                     <field name="billing_actions_visible" invisible="1"/>
                     <div class="d-flex gap-2 mb-2 align-items-center"
                          invisible="not billing_actions_visible">
-                        <span class="text-muted small me-1">
-                            Check lines below, then:
-                        </span>
+                        <span class="text-muted small me-1">Selected lines:</span>
                         <button name="action_waive_selected" type="object"
                                 string="🏷️ Waive" class="btn-warning btn-sm"
                                 confirm="Apply 100%% discount to all checked lines?"/>
                         <button name="action_claim_selected" type="object"
                                 string="📋 Claim" class="btn-info btn-sm"
                                 confirm="Submit FHIR claims for all checked lines?"/>
-                        <button name="action_pay_selected" type="object"
-                                string="💰 Pay" class="btn-primary btn-sm"/>
+                        <button name="action_invoice_selected" type="object"
+                                string="🧾 Invoice selected" class="btn-primary btn-sm"
+                                confirm="Create a partial invoice for all checked lines?"/>
                     </div>
                 </xpath>
 
-                <!-- Dim locked rows -->
+                <!-- Row styling: muted+green = paid; blue = invoiced but unpaid -->
                 <xpath expr="//field[@name='order_line']/tree" position="attributes">
                     <attribute name="decoration-muted">is_line_locked</attribute>
+                    <attribute name="decoration-success">ampath_line_invoice_status == 'paid'</attribute>
+                    <attribute name="decoration-info">ampath_line_invoice_status == 'invoiced'</attribute>
                 </xpath>
 
-                <!-- Add custom columns to the order lines tree -->
+                <!-- Extra columns added to the order lines tree -->
                 <xpath expr="//field[@name='order_line']/tree" position="inside">
 
-                    <!-- Hidden state fields used by expressions below -->
+                    <!-- Hidden state fields used in expressions/readonly conditions -->
                     <field name="is_line_locked" column_invisible="1"/>
-                    <field name="downpayment_line_id" column_invisible="1"/>
+                    <field name="ampath_line_invoice_status" column_invisible="1"/>
+                    <!-- is_downpayment must be explicitly loaded for the readonly expr below -->
+                    <field name="is_downpayment" column_invisible="1"/>
 
-                    <!-- Selection checkbox: disabled for down payments, new lines, and locked lines -->
+                    <!-- Checkbox for bulk actions; readonly on DP/locked lines -->
                     <field name="selected"
                            widget="boolean_toggle"
                            optional="show"
-                           readonly="is_downpayment or not id or is_line_locked"/>
+                           readonly="is_downpayment or is_line_locked"/>
 
-                    <!-- Lock/pending indicator: 🔒 = paid DP, ⏳ = DP in progress -->
-                    <field name="lock_indicator" string="" readonly="1" optional="show"/>
+                    <!-- Per-line quick-invoice button (single line, no checkbox needed) -->
+                    <button name="action_invoice_this_line"
+                            type="object"
+                            icon="fa-file-text-o"
+                            title="Invoice this line"
+                            class="btn-sm btn-link text-primary"
+                            invisible="ampath_line_invoice_status != 'to_invoice' or is_downpayment"/>
+
+                    <!-- Invoice status icon: blank / 📄 / ✅ -->
+                    <field name="invoice_indicator" string="Inv." readonly="1" optional="show"/>
 
                     <field name="insurance_provider_id" optional="show"/>
                     <field name="claim_status" widget="badge" optional="show"
                            decoration-info="claim_status == 'submitted'"
                            decoration-success="claim_status == 'approved'"/>
+
                 </xpath>
 
-                <!-- Lock key price columns when the line is covered by a paid DP -->
+                <!-- Lock price/qty/discount when the line's invoice is paid -->
                 <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']"
                        position="attributes">
                     <attribute name="readonly">is_line_locked</attribute>

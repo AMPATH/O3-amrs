@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-import requests
 
 
 class SaleOrderLine(models.Model):
@@ -20,54 +19,74 @@ class SaleOrderLine(models.Model):
     )
     selected = fields.Boolean(string="✓", default=False, copy=False)
 
-    downpayment_line_id = fields.Many2one(
-        'sale.order.line',
-        string="Down Payment",
-        domain=[('is_downpayment', '=', True)],
-        copy=False,
-        ondelete='set null',
-        index=True,
-        help="The down payment line that covers this item.",
+    ampath_line_invoice_status = fields.Selection([
+        ('to_invoice', 'Not Invoiced'),
+        ('invoiced', 'Invoiced'),
+        ('paid', 'Paid'),
+    ], compute='_compute_ampath_line_invoice_status',
+       string="Billing Status",
+       store=True,
     )
+
+    invoice_indicator = fields.Char(
+        compute='_compute_invoice_indicator',
+        string="Inv.",
+        help="✅ = paid  |  📄 = invoiced (awaiting payment)  |  blank = not yet invoiced",
+    )
+
     is_line_locked = fields.Boolean(
         compute='_compute_is_line_locked',
         string="Locked",
-        help="True when the linked down payment invoice has been paid.",
-    )
-    lock_indicator = fields.Char(
-        compute='_compute_lock_indicator',
-        string="",
-        help="🔒 = covered by a paid down payment  |  ⏳ = down payment in progress",
+        help="True when the line's invoice has been paid.",
     )
 
-    @api.depends('is_line_locked', 'downpayment_line_id')
-    def _compute_lock_indicator(self):
-        for line in self:
-            if line.is_line_locked:
-                line.lock_indicator = '🔒'
-            elif line.downpayment_line_id:
-                line.lock_indicator = '⏳'
-            else:
-                line.lock_indicator = ''
+    # ------------------------------------------------------------------
+    # Computed fields
+    # ------------------------------------------------------------------
 
     @api.depends(
-        'downpayment_line_id',
-        'downpayment_line_id.invoice_lines.move_id.state',
-        'downpayment_line_id.invoice_lines.move_id.payment_state',
+        'invoice_lines.move_id.state',
+        'invoice_lines.move_id.payment_state',
+        'invoice_lines.move_id.move_type',
     )
+    def _compute_ampath_line_invoice_status(self):
+        for line in self:
+            if line.display_type or line.is_downpayment:
+                line.ampath_line_invoice_status = 'to_invoice'
+                continue
+            posted = line.invoice_lines.filtered(
+                lambda il: il.move_id.move_type == 'out_invoice'
+                and il.move_id.state == 'posted'
+            )
+            if not posted:
+                line.ampath_line_invoice_status = 'to_invoice'
+            elif any(
+                il.move_id.payment_state in ('paid', 'in_payment')
+                for il in posted
+            ):
+                line.ampath_line_invoice_status = 'paid'
+            else:
+                line.ampath_line_invoice_status = 'invoiced'
+
+    @api.depends('ampath_line_invoice_status')
+    def _compute_invoice_indicator(self):
+        icons = {'paid': '✅', 'invoiced': '📄', 'to_invoice': ''}
+        for line in self:
+            line.invoice_indicator = icons.get(
+                line.ampath_line_invoice_status, ''
+            )
+
+    @api.depends('ampath_line_invoice_status')
     def _compute_is_line_locked(self):
         for line in self:
-            if not line.downpayment_line_id or line.is_downpayment or line.display_type:
-                line.is_line_locked = False
-                continue
-            dp_invoices = line.downpayment_line_id.invoice_lines.mapped('move_id')
-            line.is_line_locked = any(
-                inv.state == 'posted' and inv.payment_state in ('paid', 'in_payment')
-                for inv in dp_invoices
+            line.is_line_locked = (
+                not line.display_type
+                and not line.is_downpayment
+                and line.ampath_line_invoice_status == 'paid'
             )
 
     # ------------------------------------------------------------------
-    # Write guard: block edits on paid lines; sync draft DP invoice amount
+    # Write guard: block price edits on lines covered by a paid invoice
     # ------------------------------------------------------------------
 
     _PRICE_FIELDS = frozenset({
@@ -76,15 +95,11 @@ class SaleOrderLine(models.Model):
     })
 
     def write(self, vals):
-        # Skip lock/sync logic when called internally during DP sync
-        if self.env.context.get('_ampath_dp_sync'):
-            return super().write(vals)
-
-        has_price_change = bool(self._PRICE_FIELDS & set(vals))
-
-        if has_price_change:
+        if bool(self._PRICE_FIELDS & set(vals)):
             locked = self.filtered(
-                lambda l: not l.is_downpayment and not l.display_type and l.is_line_locked
+                lambda l: not l.is_downpayment
+                and not l.display_type
+                and l.is_line_locked
             )
             if locked:
                 names = ', '.join(
@@ -92,56 +107,16 @@ class SaleOrderLine(models.Model):
                     for l in locked
                 )
                 raise UserError(_(
-                    "Cannot modify the following line(s) — they are covered by a paid "
-                    "down payment:\n%s"
+                    "Cannot modify the following line(s) — they are covered by "
+                    "a paid invoice:\n%s"
                 ) % names)
-
-        result = super().write(vals)
-
-        if has_price_change:
-            self.env.flush_all()
-            lines_with_unpaid_dp = self.filtered(
-                lambda l: (
-                    not l.is_downpayment
-                    and not l.display_type
-                    and l.downpayment_line_id
-                    and not l.is_line_locked
-                )
-            )
-            seen_dp_ids = set()
-            for line in lines_with_unpaid_dp:
-                dp_id = line.downpayment_line_id.id
-                if dp_id not in seen_dp_ids:
-                    line._sync_downpayment_invoice()
-                    seen_dp_ids.add(dp_id)
-
-        return result
-
-    def _sync_downpayment_invoice(self):
-        """Recalculate the linked down payment to match the sum of all covered lines."""
-        dp = self.downpayment_line_id
-        if not dp:
-            return
-        linked = self.search([('downpayment_line_id', '=', dp.id)])
-        new_total = sum(l.price_total for l in linked)
-        if abs((dp.price_unit or 0.0) - new_total) < 0.01:
-            return
-        # Update the DP sale.order.line (no lock check — use internal context)
-        dp.with_context(_ampath_dp_sync=True).write({'price_unit': new_total})
-        # Update any draft invoice lines for this DP
-        for inv_line in dp.invoice_lines:
-            if inv_line.move_id.state == 'draft':
-                inv_line.with_context(
-                    check_move_validity=False,
-                    _ampath_dp_sync=True,
-                ).price_unit = new_total
+        return super().write(vals)
 
     # ------------------------------------------------------------------
-    # Invoice preparation
+    # Invoice preparation: carry custom fields onto the invoice line
     # ------------------------------------------------------------------
 
     def _prepare_invoice_line(self, **optional_values):
-        """Map custom fields from SO line to Invoice line."""
         res = super()._prepare_invoice_line(**optional_values)
         res.update({
             'claim_status': self.claim_status,
@@ -160,42 +135,56 @@ class SaleOrderLine(models.Model):
             line.write({'discount': 100.0})
 
     def action_bulk_fhir_claim(self):
-        """Simulate sending FHIR bundle for selected lines."""
+        """Submit FHIR claims for selected lines."""
         for line in self:
             if not line.insurance_provider_id:
-                raise UserError(_("Select an Insurance Payer for %s first.") % line.name)
-            # Placeholder for actual FHIR logic
+                raise UserError(
+                    _("Select an Insurance Payer for %s first.") % line.name
+                )
             line.write({'claim_status': 'submitted', 'fhir_claim_id': 'FHIR-SO-TMP'})
 
-    def action_bulk_individual_payment(self):
-        """Open the down payment wizard for the selected lines."""
-        total_to_pay = sum(line.price_total for line in self)
-        summary_lines = []
+    def action_invoice_this_line(self):
+        """Invoice only this single line — no checkbox required."""
+        self.ensure_one()
+        return self.action_bulk_invoice()
+
+    def action_bulk_invoice(self):
+        """Create a partial invoice for the selected lines (single or multi-line).
+
+        All selected lines are invoiced at their full sale quantity regardless
+        of delivery status or the order-level invoice_policy, so the caller
+        should only pass lines that are genuinely ready to be billed.
+        """
+        orders = self.mapped('order_id')
+        if len(orders) > 1:
+            raise UserError(_(
+                "Please select lines from a single order at a time."
+            ))
+
+        order = orders[0]
+        invoice_vals = order._prepare_invoice()
+        invoice_line_vals_list = []
+
         for line in self:
-            product = line.product_id.name or line.name or _('Unknown')
-            summary_lines.append(
-                "%s  ×%g  %s" % (product, line.product_uom_qty, line.price_total)
-            )
-        product_names = ', '.join(
-            name for name in self.mapped('product_id.name') if name
-        )
-        view_id = self.env.ref(
-            'ampath_billing.view_sale_advance_payment_inv_ampath'
-        ).id
+            if line.display_type or line.is_downpayment:
+                continue
+            line_vals = line._prepare_invoice_line()
+            # Always bill the full line quantity, not just qty_to_invoice,
+            # since we are doing explicit partial invoicing per selected line.
+            line_vals['quantity'] = line.product_uom_qty
+            invoice_line_vals_list.append((0, 0, line_vals))
+
+        if not invoice_line_vals_list:
+            raise UserError(_("No invoiceable lines selected."))
+
+        invoice_vals['invoice_line_ids'] = invoice_line_vals_list
+        invoice = self.env['account.move'].sudo().create(invoice_vals)
+
         return {
-            'name': _('Pay Selected Items'),
-            'res_model': 'sale.advance.payment.inv',
-            'view_mode': 'form',
-            'view_id': view_id,
-            'context': {
-                'active_ids': self.mapped('order_id').ids,
-                'default_advance_payment_method': 'fixed',
-                'default_fixed_amount': total_to_pay,
-                'ampath_selected_products': product_names,
-                'ampath_product_summary_detail': '\n'.join(summary_lines),
-                # IDs of the product lines being paid — used after wizard confirms
-                'ampath_selected_line_ids': self.ids,
-            },
-            'target': 'new',
             'type': 'ir.actions.act_window',
+            'name': _('Invoice'),
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+            'target': 'current',
         }

@@ -74,6 +74,11 @@
             "model_name": "ir.ui.view",
             "folder": "views",
             "field_rules": {}
+        },
+        {
+            "model_name": "connection.api",
+            "folder": "rest_api",
+            "field_rules": {}
         }
     ]
 }
