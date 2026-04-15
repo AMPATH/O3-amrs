@@ -181,6 +181,8 @@ public class SaleOrderHandler {
         newSaleOrder.setOrderState("draft");
         // Add Patient DOB to Odoo Quotation
         newSaleOrder.setPartnerBirthDate(partner.getPartnerBirthDate());
+        // Add Patient UUID (OpenMRS patient UUID) directly to the sale order
+        newSaleOrder.setPatientUuid(patientID);
         // Add Patient Id to Odoo Quotation
         newSaleOrder.setOdooCustomerId(partner.getPartnerExternalId().replaceAll("(?i)</?p>", ""));
         String patientWeight = getPartnerWeight(patientID);

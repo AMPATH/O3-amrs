@@ -1,67 +1,32 @@
 # -*- coding: utf-8 -*-
 """
-Billing status endpoint for the AMPATH EMR / EIP integration.
+Billing status endpoints for the AMPATH EMR / EIP integration.
 
-GET /ampath/billing/patient/<patient_external_id>
-
-Headers (required):
+All endpoints require HTTP headers:
     login    – Odoo username
     password – Odoo password
 
-Response 200 (application/json):
-{
-  "patient_external_id": "<openmrs-uuid>",
-  "orders": [
-    {
-      "id": 1,
-      "name": "S00001",
-      "state": "sale",
-      "state_label": "Sales Order",
-      "date_order": "2024-01-01T10:00:00",
-      "customer": { "id": 5, "name": "John Doe",
-                    "external_id": "<openmrs-uuid>",
-                    "dob": "1990-01-01" },
-      "company": { "id": 1, "name": "AMPATH" },
-      "amount_untaxed": 500.0,
-      "amount_tax": 0.0,
-      "amount_total": 500.0,
-      "invoice_status": "invoiced",
-      "order_lines": [
-        {
-          "id": 10,
-          "sequence": 1,
-          "product_id": 25,
-          "product_name": "Metformin 500mg",
-          "product_code": "MET500",
-          "product_category": "Medications",
-          "quantity": 30.0,
-          "uom": "Tablet",
-          "price_unit": 5.0,
-          "discount": 0.0,
-          "price_subtotal": 150.0,
-          "price_total": 150.0,
-          "billing_status": "invoiced",
-          "invoice_indicator": "📄",
-          "claim_status": "draft",
-          "insurance_provider": null
-        }
-      ],
-      "invoices": [
-        {
-          "id": 7,
-          "name": "INV/2024/0001",
-          "state": "posted",
-          "payment_state": "paid",
-          "amount_total": 150.0,
-          "invoice_date": "2024-01-02"
-        }
-      ]
-    }
-  ]
-}
+Endpoints
+---------
+GET /ampath/billing/patient/<patient_external_id>
+    All sale orders for a patient (OpenMRS patient UUID).
+
+GET /ampath/billing/order/<order_id>
+    Full detail for a single sale order (Odoo numeric ID).
+
+GET /ampath/billing/orders
+    Paginated list of sale orders with optional filters.
+    Query params:
+        company_external_id  – Location UUID of the company/facility
+        date_from            – ISO date (YYYY-MM-DD), inclusive lower bound on date_order
+        date_to              – ISO date (YYYY-MM-DD), inclusive upper bound on date_order
+        state                – Order state: draft | sent | sale | done | cancel
+        limit                – Max records to return (default 100, max 500)
+        offset               – Pagination offset (default 0)
 """
 import json
 import logging
+from datetime import datetime
 
 from odoo import http
 from odoo.http import request
@@ -112,9 +77,11 @@ class BillingStatusController(http.Controller):
     def _serialize_line(self, line):
         provider = line.insurance_provider_id
         product = line.product_id
+        openmrs_order_id = getattr(line, 'x_openmrs_order_id', None) or None
         return {
             'id': line.id,
             'sequence': line.sequence,
+            'openmrs_order_id': openmrs_order_id,
             'product_id': product.id if product else None,
             'product_name': product.name if product else line.name,
             'product_code': product.default_code if product else None,
@@ -153,6 +120,7 @@ class BillingStatusController(http.Controller):
             'sale_order_lines': [
                 {
                     'id': sol.id,
+                    'openmrs_order_id': getattr(sol, 'x_openmrs_order_id', None) or None,
                     'product_id': sol.product_id.id if sol.product_id else None,
                     'product_name': (
                         sol.product_id.name if sol.product_id else sol.name
@@ -213,6 +181,20 @@ class BillingStatusController(http.Controller):
             if inv.move_type == 'out_invoice'
         ]
 
+        patient_uuid = (
+            getattr(order, 'x_patient_uuid', None)
+            or order.x_external_identifier
+            or None
+        )
+        company_ext_id = None
+        if company:
+            imd = request.env['ir.model.data'].sudo().search([
+                ('model', '=', 'res.company'),
+                ('res_id', '=', company.id),
+                ('module', '=', 'init'),
+            ], limit=1)
+            company_ext_id = imd.name if imd else None
+
         return {
             'id': order.id,
             'name': order.name,
@@ -221,6 +203,7 @@ class BillingStatusController(http.Controller):
             'date_order': (
                 order.date_order.isoformat() if order.date_order else None
             ),
+            'patient_uuid': patient_uuid,
             'customer': {
                 'id': partner.id,
                 'name': partner.name,
@@ -230,8 +213,8 @@ class BillingStatusController(http.Controller):
             'company': {
                 'id': company.id,
                 'name': company.name,
+                'external_id': company_ext_id,
             } if company else None,
-            'patient_external_id': order.x_external_identifier or None,
             'patient_dob': (
                 str(order.x_customer_dob) if order.x_customer_dob else None
             ),
@@ -319,3 +302,146 @@ class BillingStatusController(http.Controller):
             )
 
         return self._json_response(self._serialize_order(order))
+
+    @http.route(
+        '/ampath/billing/orders',
+        type='http',
+        auth='none',
+        methods=['GET'],
+        csrf=False,
+    )
+    def list_orders(self, **kw):
+        """Return a paginated list of sale orders with optional filters.
+
+        Query parameters
+        ----------------
+        company_external_id : str, optional
+            Location UUID used as the company's initializer XML-ID name.
+        date_from : str, optional
+            ISO date (YYYY-MM-DD).  Lower bound on date_order (inclusive).
+        date_to : str, optional
+            ISO date (YYYY-MM-DD).  Upper bound on date_order (inclusive).
+        state : str, optional
+            One of: draft | sent | sale | done | cancel
+        limit : int, optional
+            Max records to return (default 100, capped at 500).
+        offset : int, optional
+            Pagination offset (default 0).
+        """
+        uid = self._authenticate()
+        if not uid:
+            return self._json_response(
+                {'error': 'Authentication failed. Provide login and password headers.'},
+                status=401,
+            )
+
+        env = request.env
+
+        # --- Build domain ---------------------------------------------------
+        domain = []
+
+        company_external_id = kw.get('company_external_id', '').strip()
+        if company_external_id:
+            imd = env['ir.model.data'].sudo().search([
+                ('module', '=', 'init'),
+                ('name', '=', company_external_id),
+                ('model', '=', 'res.company'),
+            ], limit=1)
+            if not imd:
+                return self._json_response({
+                    'error': f'No company found for external ID "{company_external_id}".',
+                }, status=404)
+            domain.append(('company_id', '=', imd.res_id))
+
+        date_from = kw.get('date_from', '').strip()
+        if date_from:
+            try:
+                datetime.strptime(date_from, '%Y-%m-%d')
+            except ValueError:
+                return self._json_response(
+                    {'error': 'date_from must be in YYYY-MM-DD format.'}, status=400
+                )
+            domain.append(('date_order', '>=', date_from + ' 00:00:00'))
+
+        date_to = kw.get('date_to', '').strip()
+        if date_to:
+            try:
+                datetime.strptime(date_to, '%Y-%m-%d')
+            except ValueError:
+                return self._json_response(
+                    {'error': 'date_to must be in YYYY-MM-DD format.'}, status=400
+                )
+            domain.append(('date_order', '<=', date_to + ' 23:59:59'))
+
+        state = kw.get('state', '').strip()
+        valid_states = ('draft', 'sent', 'sale', 'done', 'cancel')
+        if state:
+            if state not in valid_states:
+                return self._json_response(
+                    {'error': f'state must be one of: {", ".join(valid_states)}.'},
+                    status=400,
+                )
+            domain.append(('state', '=', state))
+
+        # --- Pagination ------------------------------------------------------
+        try:
+            limit = min(int(kw.get('limit', 100)), 500)
+            offset = int(kw.get('offset', 0))
+        except (TypeError, ValueError):
+            return self._json_response(
+                {'error': 'limit and offset must be integers.'}, status=400
+            )
+
+        # --- Query -----------------------------------------------------------
+        Order = env['sale.order'].sudo()
+        total = Order.search_count(domain)
+        orders = Order.search(domain, order='date_order desc', limit=limit, offset=offset)
+
+        def _summary(order):
+            partner = order.partner_id
+            company = order.company_id
+            patient_uuid = (
+                getattr(order, 'x_patient_uuid', None)
+                or order.x_external_identifier
+                or None
+            )
+            company_ext_id = None
+            if company:
+                imd = env['ir.model.data'].sudo().search([
+                    ('model', '=', 'res.company'),
+                    ('res_id', '=', company.id),
+                    ('module', '=', 'init'),
+                ], limit=1)
+                company_ext_id = imd.name if imd else None
+            return {
+                'id': order.id,
+                'name': order.name,
+                'state': order.state,
+                'state_label': _ORDER_STATE_LABELS.get(order.state, order.state),
+                'date_order': order.date_order.isoformat() if order.date_order else None,
+                'patient_uuid': patient_uuid,
+                'customer': {
+                    'id': partner.id,
+                    'name': partner.name,
+                    'external_id': partner.x_external_identifier or None,
+                } if partner else None,
+                'company': {
+                    'id': company.id,
+                    'name': company.name,
+                    'external_id': company_ext_id,
+                } if company else None,
+                'amount_total': order.amount_total,
+                'invoice_status': order.invoice_status,
+                'order_line_count': len(
+                    order.order_line.filtered(
+                        lambda l: not l.display_type and not l.is_downpayment
+                    )
+                ),
+            }
+
+        return self._json_response({
+            'total': total,
+            'limit': limit,
+            'offset': offset,
+            'orders': [_summary(o) for o in orders],
+        })

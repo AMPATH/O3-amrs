@@ -26,6 +26,13 @@ public class SaleOrderLineMapper<R extends Resource> implements ToOdooMapping<R,
     @Override
     public SaleOrderLine toOdoo(R resource) {
         SaleOrderLine saleOrderLine = new SaleOrderLine();
+
+        // Store the OpenMRS order UUID (FHIR resource ID) on the line for back-traceability.
+        String resourceUuid = resource.getIdElement().getIdPart();
+        if (resourceUuid != null && !resourceUuid.isBlank()) {
+            saleOrderLine.setOpenmrsOrderId(resourceUuid);
+        }
+
         if (resource instanceof ServiceRequest serviceRequest) {
             saleOrderLine.setSaleOrderLineProductUomQty(1.0f); // default quantity is 1 for serviceRequests.
             String requesterDisplay = serviceRequest.getRequester().getDisplay();

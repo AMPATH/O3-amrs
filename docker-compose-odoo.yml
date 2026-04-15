@@ -102,8 +102,6 @@ services:
     volumes:
       - "${ODOO_FILESTORE:-odoo-filestore}:/var/lib/odoo/filestore"
      # - "${ODOO_EXTRA_ADDONS:-odoo-extra-addons}:/mnt/extra-addons"
-      # Local initializer CSVs + initializer_config.json (repo distro); override with ODOO_INITIALIZER_CONFIG
-      - "${ODOO_INITIALIZER_CONFIG:-./distro/config/odoo/initializer_config}:/mnt/odoo_config"
       - "${ODOO_CONFIG_CHECKSUMS_PATH:-odoo-checksums}:/mnt/checksums"
 
   # ---------- FHIR Odoo facade ----------
