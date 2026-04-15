@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.5',
+    'version': '1.0.6',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
@@ -8,7 +8,6 @@
     'data': [
         'security/ir.model.access.csv',
         'data/landing_page.xml',
-        'views/sale_advance_payment_views.xml',
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
     ],

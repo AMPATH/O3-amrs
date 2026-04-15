@@ -30,16 +30,15 @@ class SaleOrder(models.Model):
 
         Rows excluded for every action
         ────────────────────────────────
-        • section / note rows (display_type set)
-        • down-payment lines  (is_downpayment)
-        • lines locked by a *paid* down-payment  (is_line_locked)
+        • section / note rows  (display_type set)
+        • down-payment lines   (is_downpayment)
+        • lines locked by a paid invoice (is_line_locked)
 
         Additional per-action exclusions
         ──────────────────────────────────
-        waive  — skip lines already at 100 % discount
-        claim  — skip lines already submitted or approved
-        pay    — skip lines that already have any linked down payment
-                 (paid OR in-progress)
+        waive   — skip lines already at 100% discount
+        claim   — skip lines already submitted or approved
+        invoice — skip lines already fully invoiced
         """
         self.ensure_one()
         lines = self.order_line.filtered(
@@ -47,18 +46,18 @@ class SaleOrder(models.Model):
         )
         if not lines:
             raise UserError(_(
-                "No lines selected. Check the ✓ column on the lines you want to act on."
+                "No lines selected. Check the ✓ column on the lines you want "
+                "to act on."
             ))
 
-        # Always exclude lines locked by a paid down payment.
         lines = lines.filtered(lambda l: not l.is_line_locked)
 
         if action == 'waive':
             lines = lines.filtered(lambda l: l.discount != 100.0)
             if not lines:
                 raise UserError(_(
-                    "All selected lines are already waived or covered by a paid "
-                    "down payment — nothing to waive."
+                    "All selected lines are already waived or covered by a "
+                    "paid invoice — nothing to waive."
                 ))
 
         elif action == 'claim':
@@ -67,17 +66,17 @@ class SaleOrder(models.Model):
             )
             if not lines:
                 raise UserError(_(
-                    "All selected lines already have a claim submitted / approved, "
-                    "or are covered by a paid down payment."
+                    "All selected lines already have a claim submitted / "
+                    "approved."
                 ))
 
-        elif action == 'pay':
-            # Exclude lines that already have any DP linked (paid or pending).
-            lines = lines.filtered(lambda l: not l.downpayment_line_id)
+        elif action == 'invoice':
+            lines = lines.filtered(
+                lambda l: l.ampath_line_invoice_status == 'to_invoice'
+            )
             if not lines:
                 raise UserError(_(
-                    "All selected lines already have a down payment linked, "
-                    "or are covered by a paid down payment."
+                    "All selected lines have already been invoiced."
                 ))
 
         else:
@@ -100,7 +99,10 @@ class SaleOrder(models.Model):
         lines.action_bulk_fhir_claim()
         lines.write({'selected': False})
 
-    def action_pay_selected(self):
+    def action_invoice_selected(self):
+        """Create a partial invoice for the checked lines and open it."""
         self.ensure_one()
-        lines = self._get_selected_lines(action='pay')
-        return lines.action_bulk_individual_payment()
+        lines = self._get_selected_lines(action='invoice')
+        result = lines.action_bulk_invoice()
+        lines.write({'selected': False})
+        return result
