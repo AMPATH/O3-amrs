@@ -3,3 +3,4 @@
 "init.api_product_product","product.model_product_product","True","False","False","False"
 "init.api_res_partner","base.model_res_partner","True","True","True","False"
 "init.api_sale_order","sale.model_sale_order","True","False","False","False"
+"init.api_sale_order_line","sale.model_sale_order_line","True","False","False","False"

@@ -231,6 +231,102 @@ class RestApi(http.Controller):
         else:
             return auth_api
 
+    def _serialize_record(self, record):
+        """Convert datetime values to ISO strings in a record dict."""
+        for key, value in record.items():
+            if isinstance(value, datetime):
+                record[key] = value.isoformat()
+        return record
+
+    @http.route(['/get_sale_order'], type='http', auth='none',
+                methods=['GET'], csrf=False)
+    def get_sale_order(self, **kw):
+        """Fetch a sale.order with its order lines and down payments expanded.
+
+        Query params:
+          Id (required) - sale.order id
+
+        Request body (JSON, optional):
+          {
+            "fields": ["id", "name", ...],       -- sale.order fields to return
+            "line_fields": ["id", "product_id", ...]  -- sale.order.line fields
+          }
+
+        If omitted, sensible defaults are used for both field lists.
+        """
+        api_key = request.httprequest.headers.get('api-key')
+        auth_result = self.auth_api_key(api_key)
+        if auth_result is not True:
+            return auth_result
+
+        username = request.httprequest.headers.get('login')
+        password = request.httprequest.headers.get('password')
+        request.session.authenticate(request.session.db, username, password)
+
+        rec_id = kw.get('Id')
+        if not rec_id:
+            return ("<html><body><h2>Id parameter is required"
+                    "</h2></body></html>")
+        try:
+            rec_id = int(rec_id)
+        except (ValueError, TypeError):
+            return ("<html><body><h2>Id must be an integer"
+                    "</h2></body></html>")
+
+        raw_body = request.httprequest.data
+        body = json.loads(raw_body) if raw_body else {}
+
+        order_fields = body.get('fields') or [
+            'id', 'name', 'state', 'date_order',
+            'partner_id', 'company_id', 'user_id', 'currency_id',
+            'amount_untaxed', 'amount_tax', 'amount_total',
+            'invoice_status', 'commitment_date', 'note',
+            'order_line',
+        ]
+
+        line_fields = body.get('line_fields') or [
+            'id', 'product_id', 'name', 'product_uom_qty', 'product_uom',
+            'price_unit', 'discount', 'tax_id',
+            'price_subtotal', 'price_total',
+            'qty_delivered', 'qty_invoiced',
+            'is_downpayment',
+        ]
+
+        # Fetch the sale order
+        orders = request.env['sale.order'].search_read(
+            domain=[('id', '=', rec_id)],
+            fields=order_fields,
+        )
+        if not orders:
+            return ("<html><body><h2>Sale order not found"
+                    "</h2></body></html>")
+
+        order = self._serialize_record(orders[0])
+        line_ids = order.get('order_line', [])
+
+        # Expand order lines
+        order_lines = []
+        down_payments = []
+        if line_ids:
+            lines = request.env['sale.order.line'].search_read(
+                domain=[('id', 'in', line_ids)],
+                fields=line_fields,
+            )
+            for line in lines:
+                line = self._serialize_record(line)
+                if line.get('is_downpayment'):
+                    down_payments.append(line)
+                else:
+                    order_lines.append(line)
+
+        order['order_line'] = order_lines
+        order['down_payments'] = down_payments
+
+        return request.make_response(
+            data=json.dumps({'records': [order]}),
+            headers=[('Content-Type', 'application/json')],
+        )
+
     @http.route(['/odoo_connect'], type="http", auth="none", csrf=False,
                 methods=['GET'])
     def odoo_connect(self, **kw):
