@@ -11,6 +11,7 @@
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
     ],
+    'assets': {},
     'installable': True,
     'application': True,
     'auto_install': True,
