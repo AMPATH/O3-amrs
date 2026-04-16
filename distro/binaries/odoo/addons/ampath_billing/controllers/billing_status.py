@@ -253,13 +253,16 @@ class BillingStatusController(http.Controller):
 
         env = request.env
 
-        # Find orders via the partner's external ID
+        # Find orders via partner external ID, order-level x_external_identifier,
+        # or the dedicated x_patient_uuid field set directly by the EIP.
         partners = env['res.partner'].sudo().search(
             [('x_external_identifier', '=', patient_external_id)]
         )
-        domain = ['|',
+        domain = ['|', '|', '|',
             ('partner_id', 'in', partners.ids),
             ('x_external_identifier', '=', patient_external_id),
+            ('x_patient_uuid', '=', patient_external_id),
+            ('partner_id.x_external_identifier', '=', patient_external_id),
         ]
 
         orders = env['sale.order'].sudo().search(
@@ -413,6 +416,9 @@ class BillingStatusController(http.Controller):
                     ('module', '=', 'init'),
                 ], limit=1)
                 company_ext_id = imd.name if imd else None
+            lines = order.order_line.filtered(
+                lambda l: not l.display_type and not l.is_downpayment
+            )
             return {
                 'id': order.id,
                 'name': order.name,
@@ -430,13 +436,11 @@ class BillingStatusController(http.Controller):
                     'name': company.name,
                     'external_id': company_ext_id,
                 } if company else None,
+                'amount_untaxed': order.amount_untaxed,
+                'amount_tax': order.amount_tax,
                 'amount_total': order.amount_total,
                 'invoice_status': order.invoice_status,
-                'order_line_count': len(
-                    order.order_line.filtered(
-                        lambda l: not l.display_type and not l.is_downpayment
-                    )
-                ),
+                'order_lines': [self._serialize_line(l) for l in lines],
             }
 
         return self._json_response({
