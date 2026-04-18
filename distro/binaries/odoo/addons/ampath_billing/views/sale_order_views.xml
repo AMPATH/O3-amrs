@@ -6,9 +6,35 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
 
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <group string="Visit billing" name="ampath_visit_billing" colspan="2">
+                        <field name="x_payment_method"/>
+                        <field name="x_insurance_scheme"/>
+                        <field name="x_preauth_status" readonly="1"/>
+                        <field name="x_preauth_code" readonly="1"/>
+                        <field name="x_preauth_request_id" readonly="1"/>
+                    </group>
+                    <group string="SHIF / AfyaLink" name="ampath_preauth_actions">
+                        <button name="action_request_preauth" type="object"
+                                string="Request pre-authorization"
+                                class="btn-secondary"
+                                invisible="state in ('done', 'cancel')"/>
+                        <button name="action_check_preauth_status" type="object"
+                                string="Refresh pre-auth status"
+                                class="btn-secondary"
+                                invisible="state in ('done', 'cancel') or not x_preauth_request_id"/>
+                        <button name="action_pay_cash_clear_shif" type="object"
+                                string="Switch to cash (clear SHIF)"
+                                class="btn-link"
+                                confirm="Clear insurance scheme and pre-auth fields and set payment to CASH?"
+                                invisible="state in ('done', 'cancel')"/>
+                    </group>
+                </xpath>
+
                 <!-- Bulk action buttons above the order lines -->
                 <xpath expr="//field[@name='order_line']" position="before">
                     <field name="billing_actions_visible" invisible="1"/>
+                    <field name="has_claim_eligible_lines" invisible="1"/>
                     <div class="d-flex gap-2 mb-2 align-items-center"
                          invisible="not billing_actions_visible">
                         <span class="text-muted small me-1">Selected lines:</span>
@@ -17,6 +43,7 @@
                                 confirm="Apply 100%% discount to all checked lines?"/>
                         <button name="action_claim_selected" type="object"
                                 string="📋 Claim" class="btn-info btn-sm"
+                                invisible="not has_claim_eligible_lines"
                                 confirm="Submit FHIR claims for all checked lines?"/>
                         <button name="action_invoice_selected" type="object"
                                 string="🧾 Invoice selected" class="btn-primary btn-sm"
@@ -57,6 +84,7 @@
                     <!-- Invoice status icon: blank / 📄 / ✅ -->
                     <field name="invoice_indicator" string="Inv." readonly="1" optional="show"/>
 
+                    <field name="is_claim_eligible" optional="show" readonly="1"/>
                     <field name="insurance_provider_id" optional="show"/>
                     <field name="claim_status" widget="badge" optional="show"
                            decoration-info="claim_status == 'submitted'"

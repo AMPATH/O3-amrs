@@ -5,9 +5,25 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    x_payment_method = fields.Char(string="Payment method (visit)", copy=False)
+    x_insurance_scheme = fields.Char(string="Insurance scheme (visit)", copy=False)
+    x_preauth_status = fields.Char(string="Pre-authorization status", copy=False)
+    x_preauth_code = fields.Char(string="Pre-authorization code", copy=False)
+    x_preauth_request_id = fields.Char(string="Pre-authorization request ID", copy=False)
+
     billing_actions_visible = fields.Boolean(
         compute='_compute_billing_actions_visible',
     )
+    has_claim_eligible_lines = fields.Boolean(
+        compute='_compute_has_claim_eligible_lines',
+    )
+
+    @api.depends('order_line.is_claim_eligible')
+    def _compute_has_claim_eligible_lines(self):
+        for order in self:
+            order.has_claim_eligible_lines = any(
+                l.is_claim_eligible for l in order.order_line
+            )
 
     @api.depends('state', 'invoice_ids.payment_state')
     def _compute_billing_actions_visible(self):
@@ -64,10 +80,11 @@ class SaleOrder(models.Model):
             lines = lines.filtered(
                 lambda l: l.claim_status not in ('submitted', 'approved')
             )
+            lines = lines.filtered(lambda l: l.is_claim_eligible)
             if not lines:
                 raise UserError(_(
-                    "All selected lines already have a claim submitted / "
-                    "approved."
+                    "No eligible lines for claim: ensure patient UUID is set, "
+                    "and for SHIF visits complete pre-authorization first."
                 ))
 
         elif action == 'invoice':
@@ -106,3 +123,41 @@ class SaleOrder(models.Model):
         result = lines.action_bulk_invoice()
         lines.write({'selected': False})
         return result
+
+    def action_request_preauth(self):
+        self.ensure_one()
+        from odoo.addons.ampath_billing.services import afyalink_client
+
+        rid, _body = afyalink_client.request_preauth(self.env, self)
+        vals = {'x_preauth_status': 'pending'}
+        if rid:
+            vals['x_preauth_request_id'] = rid
+        self.write(vals)
+
+    def action_check_preauth_status(self):
+        self.ensure_one()
+        rid = self.x_preauth_request_id
+        if not rid:
+            raise UserError(_("No pre-authorization request id on this order."))
+        from odoo.addons.ampath_billing.services import afyalink_client
+
+        body = afyalink_client.check_preauth_status(self.env, rid)
+        st, code = afyalink_client.parse_preauth_status_body(body)
+        vals = {}
+        if st:
+            vals['x_preauth_status'] = st
+        if code:
+            vals['x_preauth_code'] = code
+        if vals:
+            self.write(vals)
+
+    def action_pay_cash_clear_shif(self):
+        """After SHIF rejection: switch to cash and clear SHIF pre-auth fields."""
+        self.ensure_one()
+        self.write({
+            'x_payment_method': 'CASH',
+            'x_insurance_scheme': '',
+            'x_preauth_status': '',
+            'x_preauth_code': '',
+            'x_preauth_request_id': '',
+        })
