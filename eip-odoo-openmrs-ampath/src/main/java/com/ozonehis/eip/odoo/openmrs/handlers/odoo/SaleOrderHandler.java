@@ -14,12 +14,14 @@ import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.VisitAttributeHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.SaleOrderMapper;
 import com.ozonehis.eip.odoo.openmrs.model.Company;
 import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import com.ozonehis.eip.odoo.openmrs.model.Product;
 import com.ozonehis.eip.odoo.openmrs.model.SaleOrder;
 import com.ozonehis.eip.odoo.openmrs.model.SaleOrderLine;
+import com.ozonehis.eip.odoo.openmrs.model.VisitAttributeSnapshot;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,9 @@ public class SaleOrderHandler {
 
     @Autowired
     private CompanyHandler companyHandler;
+
+    @Autowired
+    private VisitAttributeHandler visitAttributeHandler;
 
     public List<String> orderDefaultAttributes;
 
@@ -203,6 +208,8 @@ public class SaleOrderHandler {
             }
         }
 
+        applyVisitBillingAttributes(encounter, newSaleOrder);
+
         sendSaleOrder(producerTemplate, "direct:odoo-create-sale-order-route", newSaleOrder);
         log.debug(
                 "{}: Created sale order with partner_id {}", resource.getClass().getName(), partner.getPartnerId());
@@ -297,6 +304,24 @@ public class SaleOrderHandler {
      * The clinical encounter's {@code partOf} reference points to the visit encounter.
      * Returns {@code null} if no visit or location is present.
      */
+    private void applyVisitBillingAttributes(Encounter encounter, SaleOrder saleOrder) {
+        if (encounter == null || !encounter.hasPartOf() || !encounter.getPartOf().hasReference()) {
+            return;
+        }
+        String ref = encounter.getPartOf().getReference();
+        if (ref == null || !ref.contains("/")) {
+            return;
+        }
+        String visitUuid = ref.split("/")[1];
+        VisitAttributeSnapshot snap = visitAttributeHandler.readFromVisitEncounter(visitUuid);
+        if (snap.getPaymentMethod() != null && !snap.getPaymentMethod().isBlank()) {
+            saleOrder.setPaymentMethod(snap.getPaymentMethod());
+        }
+        if (snap.getInsuranceScheme() != null && !snap.getInsuranceScheme().isBlank()) {
+            saleOrder.setInsuranceScheme(snap.getInsuranceScheme());
+        }
+    }
+
     private String getVisitLocationUuid(Encounter encounter) {
         if (encounter == null || !encounter.hasPartOf()) {
             return null;

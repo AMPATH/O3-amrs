@@ -40,9 +40,53 @@ class SaleOrderLine(models.Model):
         help="True when the line's invoice has been paid.",
     )
 
+    is_claim_eligible = fields.Boolean(
+        compute='_compute_is_claim_eligible',
+        string="Claim eligible",
+        help="True when this line can be included in an AfyaLink / FHIR claim from Odoo.",
+    )
+
     # ------------------------------------------------------------------
     # Computed fields
     # ------------------------------------------------------------------
+
+    @api.depends(
+        'display_type',
+        'is_downpayment',
+        'claim_status',
+        'order_id.x_patient_uuid',
+        'order_id.x_external_identifier',
+        'order_id.x_payment_method',
+        'order_id.x_insurance_scheme',
+        'order_id.x_preauth_status',
+    )
+    def _compute_is_claim_eligible(self):
+        for line in self:
+            if line.display_type or line.is_downpayment:
+                line.is_claim_eligible = False
+                continue
+            if line.claim_status in ('submitted', 'approved'):
+                line.is_claim_eligible = False
+                continue
+            order = line.order_id
+            patient = getattr(order, 'x_patient_uuid', None) or order.x_external_identifier
+            if not patient:
+                line.is_claim_eligible = False
+                continue
+            pm = (getattr(order, 'x_payment_method', None) or '').strip().upper()
+            scheme = (getattr(order, 'x_insurance_scheme', None) or '').strip()
+            requires_preauth = (
+                pm == 'SHIF'
+                or 'SHIF' in pm
+                or 'SHIF' in scheme.upper()
+            )
+            if requires_preauth:
+                pre = (getattr(order, 'x_preauth_status', None) or '').strip().lower()
+                line.is_claim_eligible = pre in (
+                    'approved', 'authorized', 'authorisation', 'success', 'active',
+                )
+            else:
+                line.is_claim_eligible = True
 
     @api.depends(
         'invoice_lines.move_id.state',
@@ -135,13 +179,34 @@ class SaleOrderLine(models.Model):
             line.write({'discount': 100.0})
 
     def action_bulk_fhir_claim(self):
-        """Submit FHIR claims for selected lines."""
-        for line in self:
-            if not line.insurance_provider_id:
-                raise UserError(
-                    _("Select an Insurance Payer for %s first.") % line.name
-                )
-            line.write({'claim_status': 'submitted', 'fhir_claim_id': 'FHIR-SO-TMP'})
+        """Submit a FHIR Claim bundle (AfyaLink) for the selected product lines."""
+        lines = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
+        if not lines:
+            raise UserError(_("No billable lines selected for claim submission."))
+        orders = lines.mapped('order_id')
+        if len(orders) > 1:
+            raise UserError(_("Please submit claims for lines from a single order at a time."))
+        order = orders[0]
+        ineligible = lines.filtered(lambda l: not l.is_claim_eligible)
+        if ineligible:
+            raise UserError(_(
+                "Some selected lines are not eligible for claims "
+                "(patient UUID missing, SHIF without approved pre-authorization, or claim already submitted)."
+            ))
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_claim_bundle
+        from odoo.addons.ampath_billing.services import afyalink_client
+
+        try:
+            bundle, internal_claim_id = build_claim_bundle(order, lines, pre_auth_claim_id=None)
+        except ValueError as e:
+            raise UserError(str(e)) from e
+
+        body = afyalink_client.submit_claim(self.env, bundle)
+        ext_id = afyalink_client.claim_id_from_submit_response(body) or internal_claim_id
+        lines.write({
+            'claim_status': 'submitted',
+            'fhir_claim_id': ext_id,
+        })
 
     def action_invoice_this_line(self):
         """Invoice only this single line — no checkbox required."""

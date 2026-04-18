@@ -98,6 +98,7 @@ class BillingStatusController(http.Controller):
             'invoice_indicator': line.invoice_indicator,
             'claim_status': line.claim_status,
             'fhir_claim_id': line.fhir_claim_id,
+            'is_claim_eligible': line.is_claim_eligible,
             'insurance_provider': {
                 'id': provider.id,
                 'name': provider.name,
@@ -136,6 +137,7 @@ class BillingStatusController(http.Controller):
                     'billing_status': sol.ampath_line_invoice_status,
                     'invoice_indicator': sol.invoice_indicator,
                     'claim_status': sol.claim_status,
+                    'is_claim_eligible': sol.is_claim_eligible,
                 }
                 for sol in sale_lines
                 if not sol.display_type and not sol.is_downpayment
@@ -223,6 +225,11 @@ class BillingStatusController(http.Controller):
             'amount_tax': order.amount_tax,
             'amount_total': order.amount_total,
             'invoice_status': order.invoice_status,
+            'payment_method': getattr(order, 'x_payment_method', None) or None,
+            'insurance_scheme': getattr(order, 'x_insurance_scheme', None) or None,
+            'preauth_status': getattr(order, 'x_preauth_status', None) or None,
+            'preauth_code': getattr(order, 'x_preauth_code', None) or None,
+            'preauth_request_id': getattr(order, 'x_preauth_request_id', None) or None,
             'order_lines': lines,
             'invoices': invoices,
         }
@@ -440,6 +447,9 @@ class BillingStatusController(http.Controller):
                 'amount_tax': order.amount_tax,
                 'amount_total': order.amount_total,
                 'invoice_status': order.invoice_status,
+                'payment_method': getattr(order, 'x_payment_method', None) or None,
+                'insurance_scheme': getattr(order, 'x_insurance_scheme', None) or None,
+                'preauth_status': getattr(order, 'x_preauth_status', None) or None,
                 'order_lines': [self._serialize_line(l) for l in lines],
             }
 
