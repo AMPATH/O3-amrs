@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+        <record id="view_ampath_payload_preview_form" model="ir.ui.view">
+            <field name="name">ampath.billing.payload.preview.form</field>
+            <field name="model">ampath.billing.payload.preview</field>
+            <field name="arch" type="xml">
+                <form string="Payload preview">
+                    <sheet>
+                        <group>
+                            <field name="title" readonly="1"/>
+                            <field name="sale_order_id" readonly="1"/>
+                        </group>
+                        <div class="alert alert-info" role="alert">
+                            Copy this JSON for your integration endpoint. Nothing was sent over the network.
+                        </div>
+                        <field name="payload_text" widget="text" nolabel="1" readonly="1"
+                               class="font-monospace"/>
+                    </sheet>
+                    <footer>
+                        <button special="cancel" string="Close" class="btn-primary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

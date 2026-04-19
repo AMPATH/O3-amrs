@@ -12,8 +12,10 @@ import static java.util.Arrays.asList;
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterDiagnosisFhirHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.PatientHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.VisitAttributeHandler;
 import com.ozonehis.eip.odoo.openmrs.mapper.odoo.SaleOrderMapper;
 import com.ozonehis.eip.odoo.openmrs.model.Company;
@@ -30,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.openmrs.eip.EIPException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +82,12 @@ public class SaleOrderHandler {
 
     @Autowired
     private VisitAttributeHandler visitAttributeHandler;
+
+    @Autowired
+    private EncounterDiagnosisFhirHandler encounterDiagnosisFhirHandler;
+
+    @Autowired
+    private PatientHandler patientHandler;
 
     public List<String> orderDefaultAttributes;
 
@@ -209,6 +218,7 @@ public class SaleOrderHandler {
         }
 
         applyVisitBillingAttributes(encounter, newSaleOrder);
+        applyClaimMetadataFromEncounter(encounter, newSaleOrder, patientID);
 
         sendSaleOrder(producerTemplate, "direct:odoo-create-sale-order-route", newSaleOrder);
         log.debug(
@@ -299,11 +309,7 @@ public class SaleOrderHandler {
         return invalidSaleOrderModel && (invalidWeightField || invalidDobField || invalidIdField);
     }
 
-    /**
-     * Fetches the visit (parent encounter) via FHIR and extracts its first location UUID.
-     * The clinical encounter's {@code partOf} reference points to the visit encounter.
-     * Returns {@code null} if no visit or location is present.
-     */
+    /** Sync OpenMRS visit attributes (payment method, scheme) from the visit encounter. */
     private void applyVisitBillingAttributes(Encounter encounter, SaleOrder saleOrder) {
         if (encounter == null || !encounter.hasPartOf() || !encounter.getPartOf().hasReference()) {
             return;
@@ -319,6 +325,35 @@ public class SaleOrderHandler {
         }
         if (snap.getInsuranceScheme() != null && !snap.getInsuranceScheme().isBlank()) {
             saleOrder.setInsuranceScheme(snap.getInsuranceScheme());
+        }
+    }
+
+    /**
+     * Populates quotation fields used for SHA pre-auth / claims (diagnoses, encounter link, patient gender)
+     * without pulling bill details from OpenMRS cashier.
+     */
+    private void applyClaimMetadataFromEncounter(Encounter encounter, SaleOrder saleOrder, String patientId) {
+        if (encounter != null
+                && encounter.getIdElement() != null
+                && encounter.getIdElement().hasIdPart()) {
+            String encUuid = encounter.getIdElement().getIdPart();
+            if (!encUuid.isBlank()) {
+                saleOrder.setOpenmrsEncounterUuid(encUuid);
+                String json = encounterDiagnosisFhirHandler.buildDiagnosesJson(encUuid);
+                if (json != null) {
+                    saleOrder.setClaimDiagnosesJson(json);
+                }
+            }
+        }
+        try {
+            if (patientId != null && !patientId.isBlank()) {
+                Patient p = patientHandler.getPatientByPatientID(patientId);
+                if (p != null && p.hasGender()) {
+                    saleOrder.setPatientGender(p.getGender().toCode());
+                }
+            }
+        } catch (Exception e) {
+            log.debug("Could not load FHIR Patient for gender {}: {}", patientId, e.getMessage());
         }
     }
 

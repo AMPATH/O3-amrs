@@ -47,23 +47,15 @@ def submit_claim(env, bundle_dict):
 
 
 def request_preauth(env, order):
+    from odoo.addons.ampath_billing.services.claim_bundle_builder import build_preauth_request_payload
+
     url = _param(env, _PARAM_PREAUTH_REQ)
     if not url:
         raise UserError(_(
             'Pre-authorization request URL is not configured. '
             'Set system parameter "%s".'
         ) % _PARAM_PREAUTH_REQ)
-    patient = (
-        getattr(order, 'x_patient_uuid', None)
-        or order.x_external_identifier
-    )
-    payload = {
-        'patientUuid': patient,
-        'orderId': order.id,
-        'orderName': order.name,
-        'insuranceScheme': getattr(order, 'x_insurance_scheme', None),
-        'companyId': order.company_id.id if order.company_id else None,
-    }
+    payload = build_preauth_request_payload(order)
     token = afyalink_auth.get_access_token(env)
     status, body = afyalink_auth.http_json(env, 'POST', url, body=payload, token=token)
     if status and int(status) >= 400:
@@ -95,9 +87,17 @@ def check_preauth_status(env, request_id):
 
 
 def claim_id_from_submit_response(body):
-    """Best-effort FHIR Claim id from an AfyaLink / FHIR JSON response."""
+    """Best-effort FHIR Claim id or mediator bundle id from an AfyaLink / FHIR JSON response."""
     if not isinstance(body, dict):
         return None
+    msg = body.get('message')
+    if isinstance(msg, dict):
+        for k in ('Mediator_Id', 'mediator_Id', 'mediator_id'):
+            if msg.get(k):
+                return str(msg[k])
+        cids = msg.get('Claim_Ids') or msg.get('claim_Ids') or msg.get('claim_ids')
+        if isinstance(cids, list) and cids:
+            return str(cids[0])
     if body.get('resourceType') == 'Claim' and body.get('id'):
         return str(body['id'])
     for ent in body.get('entry') or []:
@@ -111,9 +111,9 @@ def claim_id_from_submit_response(body):
 
 
 def parse_preauth_status_body(body):
-    """Return (status_str, code_str) from heterogeneous JSON."""
+    """Return (status_str, code_str, pre_auth_fhir_claim_id) from heterogeneous JSON."""
     if not isinstance(body, dict):
-        return None, None
+        return None, None, None
     st = (
         body.get('status')
         or body.get('preauthStatus')
@@ -124,8 +124,18 @@ def parse_preauth_status_body(body):
         or body.get('preauthCode')
         or body.get('authorizationCode')
     )
+    fhir_claim = (
+        body.get('preAuthClaimId')
+        or body.get('preauthClaimId')
+        or body.get('fhirClaimId')
+        or body.get('claimId')
+    )
+    if isinstance(fhir_claim, dict) and fhir_claim.get('id'):
+        fhir_claim = fhir_claim.get('id')
     if st is not None:
         st = str(st).lower()
     if code is not None:
         code = str(code)
-    return st, code
+    if fhir_claim is not None:
+        fhir_claim = str(fhir_claim)
+    return st, code, fhir_claim

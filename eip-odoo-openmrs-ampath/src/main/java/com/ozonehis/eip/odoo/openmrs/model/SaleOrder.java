@@ -58,4 +58,49 @@ public class SaleOrder implements OdooResource {
 
     @JsonProperty("x_insurance_scheme")
     private String insuranceScheme;
+
+    @JsonProperty("x_preauth_fhir_claim_id")
+    private String preauthFhirClaimId;
+
+    @JsonProperty("x_sha_client_registry_id")
+    private String shaClientRegistryId;
+
+    @JsonProperty("x_sha_facility_id")
+    private String shaFacilityId;
+
+    @JsonProperty("x_sha_facility_name")
+    private String shaFacilityName;
+
+    @JsonProperty("x_sha_facility_level")
+    private String shaFacilityLevel;
+
+    @JsonProperty("x_coverage_id")
+    private String coverageId;
+
+    @JsonProperty("x_scheme_category_code")
+    private String schemeCategoryCode;
+
+    @JsonProperty("x_scheme_category_name")
+    private String schemeCategoryName;
+
+    @JsonProperty("x_claim_type")
+    private String claimType;
+
+    @JsonProperty("x_claim_sub_type")
+    private String claimSubType;
+
+    @JsonProperty("x_priority_code")
+    private String priorityCode;
+
+    @JsonProperty("x_claim_practitioner_id")
+    private String claimPractitionerId;
+
+    @JsonProperty("x_claim_diagnoses_json")
+    private String claimDiagnosesJson;
+
+    @JsonProperty("x_openmrs_encounter_uuid")
+    private String openmrsEncounterUuid;
+
+    @JsonProperty("x_patient_gender")
+    private String patientGender;
 }

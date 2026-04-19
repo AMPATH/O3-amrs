@@ -99,6 +99,11 @@ class BillingStatusController(http.Controller):
             'claim_status': line.claim_status,
             'fhir_claim_id': line.fhir_claim_id,
             'is_claim_eligible': line.is_claim_eligible,
+            'intervention_code': getattr(line, 'x_intervention_code', None) or None,
+            'service_date_start': line.x_service_date_start.isoformat()
+            if getattr(line, 'x_service_date_start', None) else None,
+            'service_date_end': line.x_service_date_end.isoformat()
+            if getattr(line, 'x_service_date_end', None) else None,
             'insurance_provider': {
                 'id': provider.id,
                 'name': provider.name,
@@ -230,6 +235,21 @@ class BillingStatusController(http.Controller):
             'preauth_status': getattr(order, 'x_preauth_status', None) or None,
             'preauth_code': getattr(order, 'x_preauth_code', None) or None,
             'preauth_request_id': getattr(order, 'x_preauth_request_id', None) or None,
+            'preauth_fhir_claim_id': getattr(order, 'x_preauth_fhir_claim_id', None) or None,
+            'sha_client_registry_id': getattr(order, 'x_sha_client_registry_id', None) or None,
+            'sha_facility_id': getattr(order, 'x_sha_facility_id', None) or None,
+            'sha_facility_name': getattr(order, 'x_sha_facility_name', None) or None,
+            'sha_facility_level': getattr(order, 'x_sha_facility_level', None) or None,
+            'coverage_id': getattr(order, 'x_coverage_id', None) or None,
+            'scheme_category_code': getattr(order, 'x_scheme_category_code', None) or None,
+            'scheme_category_name': getattr(order, 'x_scheme_category_name', None) or None,
+            'claim_type': getattr(order, 'x_claim_type', None) or None,
+            'claim_sub_type': getattr(order, 'x_claim_sub_type', None) or None,
+            'priority_code': getattr(order, 'x_priority_code', None) or None,
+            'claim_practitioner_id': getattr(order, 'x_claim_practitioner_id', None) or None,
+            'openmrs_encounter_uuid': getattr(order, 'x_openmrs_encounter_uuid', None) or None,
+            'patient_gender': getattr(order, 'x_patient_gender', None) or None,
+            'claim_diagnoses_json': getattr(order, 'x_claim_diagnoses_json', None) or None,
             'order_lines': lines,
             'invoices': invoices,
         }
@@ -450,6 +470,9 @@ class BillingStatusController(http.Controller):
                 'payment_method': getattr(order, 'x_payment_method', None) or None,
                 'insurance_scheme': getattr(order, 'x_insurance_scheme', None) or None,
                 'preauth_status': getattr(order, 'x_preauth_status', None) or None,
+                'sha_facility_id': getattr(order, 'x_sha_facility_id', None) or None,
+                'preauth_fhir_claim_id': getattr(order, 'x_preauth_fhir_claim_id', None) or None,
+                'has_claim_diagnoses': bool((getattr(order, 'x_claim_diagnoses_json', None) or '').strip()),
                 'order_lines': [self._serialize_line(l) for l in lines],
             }
 
