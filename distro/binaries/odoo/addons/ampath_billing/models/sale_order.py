@@ -1,3 +1,5 @@
+import json
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -10,6 +12,53 @@ class SaleOrder(models.Model):
     x_preauth_status = fields.Char(string="Pre-authorization status", copy=False)
     x_preauth_code = fields.Char(string="Pre-authorization code", copy=False)
     x_preauth_request_id = fields.Char(string="Pre-authorization request ID", copy=False)
+    x_preauth_fhir_claim_id = fields.Char(
+        string="Pre-auth FHIR Claim id",
+        copy=False,
+        help="FHIR Claim.id returned after SHIF pre-authorization; links the final claim via Claim.related.",
+    )
+
+    # SHA / HIE bundle data (BuildClaimBundleRequest); billing amounts from Odoo lines.
+    x_sha_client_registry_id = fields.Char(
+        string="SHA client registry id",
+        copy=False,
+        help="National / SHA patient id for FHIR Patient.id. If empty, OpenMRS patient UUID is used.",
+    )
+    x_sha_facility_id = fields.Char(string="SHA facility id", copy=False)
+    x_sha_facility_name = fields.Char(string="SHA facility name", copy=False)
+    x_sha_facility_level = fields.Char(string="SHA facility level", copy=False)
+    x_coverage_id = fields.Char(
+        string="Coverage id override",
+        copy=False,
+        help="If empty, defaults to \"{patient}-sha-coverage\" from SHA client registry id or patient UUID.",
+    )
+    x_scheme_category_code = fields.Char(
+        string="Scheme category code", default="CAT-SHA-001", copy=False)
+    x_scheme_category_name = fields.Char(
+        string="Scheme category name",
+        default="SOCIAL HEALTH AUTHORITY",
+        copy=False,
+    )
+    x_claim_type = fields.Char(string="Claim type", default="institutional", copy=False)
+    x_claim_sub_type = fields.Char(string="Claim sub-type", default="op", copy=False)
+    x_priority_code = fields.Char(string="Process priority", default="normal", copy=False)
+    x_claim_practitioner_id = fields.Char(string="Claim practitioner id", copy=False)
+    x_claim_diagnoses_json = fields.Text(
+        string="Claim diagnoses (JSON)",
+        copy=False,
+        help='ICD-11-oriented list: [{"code":"...","display":"..."}, ...]. '
+        'May be populated by EIP from OpenMRS FHIR Condition.',
+    )
+    x_openmrs_encounter_uuid = fields.Char(
+        string="OpenMRS clinical encounter UUID",
+        copy=False,
+        help="Encounter that triggered the quotation (EIP); used to refresh diagnoses from FHIR.",
+    )
+    x_patient_gender = fields.Char(
+        string="Patient gender (claims)",
+        copy=False,
+        help="male / female / unknown — sent on FHIR Patient and pre-auth payload.",
+    )
 
     billing_actions_visible = fields.Boolean(
         compute='_compute_billing_actions_visible',
@@ -39,6 +88,24 @@ class SaleOrder(models.Model):
                 order.billing_actions_visible = not all_paid
             else:
                 order.billing_actions_visible = True
+
+    def _action_open_payload_preview(self, title, payload_dict):
+        """Open a modal with pretty-printed JSON (no external HTTP)."""
+        self.ensure_one()
+        text = json.dumps(payload_dict, indent=2, ensure_ascii=False, default=str)
+        wiz = self.env['ampath.billing.payload.preview'].create({
+            'sale_order_id': self.id,
+            'title': title,
+            'payload_text': text,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': title,
+            'res_model': 'ampath.billing.payload.preview',
+            'res_id': wiz.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
 
     def _get_selected_lines(self, action=None):
         """
@@ -83,8 +150,8 @@ class SaleOrder(models.Model):
             lines = lines.filtered(lambda l: l.is_claim_eligible)
             if not lines:
                 raise UserError(_(
-                    "No eligible lines for claim: ensure patient UUID is set, "
-                    "and for SHIF visits complete pre-authorization first."
+                    "No eligible lines for claim preview: complete SHA / visit data, "
+                    "diagnoses, intervention codes, date of birth, and SHIF pre-authorization when applicable."
                 ))
 
         elif action == 'invoice':
@@ -111,10 +178,12 @@ class SaleOrder(models.Model):
         lines.write({'selected': False})
 
     def action_claim_selected(self):
+        """Generate FHIR claim bundle JSON from selected lines and show it in a dialog."""
         self.ensure_one()
         lines = self._get_selected_lines(action='claim')
-        lines.action_bulk_fhir_claim()
+        result = lines.action_bulk_fhir_claim()
         lines.write({'selected': False})
+        return result
 
     def action_invoice_selected(self):
         """Create a partial invoice for the checked lines and open it."""
@@ -125,31 +194,22 @@ class SaleOrder(models.Model):
         return result
 
     def action_request_preauth(self):
+        """Build the pre-authorization request payload and display it as JSON (no HTTP)."""
         self.ensure_one()
-        from odoo.addons.ampath_billing.services import afyalink_client
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_preauth_request_payload
 
-        rid, _body = afyalink_client.request_preauth(self.env, self)
-        vals = {'x_preauth_status': 'pending'}
-        if rid:
-            vals['x_preauth_request_id'] = rid
-        self.write(vals)
+        payload = build_preauth_request_payload(self)
+        return self._action_open_payload_preview(
+            _('Pre-authorization payload (JSON)'),
+            payload,
+        )
 
     def action_check_preauth_status(self):
         self.ensure_one()
-        rid = self.x_preauth_request_id
-        if not rid:
-            raise UserError(_("No pre-authorization request id on this order."))
-        from odoo.addons.ampath_billing.services import afyalink_client
-
-        body = afyalink_client.check_preauth_status(self.env, rid)
-        st, code = afyalink_client.parse_preauth_status_body(body)
-        vals = {}
-        if st:
-            vals['x_preauth_status'] = st
-        if code:
-            vals['x_preauth_code'] = code
-        if vals:
-            self.write(vals)
+        raise UserError(_(
+            'Pre-authorization status polling is not enabled yet. '
+            'It will be wired when the receiving endpoint is available.'
+        ))
 
     def action_pay_cash_clear_shif(self):
         """After SHIF rejection: switch to cash and clear SHIF pre-auth fields."""
@@ -160,4 +220,5 @@ class SaleOrder(models.Model):
             'x_preauth_status': '',
             'x_preauth_code': '',
             'x_preauth_request_id': '',
+            'x_preauth_fhir_claim_id': '',
         })
