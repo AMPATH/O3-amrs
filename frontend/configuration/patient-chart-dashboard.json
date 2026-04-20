@@ -120,7 +120,8 @@
           "dashboard#pnc",
           "dashboard#immunisation",
           "dashboard#family-planning",
-          "dashboard#maternity"
+          "dashboard#maternity",
+          "dashboard#prep"
         ],
         "order": [
           "dashboard#cwc",
@@ -128,7 +129,8 @@
           "dashboard#pnc",
           "dashboard#immunisation",
           "dashboard#family-planning",
-          "dashboard#maternity"
+          "dashboard#maternity",
+          "dashboard#prep"
         ],
         "configure": {
           "dashboard#cwc": {
@@ -188,6 +190,16 @@
             "Translation overrides": {
               "en": {
                 "maternity": "Maternity"
+              }
+            }
+          },
+          "dashboard#prep": {
+            "title": "prep",
+            "path": "prep",
+            "slot": "prep-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "prep": "pREP"
               }
             }
           }

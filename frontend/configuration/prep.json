@@ -1,0 +1,75 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "prep-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "prepInitial",
+                "hasFilter": false,
+                "headerTitle": "prepInitial",
+                "displayText": "prepInitial",
+                "encounterType": "00ee2fd6-9c95-4ffc-ab31-6b1ce2dede4d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "AMPATH POC Pre Exposure Prophylaxis Initial Form v1.3",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "AMPATH POC Pre Exposure Prophylaxis Initial Form v1.3",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": { "displayText": "add" },
+                "formList": [{ "uuid": "ced9eb80-2630-42da-8a61-084711fdaa52" }]
+              },
+              {
+                "tabName": "prepFollowUp",
+                "hasFilter": false,
+                "headerTitle": "prepFollowUp",
+                "displayText": "prepFollowUp",
+                "encounterType": "ddd96f1c-524f-4caa-81a6-1a6f9789a4bc",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "AMPATH POC Pre Exposure Prophylaxis Follow up Form v1.3",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "AMPATH POC Pre Exposure Prophylaxis Follow up Form v1.3",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": { "displayText": "add" },
+                "formList": [{ "uuid": "8c4450b1-a8b4-43da-97a1-6f572483e76e" }]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "prepInitial": "PrEP Initial",
+                "prepFollowUp": "PrEP Follow Up"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
