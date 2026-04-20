@@ -82,39 +82,6 @@
                                         "uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"
                                     }
                                 ]
-                            },
-                            {
-                                "tabName": "cervicalCancerScreening",
-                                "hasFilter": false,
-                                "headerTitle": "cervicalCancerScreening",
-                                "displayText": "cervicalCancerScreening",
-                                "encounterType": "238625fc-8a25-44b2-aa5a-8bf48fa0e18d",
-                                "columns": [
-                                    {
-                                        "id": "actions",
-                                        "title": "actionsTitle",
-                                        "actionOptions": [
-                                            {
-                                                "formName": "ONCOLOGY POC Cervical Cancer Screening Form v1.0",
-                                                "label": "viewDetails",
-                                                "mode": "view"
-                                            },
-                                            {
-                                                "formName": "ONCOLOGY POC Cervical Cancer Screening Form v1.0",
-                                                "label": "editForm",
-                                                "mode": "edit"
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "launchOptions": {
-                                    "displayText": "add"
-                                },
-                                "formList": [
-                                    {
-                                        "uuid": "04640e1c-de9b-4028-9506-296409e41761"
-                                    }
-                                ]
                             }
                         ],
                         "Translation overrides": {
@@ -128,7 +95,6 @@
                                 "forms": "Forms",
                                 "programManagement": "Program Management",
                                 "cardex": "Cardex",
-                                "cervicalCancerScreening": "Cervical Cancer Screening",
                                 "patientRecords": "Patient Records",
                                 "reasonForVisitTitle": "Reason for Visit",
                                 "chiefComplaintTitle": "Chief Complaint",

@@ -62,13 +62,15 @@
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
           "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#dental",
+          "dashboard#cervical-cancer"
         ],
         "order": [
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
           "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#dental",
+          "dashboard#cervical-cancer"
         ],
         "configure": {
           "dashboard#general-opd-triage": {
@@ -108,6 +110,16 @@
             "Translation overrides": {
               "en": {
                 "dental": "Dental"
+              }
+            }
+          },
+          "dashboard#cervical-cancer": {
+            "title": "cervicalCancer",
+            "path": "cervical-cancer",
+            "slot": "cervical-cancer-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "cervicalCancer": "Cervical Cancer"
               }
             }
           }

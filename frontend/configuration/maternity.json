@@ -74,6 +74,25 @@
                 "formList": [{"uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"}]
               },
               {
+                "tabName": "lcg",
+                "hasFilter": false,
+                "headerTitle": "lcg",
+                "displayText": "lcg",
+                "encounterType": "26eeda6e-d490-47f3-bacd-058684be6d97",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC WHO Labour Care Guide v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC WHO Labour Care Guide v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "8f3f771c-ec8c-3ffa-8ddc-723128c40d26"}]
+              },
+              {
                 "tabName": "maternityLabourDelivery",
                 "hasFilter": false,
                 "headerTitle": "maternityLabourDelivery",
@@ -112,7 +131,7 @@
                 "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date"}}
           }
         }
       }
