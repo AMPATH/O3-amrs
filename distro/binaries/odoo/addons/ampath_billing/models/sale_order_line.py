@@ -61,6 +61,16 @@ class SaleOrderLine(models.Model):
         copy=False,
         help="Defaults to order date when empty.",
     )
+    x_service_category = fields.Char(
+        string="Service category (claim)",
+        copy=False,
+        help="Optional category sent per service line in pre-auth payloads.",
+    )
+    x_preauth_fhir_claim_id = fields.Char(
+        string="Pre-auth FHIR Claim id (line)",
+        copy=False,
+        help="If set, included as preAuthFhirClaimId for this service line.",
+    )
 
     # ------------------------------------------------------------------
     # Computed fields

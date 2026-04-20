@@ -201,14 +201,26 @@ def _services_from_lines(order, lines):
         total = float(line.price_subtotal or 0) or unit * qty
         start = line.x_service_date_start or order.date_order
         end = line.x_service_date_end or order.date_order
+        category = (
+            (line.x_service_category or '').strip()
+            or (product.categ_id.name if product and product.categ_id else '')
+            or 'procedure'
+        )
+        preauth_line_id = (
+            (line.x_preauth_fhir_claim_id or '').strip()
+            or (order.x_preauth_fhir_claim_id or '').strip()
+            or None
+        )
         services.append({
             'serviceCode': code,
             'serviceDisplay': display,
+            'category': category,
             'unitPrice': unit,
             'quantity': qty,
             'totalAmount': total,
             'serviceStart': _iso_z(start),
             'serviceEnd': _iso_z(end),
+            'preAuthFhirClaimId': preauth_line_id,
         })
     return services
 
