@@ -47,7 +47,8 @@ class SaleOrder(models.Model):
         string="Claim diagnoses (JSON)",
         copy=False,
         help='ICD-11-oriented list: [{"code":"...","display":"..."}, ...]. '
-        'May be populated by EIP from OpenMRS FHIR Condition.',
+        'The EIP fills this from FHIR Conditions for the whole visit (visit encounter + child encounters) '
+        'when the quotation is created and whenever a new order line is synced.',
     )
     x_openmrs_encounter_uuid = fields.Char(
         string="OpenMRS clinical encounter UUID",

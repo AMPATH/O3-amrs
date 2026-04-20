@@ -12,7 +12,7 @@ import static java.util.Arrays.asList;
 import com.ozonehis.eip.odoo.openmrs.Constants;
 import com.ozonehis.eip.odoo.openmrs.client.OdooClient;
 import com.ozonehis.eip.odoo.openmrs.client.OdooUtils;
-import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterDiagnosisFhirHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.VisitDiagnosisRestHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.EncounterHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.ObservationHandler;
 import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.PatientHandler;
@@ -84,7 +84,7 @@ public class SaleOrderHandler {
     private VisitAttributeHandler visitAttributeHandler;
 
     @Autowired
-    private EncounterDiagnosisFhirHandler encounterDiagnosisFhirHandler;
+    private VisitDiagnosisRestHandler visitDiagnosisRestHandler;
 
     @Autowired
     private PatientHandler patientHandler;
@@ -180,6 +180,7 @@ public class SaleOrderHandler {
                 resource.getClass().getName(),
                 saleOrderLine,
                 saleOrder);
+        refreshVisitDiagnosesOnQuotation(encounterVisitUuid, saleOrder, partnerId, producerTemplate);
     }
 
     public void createSaleOrderWithSaleOrderLine(
@@ -218,7 +219,7 @@ public class SaleOrderHandler {
         }
 
         applyVisitBillingAttributes(encounter, newSaleOrder);
-        applyClaimMetadataFromEncounter(encounter, newSaleOrder, patientID);
+        applyClaimMetadataFromEncounter(encounter, newSaleOrder, patientID, encounterVisitUuid);
 
         sendSaleOrder(producerTemplate, "direct:odoo-create-sale-order-route", newSaleOrder);
         log.debug(
@@ -242,6 +243,8 @@ public class SaleOrderHandler {
                     resource.getClass().getName(),
                     fetchedSaleOrder.getOrderId(),
                     saleOrderLine);
+            refreshVisitDiagnosesOnQuotation(
+                    encounterVisitUuid, fetchedSaleOrder, partner.getPartnerId(), producerTemplate);
         }
     }
 
@@ -309,16 +312,24 @@ public class SaleOrderHandler {
         return invalidSaleOrderModel && (invalidWeightField || invalidDobField || invalidIdField);
     }
 
-    /** Sync OpenMRS visit attributes (payment method, scheme) from the visit encounter. */
-    private void applyVisitBillingAttributes(Encounter encounter, SaleOrder saleOrder) {
+    /** OpenMRS visit encounter UUID from a clinical encounter's {@code partOf}, if present. */
+    private static String extractVisitEncounterUuid(Encounter encounter) {
         if (encounter == null || !encounter.hasPartOf() || !encounter.getPartOf().hasReference()) {
-            return;
+            return null;
         }
         String ref = encounter.getPartOf().getReference();
         if (ref == null || !ref.contains("/")) {
+            return null;
+        }
+        return ref.split("/")[1];
+    }
+
+    /** Sync OpenMRS visit attributes (payment method, scheme) from the visit encounter. */
+    private void applyVisitBillingAttributes(Encounter encounter, SaleOrder saleOrder) {
+        String visitUuid = extractVisitEncounterUuid(encounter);
+        if (visitUuid == null) {
             return;
         }
-        String visitUuid = ref.split("/")[1];
         VisitAttributeSnapshot snap = visitAttributeHandler.readFromVisitEncounter(visitUuid);
         if (snap.getPaymentMethod() != null && !snap.getPaymentMethod().isBlank()) {
             saleOrder.setPaymentMethod(snap.getPaymentMethod());
@@ -330,19 +341,27 @@ public class SaleOrderHandler {
 
     /**
      * Populates quotation fields used for SHA pre-auth / claims (diagnoses, encounter link, patient gender)
-     * without pulling bill details from OpenMRS cashier.
+     * without pulling bill details from OpenMRS cashier. Diagnoses are loaded for the whole visit (visit
+     * encounter + child encounters), not only the triggering clinical encounter.
      */
-    private void applyClaimMetadataFromEncounter(Encounter encounter, SaleOrder saleOrder, String patientId) {
+    private void applyClaimMetadataFromEncounter(
+            Encounter encounter, SaleOrder saleOrder, String patientId, String visitEncounterUuidForDiagnoses) {
         if (encounter != null
                 && encounter.getIdElement() != null
                 && encounter.getIdElement().hasIdPart()) {
             String encUuid = encounter.getIdElement().getIdPart();
             if (!encUuid.isBlank()) {
                 saleOrder.setOpenmrsEncounterUuid(encUuid);
-                String json = encounterDiagnosisFhirHandler.buildDiagnosesJson(encUuid);
-                if (json != null) {
-                    saleOrder.setClaimDiagnosesJson(json);
-                }
+            }
+        }
+        String visitUuid = visitEncounterUuidForDiagnoses;
+        if (visitUuid == null || visitUuid.isBlank()) {
+            visitUuid = extractVisitEncounterUuid(encounter);
+        }
+        if (visitUuid != null && !visitUuid.isBlank()) {
+            String json = visitDiagnosisRestHandler.buildDiagnosesJsonForVisit(visitUuid);
+            if (json != null) {
+                saleOrder.setClaimDiagnosesJson(json);
             }
         }
         try {
@@ -357,12 +376,37 @@ public class SaleOrderHandler {
         }
     }
 
+    /**
+     * Re-fetch all visit diagnoses from OpenMRS FHIR and write {@code x_claim_diagnoses_json} on the draft
+     * quotation (e.g. after a new order line is added so newly charted diagnoses are included).
+     */
+    public void refreshVisitDiagnosesOnQuotation(
+            String visitEncounterUuid, SaleOrder saleOrder, int partnerId, ProducerTemplate producerTemplate) {
+        if (visitEncounterUuid == null
+                || visitEncounterUuid.isBlank()
+                || saleOrder.getOrderId() == null) {
+            return;
+        }
+        String json = visitDiagnosisRestHandler.buildDiagnosesJsonForVisit(visitEncounterUuid);
+        if (json == null) {
+            return;
+        }
+        SaleOrder patch = new SaleOrder();
+        patch.setOrderId(saleOrder.getOrderId());
+        patch.setOrderPartnerId(partnerId);
+        patch.setClaimDiagnosesJson(json);
+        sendSaleOrder(producerTemplate, "direct:odoo-update-sale-order-route", patch);
+    }
+
     private String getVisitLocationUuid(Encounter encounter) {
         if (encounter == null || !encounter.hasPartOf()) {
             return null;
         }
         try {
-            String visitUuid = encounter.getPartOf().getReference().split("/")[1];
+            String visitUuid = extractVisitEncounterUuid(encounter);
+            if (visitUuid == null) {
+                return null;
+            }
             Encounter visitEncounter = encounterHandler.getEncounterByEncounterID(visitUuid);
             if (visitEncounter == null
                     || visitEncounter.getLocation() == null
