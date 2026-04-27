@@ -60,6 +60,11 @@ class SaleOrder(models.Model):
         copy=False,
         help="male / female / unknown — sent on FHIR Patient and pre-auth payload.",
     )
+    # Declared here (not only via odoo_initializer CSV) so @api.depends on sale.order.line
+    # resolves during registry init; ampath_billing is auto_install and loads with sale.
+    x_patient_uuid = fields.Char(string="Patient UUID", copy=False)
+    x_external_identifier = fields.Char(string="Customer External ID", copy=False)
+    x_customer_dob = fields.Date(string="Customer Date of Birth", copy=False)
 
     billing_actions_visible = fields.Boolean(
         compute='_compute_billing_actions_visible',

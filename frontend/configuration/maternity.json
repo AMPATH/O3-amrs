@@ -33,6 +33,16 @@
                 "encounterType": "64e0f9f4-5f25-4098-bbca-ba8db6ce1696",
                 "columns": [
                   {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
                     "id": "admissionDate",
                     "title": "admissionDateTitle",
                     "concept": "a8a01652-1350-11df-a1f1-0026b9348838"
@@ -131,7 +141,7 @@
                 "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider"}}
           }
         }
       }

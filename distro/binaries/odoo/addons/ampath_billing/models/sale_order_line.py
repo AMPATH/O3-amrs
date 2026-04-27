@@ -93,7 +93,6 @@ class SaleOrderLine(models.Model):
         'order_id.x_sha_facility_level',
         'order_id.x_claim_diagnoses_json',
         'order_id.x_customer_dob',
-        'order_id.partner_id.x_customer_dob',
     )
     def _compute_is_claim_eligible(self):
         from odoo.addons.ampath_billing.services.claim_bundle_builder import diagnoses_list

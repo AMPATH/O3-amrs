@@ -1,0 +1,8 @@
+// Loaded before web/static/src/scss/primary_variables.scss so Odoo's !default
+// definitions do not replace these values.
+// Community default purple is $o-community-color (#71639e); backend uses this for
+// navbar, primary buttons, focus rings, etc.
+
+$o-community-color: #135c33;
+$o-brand-odoo: #135c33;
+$o-brand-primary: #135c33;

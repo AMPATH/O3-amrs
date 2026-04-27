@@ -106,6 +106,16 @@
                                 "encounterType": "64e0f9f4-5f25-4098-bbca-ba8db6ce1696",
                                 "columns": [
                                     {
+                                        "id": "encounterDate",
+                                        "title": "encounterDateTitle",
+                                        "type": "encounterDatetime"
+                                    },
+                                    {
+                                        "id": "provider",
+                                        "title": "providerTitle",
+                                        "type": "provider"
+                                    },
+                                    {
                                         "id": "notes",
                                         "title": "notesTitle",
                                         "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
@@ -144,7 +154,9 @@
                                 "vitals": "Vitals",
                                 "tbScreening": "TB Screening",
                                 "nutritionAssessment": "Nutrition Assessment",
-                                "cadex": "CADEx"
+                                "cadex": "CADEx",
+                                "encounterDateTitle": "Encounter Date",
+                                "providerTitle": "Provider"
                             }
                         }
                     }
