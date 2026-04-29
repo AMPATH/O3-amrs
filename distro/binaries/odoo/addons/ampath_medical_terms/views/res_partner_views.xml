@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Partner form ──
+         Only relabels user_id which exists on base partner form.
+         customer_rank and team_id are added by sale module via inherited views;
+         they're handled by the Python model field overrides in res_partner.py
+         which also relabels them anywhere they appear. -->
+    <record id="view_partner_medical_form" model="ir.ui.view">
+        <field name="name">res.partner.form.medical</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="attributes">
+                <attribute name="string">Billing Officer</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>

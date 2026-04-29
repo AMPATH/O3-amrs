@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Product template form ── -->
+    <record id="view_product_medical_form" model="ir.ui.view">
+        <field name="name">product.template.form.medical</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="list_price" position="attributes">
+                <attribute name="string">Sales Fee</attribute>
+            </field>
+            <field name="standard_price" position="attributes">
+                <attribute name="string">Cost</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- ── Action renames ── -->
+    <record id="product.product_template_action_all" model="ir.actions.act_window">
+        <field name="name">Items</field>
+    </record>
+
+    <record id="product.product_template_action" model="ir.actions.act_window">
+        <field name="name">Items</field>
+    </record>
+
+    <record id="product.product_pricelist_action2" model="ir.actions.act_window">
+        <field name="name">Fee Schedules</field>
+    </record>
+
+</odoo>
