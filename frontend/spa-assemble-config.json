@@ -47,7 +47,8 @@
     "@ampath/esm-procedures-app": "next",
     "@ampath/esm-clinical-reminders-app": "next",
     "@ampath/esm-radiology-app": "next",
-    "@ampath/esm-reports-app": "next"
+    "@ampath/esm-reports-app": "next",
+    "@mekomsolutions/esm-patient-billing-status-app": "1.0.1-pre.27"
   },
   "excludedFrontendModules": []
 }
