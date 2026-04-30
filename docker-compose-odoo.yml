@@ -93,6 +93,8 @@ services:
       - USER=${ODOO_DB_USER:-odoo}
       - PASSWORD=${ODOO_DB_PASSWORD:-password}
       - ADDONS=${ODOO_ADDONS:-sale_management,stock,account,purchase,mrp,odoo_initializer,mrp_product_expiry,product_expiry,ampath_billing,l10n_ke}
+      - AMPATH_ETL_CLAIMS_SUBMIT_URL=${AMPATH_ETL_CLAIMS_SUBMIT_URL:-}
+      - AMPATH_ETL_CLAIMS_API_KEY=${AMPATH_ETL_CLAIMS_API_KEY:-}
       - INITIALIZER_DATA_FILES_PATH=/mnt/odoo_config
       - INITIALIZER_CONFIG_FILE_PATH=/mnt/odoo_config/initializer_config.json
     image: ${ODOO_IMAGE:-ghcr.io/ampath/o3-amrs-odoo:latest}

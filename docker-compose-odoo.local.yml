@@ -1,0 +1,10 @@
+services:
+  odoo:
+    environment:
+      # Force include ampath_billing during local development.
+      ADDONS: sale_management,stock,account,purchase,mrp,odoo_initializer,mrp_product_expiry,product_expiry,ampath_billing,l10n_ke
+    volumes:
+      # Live-edit local addon code without rebuilding images.
+      - ./distro/binaries/odoo/addons/ampath_billing:/mnt/extra-addons/ampath_billing
+      # Live-edit local initializer config files.
+      - ./distro/config/odoo/initializer_config:/mnt/odoo_config

@@ -7,40 +7,11 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <group string="Visit billing" name="ampath_visit_billing" colspan="2">
-                        <field name="x_payment_method"/>
-                        <field name="x_insurance_scheme"/>
-                        <field name="x_openmrs_encounter_uuid" readonly="1"/>
-                        <field name="x_preauth_status" readonly="1"/>
-                        <field name="x_preauth_code" readonly="1"/>
-                        <field name="x_preauth_request_id" readonly="1"/>
-                        <field name="x_preauth_fhir_claim_id" readonly="1"/>
-                    </group>
-                    <group string="SHA / HIE (quotation claim data)" name="ampath_sha_claim" colspan="2">
-                        <field name="x_sha_client_registry_id"/>
-                        <field name="x_sha_facility_id"/>
-                        <field name="x_sha_facility_name"/>
-                        <field name="x_sha_facility_level"/>
-                        <field name="x_coverage_id"/>
-                        <field name="x_scheme_category_code"/>
-                        <field name="x_scheme_category_name"/>
-                        <field name="x_claim_type"/>
-                        <field name="x_claim_sub_type"/>
-                        <field name="x_priority_code"/>
-                        <field name="x_claim_practitioner_id"/>
-                        <field name="x_patient_gender"/>
-                        <field name="x_claim_diagnoses_json" widget="text" placeholder='[{"code":"ICD11","display":"Label"}]'/>
-                    </group>
-                    <group string="SHIF / payloads (preview only)" name="ampath_preauth_actions">
-                        <button name="action_request_preauth" type="object"
-                                string="Preview pre-auth payload (JSON)"
-                                class="btn-secondary"
-                                invisible="state in ('done', 'cancel')"/>
-                        <button name="action_pay_cash_clear_shif" type="object"
-                                string="Switch to cash (clear SHIF)"
-                                class="btn-link"
-                                confirm="Clear insurance scheme and pre-auth fields and set payment to CASH?"
-                                invisible="state in ('done', 'cancel')"/>
+                    <group string="Patient data" name="ampath_patient_data" colspan="2">
+                        <field name="x_patient_uuid" readonly="1"/>
+                        <field name="x_external_identifier" readonly="1"/>
+                        <field name="x_customer_dob" readonly="1"/>
+                        <field name="x_patient_gender" readonly="1"/>
                     </group>
                 </xpath>
 
@@ -55,9 +26,9 @@
                                 string="🏷️ Waive" class="btn-warning btn-sm"
                                 confirm="Apply 100%% discount to all checked lines?"/>
                         <button name="action_claim_selected" type="object"
-                                string="📋 Preview claim JSON" class="btn-info btn-sm"
+                                string="📋 Submit / preview claim" class="btn-info btn-sm"
                                 invisible="not has_claim_eligible_lines"
-                                confirm="Generate the FHIR claim bundle from checked lines and show JSON?"/>
+                                confirm="If ampath.etl_claims.submit_url is set: POST claim JSON to AMPATH ETL; otherwise: build FHIR bundle preview only. Continue?"/>
                         <button name="action_invoice_selected" type="object"
                                 string="🧾 Invoice selected" class="btn-primary btn-sm"
                                 confirm="Create a partial invoice for all checked lines?"/>

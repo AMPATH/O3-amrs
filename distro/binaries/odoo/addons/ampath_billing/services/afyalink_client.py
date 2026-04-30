@@ -5,8 +5,18 @@ Endpoint paths are configurable (DHA UAT vs prod differ). Set:
   ampath.afyalink.claim_submit_url  – full URL POST JSON body (FHIR Bundle)
   ampath.afyalink.preauth_request_url – POST JSON
   ampath.afyalink.preauth_status_url – GET template with {request_id} placeholder
+
+AMPATH ETL / HIE (Odoo-shaped JSON, same builder as pre-auth preview). Set:
+  ampath.etl_claims.submit_url — full URL (e.g. …/etl-claims/api/Hie/submit-claim-odoo)
+  ampath.etl_claims.api_key — value for header AMPATH-CLAIMS-KEY
+  Or on the host / container: AMPATH_ETL_CLAIMS_SUBMIT_URL, AMPATH_ETL_CLAIMS_API_KEY
+  (used when the system parameters above are empty).
+
+When ETL URL is set (parameter or env), sale order bulk claim uses this path instead of
+posting a FHIR Bundle to AfyaLink.
 """
 import logging
+import os
 import urllib.parse
 
 from odoo import _
@@ -19,10 +29,20 @@ _logger = logging.getLogger(__name__)
 _PARAM_CLAIM_URL = 'ampath.afyalink.claim_submit_url'
 _PARAM_PREAUTH_REQ = 'ampath.afyalink.preauth_request_url'
 _PARAM_PREAUTH_STATUS = 'ampath.afyalink.preauth_status_url'
+_PARAM_ETL_SUBMIT_URL = 'ampath.etl_claims.submit_url'
+_PARAM_ETL_API_KEY = 'ampath.etl_claims.api_key'
+# Docker / k8s: set these on the odoo container when you prefer env over DB parameters
+_ENV_ETL_SUBMIT_URL = 'AMPATH_ETL_CLAIMS_SUBMIT_URL'
+_ENV_ETL_API_KEY = 'AMPATH_ETL_CLAIMS_API_KEY'
 
 
 def _param(env, key):
     return (env['ir.config_parameter'].sudo().get_param(key, '') or '').strip()
+
+
+def etl_submit_url_configured(env):
+    """True if ETL URL is set via system parameter or environment."""
+    return bool(_param(env, _PARAM_ETL_SUBMIT_URL) or (os.environ.get(_ENV_ETL_SUBMIT_URL) or '').strip())
 
 
 def submit_claim(env, bundle_dict):
@@ -43,6 +63,53 @@ def submit_claim(env, bundle_dict):
             _logger.error('AfyaLink claim submit failed %s: %s', status, body)
             raise UserError(_('Claim submission failed (%s): %s') % (status, body))
         return body
+    return None
+
+
+def submit_etl_hie_claim(env, payload_dict):
+    """POST Odoo-shaped claim JSON to AMPATH ETL (AMPATH-CLAIMS-KEY), no OAuth."""
+    url = _param(env, _PARAM_ETL_SUBMIT_URL) or (os.environ.get(_ENV_ETL_SUBMIT_URL) or '').strip()
+    if not url:
+        raise UserError(_(
+            'ETL claim URL is not configured. Set system parameter "%s" '
+            'or environment variable "%s" to the full HTTPS endpoint (e.g. …/submit-claim-odoo).'
+        ) % (_PARAM_ETL_SUBMIT_URL, _ENV_ETL_SUBMIT_URL))
+    api_key = _param(env, _PARAM_ETL_API_KEY) or (os.environ.get(_ENV_ETL_API_KEY) or '').strip()
+    if not api_key:
+        raise UserError(_(
+            'ETL claims API key is not configured. Set system parameter "%s" '
+            'or environment variable "%s".'
+        ) % (_PARAM_ETL_API_KEY, _ENV_ETL_API_KEY))
+    status, body = afyalink_auth.http_json(
+        env,
+        'POST',
+        url,
+        body=payload_dict,
+        token=None,
+        extra_headers={'AMPATH-CLAIMS-KEY': api_key},
+    )
+    if status and int(status) >= 400:
+        _logger.error('ETL claim submit failed %s: %s', status, body)
+        raise UserError(_('Claim submission failed (%s): %s') % (status, body))
+    return body
+
+
+def etl_claim_external_id_from_response(body):
+    """Best-effort id from heterogeneous ETL JSON (for sale.order.line.fhir_claim_id)."""
+    if not isinstance(body, dict):
+        return None
+    for k in (
+        'claimId', 'claim_id', 'ClaimId',
+        'mediatorId', 'Mediator_Id', 'mediator_Id', 'mediator_id',
+        'id',
+    ):
+        if body.get(k):
+            return str(body[k])
+    msg = body.get('message')
+    if isinstance(msg, dict):
+        for k in ('Mediator_Id', 'mediator_Id', 'mediator_id'):
+            if msg.get(k):
+                return str(msg[k])
     return None
 
 

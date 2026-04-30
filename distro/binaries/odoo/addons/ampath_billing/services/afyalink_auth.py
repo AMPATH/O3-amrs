@@ -112,14 +112,23 @@ def _parse_token_response(body):
     return body
 
 
-def http_json(env, method, url, *, body=None, token=None, timeout=60):
-    """Perform HTTPS request; returns (status_code, parsed_json_or_text)."""
+def http_json(env, method, url, *, body=None, token=None, extra_headers=None, timeout=60):
+    """Perform HTTPS request; returns (status_code, parsed_json_or_text).
+
+    ``extra_headers`` values override defaults when keys collide (except Authorization
+    from ``token``, which is skipped when ``token`` is falsy).
+    """
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
     if token:
         headers['Authorization'] = f'Bearer {token}'
+    if extra_headers:
+        for k, v in extra_headers.items():
+            if v is None:
+                continue
+            headers[str(k)] = str(v)
     data = None
     if body is not None and method.upper() != 'GET':
         data = json.dumps(body).encode('utf-8')

@@ -1,5 +1,9 @@
+import logging
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrderLine(models.Model):
@@ -240,7 +244,7 @@ class SaleOrderLine(models.Model):
             line.write({'discount': 100.0})
 
     def action_bulk_fhir_claim(self):
-        """Build the FHIR claim bundle from selected lines and open a JSON preview (no HTTP)."""
+        """Submit claim to AMPATH ETL when configured, else open FHIR bundle JSON preview."""
         lines = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
         if not lines:
             raise UserError(_("No billable lines selected for claim preview."))
@@ -255,6 +259,31 @@ class SaleOrderLine(models.Model):
                 "fields, ICD-11 diagnoses JSON, intervention code per line, date of birth, "
                 "SHIF pre-authorization when applicable, and claim status."
             ))
+        env = self.env
+        from odoo.addons.ampath_billing.services import afyalink_client
+
+        if afyalink_client.etl_submit_url_configured(env):
+            from odoo.addons.ampath_billing.services.claim_bundle_builder import build_preauth_request_payload
+
+            payload = build_preauth_request_payload(order, lines)
+            try:
+                body = afyalink_client.submit_etl_hie_claim(env, payload)
+            except UserError:
+                raise
+            except Exception as e:
+                _logger.exception('ETL claim submit error')
+                raise UserError(str(e)) from e
+
+            ext_id = afyalink_client.etl_claim_external_id_from_response(body)
+            line_vals = {'claim_status': 'submitted', 'selected': False}
+            if ext_id:
+                line_vals['fhir_claim_id'] = ext_id
+            lines.write(line_vals)
+            return order._action_open_payload_preview(
+                _('ETL claim response (JSON)'),
+                body if isinstance(body, dict) else {'raw': body},
+            )
+
         from odoo.addons.ampath_billing.services.claim_bundle_builder import build_claim_bundle
 
         try:
