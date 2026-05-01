@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Action renames ── -->
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="name">Requests for Quotation</field>
+    </record>
+
+    <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+        <field name="name">Purchase Orders</field>
+    </record>
+
+</odoo>

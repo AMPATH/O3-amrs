@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Sale Order form ── -->
+    <record id="view_sale_order_medical_form" model="ir.ui.view">
+        <field name="name">sale.order.form.medical</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="attributes">
+                <attribute name="string">Patient</attribute>
+            </field>
+            <field name="user_id" position="attributes">
+                <attribute name="string">Billing Officer</attribute>
+            </field>
+            <field name="team_id" position="attributes">
+                <attribute name="string">Billing Team</attribute>
+            </field>
+            <field name="pricelist_id" position="attributes">
+                <attribute name="string">Fee Schedule</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- ── Action renames ── -->
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+        <field name="name">Service Quotes</field>
+    </record>
+
+    <record id="sale.action_quotations" model="ir.actions.act_window">
+        <field name="name">Service Quotes</field>
+    </record>
+
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="name">Service Orders</field>
+    </record>
+
+</odoo>

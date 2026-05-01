@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══ SALES MENUS ══ -->
+    <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+        <field name="name">Service Quotes</field>
+    </record>
+
+    <record id="sale.menu_sale_order" model="ir.ui.menu">
+        <field name="name">Service Orders</field>
+    </record>
+
+    <!-- ══ INVENTORY MENUS ══ -->
+    <record id="stock.menu_action_production_lot_form" model="ir.ui.menu">
+        <field name="name">Batch/Serial Numbers</field>
+    </record>
+
+    <record id="stock.menu_action_warehouse_form" model="ir.ui.menu">
+        <field name="name">Medical Stores</field>
+    </record>
+
+    <record id="stock.menu_stock_scrap" model="ir.ui.menu">
+        <field name="name">Wastage</field>
+    </record>
+
+    <record id="stock.menu_reordering_rules_replenish" model="ir.ui.menu">
+        <field name="name">Reorder Levels</field>
+    </record>
+
+    <record id="stock.menu_reordering_rules_config" model="ir.ui.menu">
+        <field name="name">Reorder Levels (Config)</field>
+    </record>
+
+    <!-- ══ ACCOUNTING MENUS ══ -->
+    <record id="account.menu_action_move_out_invoice_type" model="ir.ui.menu">
+        <field name="name">Patient Invoices</field>
+    </record>
+
+    <record id="account.menu_action_move_out_refund_type" model="ir.ui.menu">
+        <field name="name">Patient Credit Notes</field>
+    </record>
+
+    <record id="account.menu_action_move_in_invoice_type" model="ir.ui.menu">
+        <field name="name">Supplier Bills</field>
+    </record>
+
+    <record id="account.menu_action_move_in_refund_type" model="ir.ui.menu">
+        <field name="name">Supplier Credit Notes</field>
+    </record>
+
+    <record id="account.menu_action_account_payments_payable" model="ir.ui.menu">
+        <field name="name">Supplier Payments</field>
+    </record>
+
+    <record id="account.menu_action_account_payments_receivable" model="ir.ui.menu">
+        <field name="name">Patient Payments</field>
+    </record>
+
+    <!-- ══ PURCHASE MENUS ══ -->
+    <record id="purchase.menu_purchase_rfq" model="ir.ui.menu">
+        <field name="name">Requests for Quotation</field>
+    </record>
+
+    <record id="purchase.menu_purchase_form_action" model="ir.ui.menu">
+        <field name="name">Purchase Orders</field>
+    </record>
+
+    <!-- ══ MRP MENUS ══ -->
+    <record id="mrp.menu_mrp_bom" model="ir.ui.menu">
+        <field name="name">Kits / Package Contents</field>
+    </record>
+
+    <record id="mrp.menu_mrp_bom_form_action" model="ir.ui.menu">
+        <field name="name">Kits / Package Contents</field>
+    </record>
+
+    <record id="mrp.menu_mrp_production_action" model="ir.ui.menu">
+        <field name="name">Production Orders</field>
+    </record>
+
+    <!-- ══ PRODUCTS ══ -->
+    <record id="sale.menu_product_template_action" model="ir.ui.menu">
+        <field name="name">Items</field>
+    </record>
+
+    <record id="sale.menu_product_pricelist_main" model="ir.ui.menu">
+        <field name="name">Fee Schedules</field>
+    </record>
+
+    <!-- ══ FACILITIES (Companies) ══ -->
+    <record id="base.menu_action_res_company_form" model="ir.ui.menu">
+        <field name="name">Facilities</field>
+    </record>
+
+</odoo>

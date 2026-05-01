@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Bill of Materials form ── -->
+    <record id="view_mrp_bom_medical_form" model="ir.ui.view">
+        <field name="name">mrp.bom.form.medical</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="attributes">
+                <attribute name="string">Item</attribute>
+            </field>
+            <field name="product_tmpl_id" position="attributes">
+                <attribute name="string">Item</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- ── Production Order form ── -->
+    <record id="view_mrp_production_medical_form" model="ir.ui.view">
+        <field name="name">mrp.production.form.medical</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="attributes">
+                <attribute name="string">Item</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- ── Action renames ── -->
+    <record id="mrp.mrp_bom_form_action" model="ir.actions.act_window">
+        <field name="name">Kits / Package Contents</field>
+    </record>
+
+    <record id="mrp.action_mrp_production_form" model="ir.actions.act_window">
+        <field name="name">Production Orders</field>
+    </record>
+
+    <record id="mrp.mrp_production_action" model="ir.actions.act_window">
+        <field name="name">Production Orders</field>
+    </record>
+
+</odoo>
