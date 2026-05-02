@@ -77,6 +77,10 @@ class SaleOrder(models.Model):
     has_claim_eligible_lines = fields.Boolean(
         compute='_compute_has_claim_eligible_lines',
     )
+    has_claim_submit_lines = fields.Boolean(
+        compute='_compute_has_claim_submit_lines',
+        help='True when at least one line can be submitted (eligible, not waived, not yet invoiced).',
+    )
 
     @api.depends('order_line.is_claim_eligible')
     def _compute_has_claim_eligible_lines(self):
@@ -84,6 +88,32 @@ class SaleOrder(models.Model):
             order.has_claim_eligible_lines = any(
                 l.is_claim_eligible for l in order.order_line
             )
+
+    @api.depends(
+        'order_line.is_claim_eligible',
+        'order_line.discount',
+        'order_line.ampath_line_invoice_status',
+        'order_line.claim_status',
+        'order_line.display_type',
+        'order_line.is_downpayment',
+    )
+    def _compute_has_claim_submit_lines(self):
+        for order in self:
+            order.has_claim_submit_lines = bool(order._order_lines_for_etl_claim_submit())
+
+    def _order_lines_for_etl_claim_submit(self):
+        """Lines to POST on Submit claim: eligible, not waived, still **to_invoice** (not manually invoiced)."""
+        self.ensure_one()
+        return self.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and not l.is_downpayment
+                and (l.discount or 0) < 100.0
+                and l.ampath_line_invoice_status == 'to_invoice'
+                and l.claim_status not in ('submitted', 'approved')
+                and l.is_claim_eligible
+            )
+        )
 
     @api.depends('state', 'invoice_ids.payment_state')
     def _compute_billing_actions_visible(self):
@@ -155,14 +185,21 @@ class SaleOrder(models.Model):
                 ))
 
         elif action == 'claim':
+            # Legacy path if claim ever uses selection again; submit uses
+            # ``_order_lines_for_etl_claim_submit()`` instead.
             lines = lines.filtered(
                 lambda l: l.claim_status not in ('submitted', 'approved')
             )
             lines = lines.filtered(lambda l: l.is_claim_eligible)
+            lines = lines.filtered(lambda l: (l.discount or 0) < 100.0)
+            lines = lines.filtered(
+                lambda l: l.ampath_line_invoice_status == 'to_invoice'
+            )
             if not lines:
                 raise UserError(_(
                     "No eligible lines for claim preview: complete SHA / visit data, "
-                    "diagnoses, intervention codes, date of birth, and SHIF pre-authorization when applicable."
+                    "date of birth, patient id, intervention codes when applicable, and SHIF "
+                    "pre-authorization when the product requires it."
                 ))
 
         elif action == 'invoice':
@@ -189,12 +226,19 @@ class SaleOrder(models.Model):
         lines.write({'selected': False})
 
     def action_submit_etl_claim_selected(self):
-        """POST selected lines to AMPATH ETL submit-claim-odoo (URL + key from env or params)."""
+        """POST **all** qualifying lines to AMPATH ETL (not checkbox selection).
+
+        Includes each product line that is claim-eligible, not waived (discount under 100%),
+        not yet manually invoiced (billing status Not Invoiced), and not already submitted.
+        """
         self.ensure_one()
-        lines = self._get_selected_lines(action='claim')
-        result = lines.action_submit_etl_claim()
-        lines.write({'selected': False})
-        return result
+        lines = self._order_lines_for_etl_claim_submit()
+        if not lines:
+            raise UserError(_(
+                'No lines to submit: waive (100%% discount) and manually invoiced lines are '
+                'excluded. Remaining lines must be claim-eligible and still **Not Invoiced**.'
+            ))
+        return lines.action_submit_etl_claim()
 
     def action_invoice_selected(self):
         """Create a partial invoice for the checked lines and open it."""

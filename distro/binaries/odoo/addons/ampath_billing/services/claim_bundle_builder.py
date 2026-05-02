@@ -18,6 +18,9 @@ import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 
+from odoo import _
+from odoo.exceptions import UserError
+
 _logger = logging.getLogger(__name__)
 
 _DEFAULT_FHIR_BASE = 'https://qa-mis.apeiro-digital.com/fhir'
@@ -91,15 +94,47 @@ def diagnoses_list(order):
     return out
 
 
+def etl_patient_uuid(order):
+    """OpenMRS / EMR patient id for ETL ``patientUuid`` (API requires non-empty).
+
+    Order fields first, then ``res.partner`` (EIP often stores the id on the partner only).
+    """
+    if not order:
+        return None
+    for s in (
+        (getattr(order, 'x_patient_uuid', None) or '').strip(),
+        (order.x_external_identifier or '').strip(),
+    ):
+        if s:
+            return s
+    p = order.partner_id
+    if p:
+        for s in (
+            (p.x_external_identifier or '').strip(),
+            (p.ref or '').strip(),
+        ):
+            if s:
+                return s
+    for s in ((order.x_sha_client_registry_id or '').strip(),):
+        if s:
+            return s
+    return None
+
+
 def sha_patient_identifier(order):
     """HIE patient id for FHIR Patient.id (SHA client registry when set)."""
     reg = (order.x_sha_client_registry_id or '').strip()
     if reg:
         return reg
-    return (
-        getattr(order, 'x_patient_uuid', None)
-        or (order.x_external_identifier or '')
-    ).strip() or None
+    u = (getattr(order, 'x_patient_uuid', None) or order.x_external_identifier or '').strip()
+    if u:
+        return u
+    p = order.partner_id
+    if p:
+        u = (p.x_external_identifier or p.ref or '').strip()
+        if u:
+            return u
+    return None
 
 
 def coverage_id_for_order(order):
@@ -126,9 +161,20 @@ def line_requires_sha_intervention_code(line):
 
 
 def etl_service_code_for_line(line):
-    """ETL JSON ``serviceCode``: JSON false when the product has no intervention code."""
+    """ETL JSON ``serviceCode``: non-empty string (API model binds to ``System.String``).
+
+    Uses intervention code when set; otherwise product ``default_code`` or numeric ``product.id``.
+    """
     code = resolved_intervention_code(line)
-    return code if code else False
+    if code:
+        return code
+    product = line.product_id
+    if product:
+        dc = (product.default_code or '').strip()
+        if dc:
+            return dc
+        return str(product.id)
+    return 'UNKNOWN'
 
 
 def fhir_service_code_for_line(line):
@@ -159,9 +205,10 @@ def validate_claim_prerequisites(order, lines):
     partner = order.partner_id
     pid = sha_patient_identifier(order)
     if not pid:
-        msgs.append('Patient identifier for claims (x_sha_client_registry_id or x_patient_uuid) is missing.')
-    if not diagnoses_list(order):
-        msgs.append('At least one ICD-11 diagnosis is required (x_claim_diagnoses_json).')
+        msgs.append(
+            'Patient identifier for claims is missing (order or partner: x_sha_client_registry_id, '
+            'x_patient_uuid, x_external_identifier, partner ref).'
+        )
     cov = coverage_id_for_order(order)
     if not cov:
         msgs.append('Coverage id could not be resolved (set x_coverage_id or patient id).')
@@ -186,10 +233,17 @@ def build_preauth_request_payload(order, lines=None):
         birth = str(order.x_customer_dob)
     elif partner and getattr(partner, 'x_customer_dob', None):
         birth = str(partner.x_customer_dob)
+    patient_uuid = etl_patient_uuid(order)
+    if not patient_uuid:
+        raise UserError(_(
+            'Patient UUID is required for the claim request. Set x_patient_uuid or '
+            'x_external_identifier on the sale order, or x_external_identifier / ref on the customer.'
+        ))
+
     return {
         'visitUuid': (order.client_order_ref or '').strip() or None,
         'openmrsEncounterUuid': (order.x_openmrs_encounter_uuid or '').strip() or None,
-        'patientUuid': (getattr(order, 'x_patient_uuid', None) or order.x_external_identifier),
+        'patientUuid': patient_uuid,
         'shaPatientId': sha_patient_identifier(order),
         'orderId': order.id,
         'orderName': order.name,

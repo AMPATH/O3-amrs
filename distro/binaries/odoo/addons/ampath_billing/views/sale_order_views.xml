@@ -20,19 +20,20 @@
                 <xpath expr="//field[@name='order_line']" position="before">
                     <field name="billing_actions_visible" invisible="1"/>
                     <field name="has_claim_eligible_lines" invisible="1"/>
+                    <field name="has_claim_submit_lines" invisible="1"/>
                     <div class="d-flex gap-2 mb-2 align-items-center"
                          invisible="not billing_actions_visible">
                         <span class="text-muted small me-1">Selected lines:</span>
                         <button name="action_waive_selected" type="object"
-                                string="🏷️ Waive" class="btn-warning btn-sm"
-                                confirm="Apply 100%% discount to all checked lines?"/>
+                                string="Waive" class="btn-warning btn-sm"
+                                confirm="Apply a 100%% waiver discount to every selected line?"/>
                         <button name="action_submit_etl_claim_selected" type="object"
                                 string="Submit claim" class="btn-info btn-sm"
-                                invisible="not has_claim_eligible_lines"
-                                confirm="POST the BuildClaimBundleRequest JSON for checked lines to AMPATH ETL (URL and AMPATH-CLAIMS-KEY from env or system parameters). Continue?"/>
+                                invisible="not has_claim_submit_lines"
+                                confirm="Submit eligible selected lines to AMPATH? Invoiced and fully waived lines are skipped."/>
                         <button name="action_invoice_selected" type="object"
-                                string="🧾 Invoice selected" class="btn-primary btn-sm"
-                                confirm="Create a partial invoice for all checked lines?"/>
+                                string="Invoice selected" class="btn-primary btn-sm"
+                                confirm="Create an invoice for every selected line?"/>
                     </div>
                 </xpath>
 

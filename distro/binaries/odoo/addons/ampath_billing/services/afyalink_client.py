@@ -36,6 +36,31 @@ _ENV_ETL_SUBMIT_URL = 'AMPATH_ETL_CLAIMS_SUBMIT_URL'
 _ENV_ETL_API_KEY = 'AMPATH_ETL_CLAIMS_API_KEY'
 
 
+def _ensure_etl_submit_body_reports_success(body):
+    """Raise UserError when ETL returns HTTP 2xx but JSON has explicit ``success: false``."""
+    if not isinstance(body, dict):
+        return
+    success = body.get('success')
+    if success is None and 'Success' in body:
+        success = body['Success']
+    if success is None:
+        return
+    if success is True or success == 1:
+        return
+    if isinstance(success, str) and success.strip().lower() in ('true', '1', 'yes'):
+        return
+    if success is False or success == 0 or (
+        isinstance(success, str) and success.strip().lower() in ('false', '0', 'no')
+    ):
+        msg = body.get('message') or body.get('Message') or body.get('error') or body.get('Error')
+        if isinstance(msg, dict):
+            msg = msg.get('message') or msg.get('Message') or str(msg)
+        detail = (msg or '').strip() if isinstance(msg, str) else (str(msg).strip() if msg else '')
+        if not detail:
+            detail = _('The server reported failure without details.')
+        raise UserError(_('Claim submission failed: %s') % detail)
+
+
 def _param(env, key):
     return (env['ir.config_parameter'].sudo().get_param(key, '') or '').strip()
 
@@ -67,7 +92,11 @@ def submit_claim(env, bundle_dict):
 
 
 def submit_etl_hie_claim(env, payload_dict):
-    """POST Odoo-shaped claim JSON to AMPATH ETL (AMPATH-CLAIMS-KEY), no OAuth."""
+    """POST Odoo-shaped claim JSON to AMPATH ETL (AMPATH-CLAIMS-KEY), no OAuth.
+
+    The submit endpoint expects a wrapper object: ``{"request": { ... BuildClaimBundleRequest }}``
+    (ASP.NET model binding). ``serviceCode`` in each service must be a string, not JSON ``false``.
+    """
     url = _param(env, _PARAM_ETL_SUBMIT_URL) or (os.environ.get(_ENV_ETL_SUBMIT_URL) or '').strip()
     if not url:
         raise UserError(_(
@@ -80,17 +109,19 @@ def submit_etl_hie_claim(env, payload_dict):
             'ETL claims API key is not configured. Set system parameter "%s" '
             'or environment variable "%s".'
         ) % (_PARAM_ETL_API_KEY, _ENV_ETL_API_KEY))
+    wrapped = {'request': payload_dict}
     status, body = afyalink_auth.http_json(
         env,
         'POST',
         url,
-        body=payload_dict,
+        body=wrapped,
         token=None,
         extra_headers={'AMPATH-CLAIMS-KEY': api_key},
     )
     if status and int(status) >= 400:
         _logger.error('ETL claim submit failed %s: %s', status, body)
         raise UserError(_('Claim submission failed (%s): %s') % (status, body))
+    _ensure_etl_submit_body_reports_success(body)
     return body
 
 

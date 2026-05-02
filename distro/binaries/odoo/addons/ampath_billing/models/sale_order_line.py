@@ -47,8 +47,8 @@ class SaleOrderLine(models.Model):
     is_claim_eligible = fields.Boolean(
         compute='_compute_is_claim_eligible',
         string="Claim eligible",
-        help="Eligible when patient, diagnoses, and DOB are set. Pre-authorization applies only when "
-             "the **product** has an intervention code set.",
+        help="Eligible when patient id and DOB are set (diagnosis checks disabled for now). "
+             "SHA pre-authorization applies when the **product** has an intervention code set.",
     )
     x_service_date_start = fields.Datetime(
         string="Service start (claim)",
@@ -89,13 +89,11 @@ class SaleOrderLine(models.Model):
         'order_id.x_external_identifier',
         'order_id.x_sha_client_registry_id',
         'order_id.x_preauth_status',
-        'order_id.x_claim_diagnoses_json',
         'order_id.x_customer_dob',
         'order_id.partner_id.x_customer_dob',
     )
     def _compute_is_claim_eligible(self):
         from odoo.addons.ampath_billing.services.claim_bundle_builder import (
-            diagnoses_list,
             line_requires_sha_intervention_code,
         )
 
@@ -113,9 +111,6 @@ class SaleOrderLine(models.Model):
                 or (getattr(order, 'x_external_identifier', None) or '').strip()
             )
             if not patient:
-                line.is_claim_eligible = False
-                continue
-            if not diagnoses_list(order):
                 line.is_claim_eligible = False
                 continue
             if not (
@@ -235,9 +230,9 @@ class SaleOrderLine(models.Model):
         ineligible = lines.filtered(lambda l: not l.is_claim_eligible)
         if ineligible:
             raise UserError(_(
-                "Some selected lines are not eligible for claims. Check: ICD-11 diagnoses JSON, "
-                "date of birth, patient id; pre-authorization when the product has an intervention "
-                "code; claim status (already submitted lines are excluded)."
+                "Some selected lines are not eligible for claims. Check: date of birth, patient id "
+                "on the order; pre-authorization when the product has an intervention code; claim "
+                "status (already submitted lines are excluded)."
             ))
         return order, lines
 

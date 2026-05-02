@@ -6,10 +6,15 @@ All endpoints require HTTP headers:
     login    – Odoo username
     password – Odoo password
 
+Patient identifiers in JSON mirror ``sha_patient_identifier`` / claim logic: prefer
+``x_sha_client_registry_id``, then ``x_patient_uuid``, then ``x_external_identifier`` on
+``sale.order``. Partner matching uses ``res.partner.x_external_identifier``, ``ref`` (EIP / OpenMRS
+id), and the same order-level fields.
+
 Endpoints
 ---------
 GET /ampath/billing/patient/<patient_external_id>
-    All sale orders for a patient (OpenMRS patient UUID).
+    All sale orders for a patient (OpenMRS UUID, SHA registry id, partner external id, or ref).
 
 GET /ampath/billing/order/<order_id>
     Full detail for a single sale order (Odoo numeric ID).
@@ -32,7 +37,9 @@ from odoo import http
 from odoo.http import request
 
 from odoo.addons.ampath_billing.services.claim_bundle_builder import (
+    diagnoses_list,
     resolved_intervention_code,
+    sha_patient_identifier,
 )
 
 _logger = logging.getLogger(__name__)
@@ -192,11 +199,8 @@ class BillingStatusController(http.Controller):
             if inv.move_type == 'out_invoice'
         ]
 
-        patient_uuid = (
-            getattr(order, 'x_patient_uuid', None)
-            or order.x_external_identifier
-            or None
-        )
+        patient_uuid = sha_patient_identifier(order)
+        dx_order = diagnoses_list(order)
         company_ext_id = None
         if company:
             imd = request.env['ir.model.data'].sudo().search([
@@ -218,7 +222,8 @@ class BillingStatusController(http.Controller):
             'customer': {
                 'id': partner.id,
                 'name': partner.name,
-                'external_id': partner.x_external_identifier or None,
+                'ref': partner.ref or None,
+                'external_id': (partner.x_external_identifier or partner.ref or None),
                 'dob': str(partner.x_customer_dob) if partner.x_customer_dob else None,
             } if partner else None,
             'company': {
@@ -254,6 +259,8 @@ class BillingStatusController(http.Controller):
             'openmrs_encounter_uuid': getattr(order, 'x_openmrs_encounter_uuid', None) or None,
             'patient_gender': getattr(order, 'x_patient_gender', None) or None,
             'claim_diagnoses_json': getattr(order, 'x_claim_diagnoses_json', None) or None,
+            'diagnosis_codes_count': len(dx_order),
+            'has_claim_eligible_lines': order.has_claim_eligible_lines,
             'order_lines': lines,
             'invoices': invoices,
         }
@@ -272,8 +279,8 @@ class BillingStatusController(http.Controller):
     def billing_status_by_patient(self, patient_external_id, **kw):
         """Return all sale orders for a patient identified by their OpenMRS UUID.
 
-        Searches both res.partner.x_external_identifier (partner UUID) and
-        sale.order.x_external_identifier (order-level UUID set by EIP).
+        Matches orders by partner or order fields: ``x_external_identifier``, ``x_patient_uuid``,
+        ``x_sha_client_registry_id``, and partner ``ref`` / ``x_external_identifier``.
         """
         uid = self._authenticate()
         if not uid:
@@ -284,16 +291,14 @@ class BillingStatusController(http.Controller):
 
         env = request.env
 
-        # Find orders via partner external ID, order-level x_external_identifier,
-        # or the dedicated x_patient_uuid field set directly by the EIP.
-        partners = env['res.partner'].sudo().search(
-            [('x_external_identifier', '=', patient_external_id)]
-        )
-        domain = ['|', '|', '|',
-            ('partner_id', 'in', partners.ids),
+        # Order-level ids + partner x_external_identifier / ref (EIP stores OpenMRS id on ref).
+        domain = [
+            '|', '|', '|', '|',
             ('x_external_identifier', '=', patient_external_id),
             ('x_patient_uuid', '=', patient_external_id),
+            ('x_sha_client_registry_id', '=', patient_external_id),
             ('partner_id.x_external_identifier', '=', patient_external_id),
+            ('partner_id.ref', '=', patient_external_id),
         ]
 
         orders = env['sale.order'].sudo().search(
@@ -434,11 +439,7 @@ class BillingStatusController(http.Controller):
         def _summary(order):
             partner = order.partner_id
             company = order.company_id
-            patient_uuid = (
-                getattr(order, 'x_patient_uuid', None)
-                or order.x_external_identifier
-                or None
-            )
+            patient_uuid = sha_patient_identifier(order)
             company_ext_id = None
             if company:
                 imd = env['ir.model.data'].sudo().search([
@@ -450,6 +451,7 @@ class BillingStatusController(http.Controller):
             lines = order.order_line.filtered(
                 lambda l: not l.display_type and not l.is_downpayment
             )
+            dx = diagnoses_list(order)
             return {
                 'id': order.id,
                 'name': order.name,
@@ -460,7 +462,8 @@ class BillingStatusController(http.Controller):
                 'customer': {
                     'id': partner.id,
                     'name': partner.name,
-                    'external_id': partner.x_external_identifier or None,
+                    'ref': partner.ref or None,
+                    'external_id': (partner.x_external_identifier or partner.ref or None),
                 } if partner else None,
                 'company': {
                     'id': company.id,
@@ -476,7 +479,9 @@ class BillingStatusController(http.Controller):
                 'preauth_status': getattr(order, 'x_preauth_status', None) or None,
                 'sha_facility_id': getattr(order, 'x_sha_facility_id', None) or None,
                 'preauth_fhir_claim_id': getattr(order, 'x_preauth_fhir_claim_id', None) or None,
-                'has_claim_diagnoses': bool((getattr(order, 'x_claim_diagnoses_json', None) or '').strip()),
+                'diagnosis_codes_count': len(dx),
+                'has_claim_diagnoses': len(dx) > 0,
+                'has_claim_eligible_lines': order.has_claim_eligible_lines,
                 'order_lines': [self._serialize_line(l) for l in lines],
             }
 
