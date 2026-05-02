@@ -1,8 +1,15 @@
 # Local overrides: live-mount ampath_billing + initializer config.
+#
+# Remote (SSH) — use `sudo docker` on the host for ps / logs / exec (reliable for sudoers without
+# relying on the `docker` group or a new login):
+#   ssh user@host 'sudo docker ps'
+#   ssh user@host 'sudo docker logs o3-amrs-odoo-1 2>&1 | tail -80'
+#   ssh -i ~/.ssh/id_ed25519 user@host "sudo docker exec -it o3-amrs-odoo-1 …"
+#
 # If initializer CSV fails with KeyError x_intervention_code on product.product, the billing
 # addon is not installed in the DB yet — install once, then restart Odoo:
-#   docker exec -e PGHOST=postgresql -e PGUSER=odoo -e PGPASSWORD=password \
-#     <odoo-container> /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo -i ampath_billing --stop-after-init
+#   sudo docker exec -e PGHOST=postgresql -e PGUSER=odoo -e PGPASSWORD=password \
+#     o3-amrs-odoo-1 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo -i ampath_billing --stop-after-init
 services:
   odoo:
     environment:
