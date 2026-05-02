@@ -53,7 +53,8 @@ class SaleOrderLine(models.Model):
     x_intervention_code = fields.Char(
         string="SHA intervention code",
         copy=False,
-        help="If set, overrides product default code for DHA intervention-codes in the claim bundle.",
+        help="Optional override on the line. For SHIF claims this should be the DHA intervention code; "
+             "for PHC/other it overrides the product code used as serviceCode.",
     )
     x_service_date_start = fields.Datetime(
         string="Service start (claim)",
@@ -86,6 +87,8 @@ class SaleOrderLine(models.Model):
         'claim_status',
         'x_intervention_code',
         'product_id.default_code',
+        'product_id.x_sha_intervention_code',
+        'product_id.x_concept_code',
         'order_id.x_patient_uuid',
         'order_id.x_external_identifier',
         'order_id.x_sha_client_registry_id',
@@ -96,7 +99,11 @@ class SaleOrderLine(models.Model):
         'order_id.x_customer_dob',
     )
     def _compute_is_claim_eligible(self):
-        from odoo.addons.ampath_billing.services.claim_bundle_builder import diagnoses_list
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import (
+            diagnoses_list,
+            line_intervention_code_for_claim,
+            order_requires_shif_preauth,
+        )
 
         for line in self:
             if line.display_type or line.is_downpayment:
@@ -123,20 +130,13 @@ class SaleOrderLine(models.Model):
             ):
                 line.is_claim_eligible = False
                 continue
-            product = line.product_id
-            iv_code = (line.x_intervention_code or (product.default_code if product else '') or '').strip()
+            shif = order_requires_shif_preauth(order)
+            iv_code = line_intervention_code_for_claim(line, shif)
             if not iv_code:
                 line.is_claim_eligible = False
                 continue
 
-            pm = (order.x_payment_method or '').strip().upper()
-            scheme = (order.x_insurance_scheme or '').strip()
-            requires_preauth = (
-                pm == 'SHIF'
-                or 'SHIF' in pm
-                or 'SHIF' in scheme.upper()
-            )
-            if requires_preauth:
+            if shif:
                 pre = (order.x_preauth_status or '').strip().lower()
                 line.is_claim_eligible = pre in (
                     'approved', 'authorized', 'authorisation', 'success', 'active',
@@ -246,9 +246,10 @@ class SaleOrderLine(models.Model):
         ineligible = lines.filtered(lambda l: not l.is_claim_eligible)
         if ineligible:
             raise UserError(_(
-                "Some selected lines are not eligible for claims. Check: SHA facility "
-                "fields, ICD-11 diagnoses JSON, intervention code per line, date of birth, "
-                "SHIF pre-authorization when applicable, and claim status."
+                "Some selected lines are not eligible for claims. Check: ICD-11 diagnoses JSON, "
+                "date of birth, patient id; per line: SHIF needs SHA intervention code + "
+                "pre-authorization; PHC/other needs default code (or concept/SHA/line code); "
+                "and claim status."
             ))
         return order, lines
 
