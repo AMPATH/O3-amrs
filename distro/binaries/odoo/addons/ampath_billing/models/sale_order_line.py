@@ -243,11 +243,11 @@ class SaleOrderLine(models.Model):
         for line in self:
             line.write({'discount': 100.0})
 
-    def action_bulk_fhir_claim(self):
-        """Submit claim to AMPATH ETL when configured, else open FHIR bundle JSON preview."""
+    def _ampath_claim_lines_common(self):
+        """Shared validation for claim preview / ETL submit on selected lines."""
         lines = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
         if not lines:
-            raise UserError(_("No billable lines selected for claim preview."))
+            raise UserError(_("No billable lines selected for claim actions."))
         orders = lines.mapped('order_id')
         if len(orders) > 1:
             raise UserError(_("Please select lines from a single order at a time."))
@@ -259,41 +259,41 @@ class SaleOrderLine(models.Model):
                 "fields, ICD-11 diagnoses JSON, intervention code per line, date of birth, "
                 "SHIF pre-authorization when applicable, and claim status."
             ))
+        return order, lines
+
+    def action_submit_etl_claim(self):
+        """POST BuildClaimBundleRequest-shaped JSON to AMPATH ETL (env / system params)."""
+        order, lines = self._ampath_claim_lines_common()
         env = self.env
         from odoo.addons.ampath_billing.services import afyalink_client
 
-        if afyalink_client.etl_submit_url_configured(env):
-            from odoo.addons.ampath_billing.services.claim_bundle_builder import build_preauth_request_payload
+        if not afyalink_client.etl_submit_url_configured(env):
+            raise UserError(_(
+                'AMPATH ETL submit URL is not configured. Set ir.config_parameter '
+                '"ampath.etl_claims.submit_url" or environment variable '
+                '"AMPATH_ETL_CLAIMS_SUBMIT_URL", and "AMPATH_ETL_CLAIMS_API_KEY" '
+                '(or parameter ampath.etl_claims.api_key).'
+            ))
 
-            payload = build_preauth_request_payload(order, lines)
-            try:
-                body = afyalink_client.submit_etl_hie_claim(env, payload)
-            except UserError:
-                raise
-            except Exception as e:
-                _logger.exception('ETL claim submit error')
-                raise UserError(str(e)) from e
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_preauth_request_payload
 
-            ext_id = afyalink_client.etl_claim_external_id_from_response(body)
-            line_vals = {'claim_status': 'submitted', 'selected': False}
-            if ext_id:
-                line_vals['fhir_claim_id'] = ext_id
-            lines.write(line_vals)
-            return order._action_open_payload_preview(
-                _('ETL claim response (JSON)'),
-                body if isinstance(body, dict) else {'raw': body},
-            )
-
-        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_claim_bundle
-
+        payload = build_preauth_request_payload(order, lines)
         try:
-            bundle, _internal_claim_id = build_claim_bundle(order, lines, pre_auth_claim_id=None)
-        except ValueError as e:
+            body = afyalink_client.submit_etl_hie_claim(env, payload)
+        except UserError:
+            raise
+        except Exception as e:
+            _logger.exception('ETL claim submit error')
             raise UserError(str(e)) from e
 
+        ext_id = afyalink_client.etl_claim_external_id_from_response(body)
+        line_vals = {'claim_status': 'submitted', 'selected': False}
+        if ext_id:
+            line_vals['fhir_claim_id'] = ext_id
+        lines.write(line_vals)
         return order._action_open_payload_preview(
-            _('FHIR claim bundle (JSON)'),
-            bundle,
+            _('ETL claim response (JSON)'),
+            body if isinstance(body, dict) else {'raw': body},
         )
 
     def action_invoice_this_line(self):

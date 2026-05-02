@@ -183,11 +183,11 @@ class SaleOrder(models.Model):
         lines.action_bulk_waive()
         lines.write({'selected': False})
 
-    def action_claim_selected(self):
-        """Generate FHIR claim bundle JSON from selected lines and show it in a dialog."""
+    def action_submit_etl_claim_selected(self):
+        """POST selected lines to AMPATH ETL submit-claim-odoo (URL + key from env or params)."""
         self.ensure_one()
         lines = self._get_selected_lines(action='claim')
-        result = lines.action_bulk_fhir_claim()
+        result = lines.action_submit_etl_claim()
         lines.write({'selected': False})
         return result
 
