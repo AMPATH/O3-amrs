@@ -31,6 +31,10 @@ from datetime import datetime
 from odoo import http
 from odoo.http import request
 
+from odoo.addons.ampath_billing.services.claim_bundle_builder import (
+    resolved_intervention_code,
+)
+
 _logger = logging.getLogger(__name__)
 
 _ORDER_STATE_LABELS = {
@@ -99,7 +103,7 @@ class BillingStatusController(http.Controller):
             'claim_status': line.claim_status,
             'fhir_claim_id': line.fhir_claim_id,
             'is_claim_eligible': line.is_claim_eligible,
-            'intervention_code': getattr(line, 'x_intervention_code', None) or None,
+            'intervention_code': resolved_intervention_code(line) or None,
             'service_date_start': line.x_service_date_start.isoformat()
             if getattr(line, 'x_service_date_start', None) else None,
             'service_date_end': line.x_service_date_end.isoformat()

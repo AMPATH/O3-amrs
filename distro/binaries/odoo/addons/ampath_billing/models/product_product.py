@@ -20,10 +20,10 @@ class ProductProduct(models.Model):
         copy=False,
         help='Medication strength representation.',
     )
-    x_sha_intervention_code = fields.Char(
-        string='SHA intervention code',
+    x_intervention_code = fields.Char(
+        string='Intervention code',
         copy=False,
-        help='DHA / SHA catalogue code. If set on the line’s product, that line uses SHA claim '
-             'rules (requires approved pre-authorization). Leave empty for PHC-only items '
-             '(including on SHIF visits).',
+        oldname='x_sha_intervention_code',
+        help='DHA / SHA catalogue code. Pre-authorization applies when this field is non-empty. '
+             'Leave empty so the product stays on the PHC path.',
     )

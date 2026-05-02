@@ -9,7 +9,7 @@
                 <field name="x_concept_source"/>
                 <field name="x_concept_code"/>
                 <field name="x_drug_strength"/>
-                <field name="x_sha_intervention_code"/>
+                <field name="x_intervention_code"/>
             </xpath>
         </field>
     </record>
@@ -22,7 +22,7 @@
                 <field name="x_concept_source"/>
                 <field name="x_concept_code"/>
                 <field name="x_drug_strength"/>
-                <field name="x_sha_intervention_code"/>
+                <field name="x_intervention_code"/>
             </xpath>
         </field>
     </record>

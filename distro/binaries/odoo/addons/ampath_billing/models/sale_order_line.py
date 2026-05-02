@@ -47,16 +47,8 @@ class SaleOrderLine(models.Model):
     is_claim_eligible = fields.Boolean(
         compute='_compute_is_claim_eligible',
         string="Claim eligible",
-        help="Eligible when patient, diagnoses, and DOB are set. Lines with an intervention code "
-             "(on the product or line) need approved pre-authorization; lines without a code are PHC-style "
-             "even on SHIF visits.",
-    )
-
-    x_intervention_code = fields.Char(
-        string="SHA intervention code",
-        copy=False,
-        help="Optional line-level intervention code. With product SHA code or this override, the line "
-             "uses SHA/pre-auth rules when pre-authorization is approved.",
+        help="Eligible when patient, diagnoses, and DOB are set. Pre-authorization applies only when "
+             "the **product** has an intervention code set.",
     )
     x_service_date_start = fields.Datetime(
         string="Service start (claim)",
@@ -87,8 +79,7 @@ class SaleOrderLine(models.Model):
         'display_type',
         'is_downpayment',
         'claim_status',
-        'x_intervention_code',
-        'product_id.x_sha_intervention_code',
+        'product_id.x_intervention_code',
         'order_id.x_patient_uuid',
         'order_id.x_external_identifier',
         'order_id.x_sha_client_registry_id',
@@ -240,7 +231,7 @@ class SaleOrderLine(models.Model):
         if ineligible:
             raise UserError(_(
                 "Some selected lines are not eligible for claims. Check: ICD-11 diagnoses JSON, "
-                "date of birth, patient id; pre-authorization for lines that have a SHA intervention "
+                "date of birth, patient id; pre-authorization when the product has an intervention "
                 "code; claim status (already submitted lines are excluded)."
             ))
         return order, lines

@@ -112,38 +112,31 @@ def coverage_id_for_order(order):
     return f'{pid}-sha-coverage'
 
 
-def line_shif_intervention_code(line):
-    """Resolved SHA/DHA intervention code: line override or ``product.x_sha_intervention_code``."""
+def resolved_intervention_code(line):
+    """Intervention code for claims: ``product.product.x_intervention_code`` when set."""
     product = line.product_id
-    return (
-        (line.x_intervention_code or '').strip()
-        or (getattr(product, 'x_sha_intervention_code', None) or '').strip()
-    )
+    if product:
+        return (product.x_intervention_code or '').strip()
+    return ''
 
 
 def line_requires_sha_intervention_code(line):
-    """SHA / pre-auth path only when this line has an intervention code (line or product).
-
-    A SHIF visit does not change lines without a code: those stay PHC-style (``serviceCode`` false).
-    """
-    return bool(line_shif_intervention_code(line))
+    """SHA pre-auth path when the line's product has a non-empty ``x_intervention_code``."""
+    return bool(resolved_intervention_code(line))
 
 
 def etl_service_code_for_line(line):
-    """ETL JSON ``serviceCode``: JSON false when no code; otherwise the resolved intervention string."""
-    code = line_shif_intervention_code(line)
+    """ETL JSON ``serviceCode``: JSON false when the product has no intervention code."""
+    code = resolved_intervention_code(line)
     return code if code else False
 
 
 def fhir_service_code_for_line(line):
     """FHIR Claim.item coding ``code`` (non-empty)."""
-    needs = line_requires_sha_intervention_code(line)
+    resolved = resolved_intervention_code(line)
+    if resolved:
+        return resolved
     product = line.product_id
-    if needs:
-        return line_shif_intervention_code(line) or 'SHA-PENDING'
-    explicit = (line.x_intervention_code or '').strip()
-    if explicit:
-        return explicit
     if product:
         dc = (product.default_code or '').strip()
         if dc:
