@@ -206,15 +206,16 @@ public class SaleOrderHandler {
         }
         // Resolve company from the visit location UUID
         String locationUuid = getVisitLocationUuid(encounter);
+        Company locationCompany = null;
         if (locationUuid != null) {
-            Company company = companyHandler.getCompanyByLocationUuid(locationUuid);
-            if (company != null) {
+            locationCompany = companyHandler.getCompanyByLocationUuid(locationUuid);
+            if (locationCompany != null) {
                 log.info(
                         "Assigning company '{}' (id={}) to sale order for encounter location UUID '{}'",
-                        company.getCompanyName(),
-                        company.getCompanyId(),
+                        locationCompany.getCompanyName(),
+                        locationCompany.getCompanyId(),
                         locationUuid);
-                newSaleOrder.setCompanyId(company.getCompanyId());
+                newSaleOrder.setCompanyId(locationCompany.getCompanyId());
             }
         }
 

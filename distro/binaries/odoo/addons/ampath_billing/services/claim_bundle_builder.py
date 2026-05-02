@@ -112,6 +112,14 @@ def coverage_id_for_order(order):
     return f'{pid}-sha-coverage'
 
 
+def _etl_false_or_str(val):
+    """Match AMPATH ETL JSON: empty optional strings become JSON false."""
+    if val is None or val is False:
+        return False
+    s = str(val).strip()
+    return s if s else False
+
+
 def validate_claim_prerequisites(order, lines):
     """Raise ValueError with a clear message if the quotation cannot build a SHA bundle."""
     msgs = []
@@ -119,12 +127,6 @@ def validate_claim_prerequisites(order, lines):
     pid = sha_patient_identifier(order)
     if not pid:
         msgs.append('Patient identifier for claims (x_sha_client_registry_id or x_patient_uuid) is missing.')
-    if not (order.x_sha_facility_id or '').strip():
-        msgs.append('SHA facility id (x_sha_facility_id) is missing.')
-    if not (order.x_sha_facility_name or '').strip():
-        msgs.append('SHA facility name (x_sha_facility_name) is missing.')
-    if not (order.x_sha_facility_level or '').strip():
-        msgs.append('SHA facility level (x_sha_facility_level) is missing.')
     if not diagnoses_list(order):
         msgs.append('At least one ICD-11 diagnosis is required (x_claim_diagnoses_json).')
     cov = coverage_id_for_order(order)
@@ -167,11 +169,12 @@ def build_preauth_request_payload(order, lines=None):
         'shaPatientId': sha_patient_identifier(order),
         'orderId': order.id,
         'orderName': order.name,
-        'insuranceScheme': order.x_insurance_scheme,
-        'paymentMethod': order.x_payment_method,
-        'facilityId': order.x_sha_facility_id,
-        'facilityName': order.x_sha_facility_name,
-        'facilityLevel': order.x_sha_facility_level,
+        'insuranceScheme': _etl_false_or_str(order.x_insurance_scheme),
+        'paymentMethod': _etl_false_or_str(order.x_payment_method),
+        # Facility identity is resolved by the AMPATH ETL backend; mirror Postman samples (JSON false).
+        'facilityId': False,
+        'facilityName': False,
+        'facilityLevel': False,
         'coverageId': coverage_id_for_order(order),
         'schemeCategoryCode': order.x_scheme_category_code or 'CAT-SHA-001',
         'schemeCategoryName': order.x_scheme_category_name or 'SOCIAL HEALTH AUTHORITY',
@@ -269,9 +272,9 @@ def build_claim_bundle(order, lines, pre_auth_claim_id=None):
     bundle_uuid = str(uuid.uuid4())
     now = datetime.now(timezone.utc)
 
-    facility_id = order.x_sha_facility_id.strip()
-    facility_name = order.x_sha_facility_name.strip()
-    facility_level = order.x_sha_facility_level.strip()
+    facility_id = (order.x_sha_facility_id or '').strip()
+    facility_name = (order.x_sha_facility_name or '').strip()
+    facility_level = (order.x_sha_facility_level or '').strip()
 
     partner = order.partner_id
     full_name = partner.name if partner else order.name

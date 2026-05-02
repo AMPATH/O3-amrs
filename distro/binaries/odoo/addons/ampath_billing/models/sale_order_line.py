@@ -92,9 +92,6 @@ class SaleOrderLine(models.Model):
         'order_id.x_payment_method',
         'order_id.x_insurance_scheme',
         'order_id.x_preauth_status',
-        'order_id.x_sha_facility_id',
-        'order_id.x_sha_facility_name',
-        'order_id.x_sha_facility_level',
         'order_id.x_claim_diagnoses_json',
         'order_id.x_customer_dob',
     )
@@ -115,12 +112,6 @@ class SaleOrderLine(models.Model):
                 or order.x_external_identifier
             )
             if not patient:
-                line.is_claim_eligible = False
-                continue
-            if not (order.x_sha_facility_id or '').strip() or not (order.x_sha_facility_name or '').strip():
-                line.is_claim_eligible = False
-                continue
-            if not (order.x_sha_facility_level or '').strip():
                 line.is_claim_eligible = False
                 continue
             if not diagnoses_list(order):
