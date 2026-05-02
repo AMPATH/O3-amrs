@@ -11,6 +11,7 @@
                         <field name="x_patient_uuid" readonly="1"/>
                         <field name="x_external_identifier" readonly="1"/>
                         <field name="x_customer_dob" readonly="1"/>
+                        <field name="x_customer_weight" readonly="1"/>
                         <field name="x_patient_gender" readonly="1"/>
                     </group>
                 </xpath>
@@ -69,6 +70,7 @@
                     <field name="invoice_indicator" string="Inv." readonly="1" optional="show"/>
 
                     <field name="is_claim_eligible" optional="show" readonly="1"/>
+                    <field name="x_openmrs_order_id" optional="hide" readonly="1"/>
                     <field name="x_service_date_start" optional="hide"/>
                     <field name="x_service_date_end" optional="hide"/>
                     <field name="claim_status" widget="badge" optional="show"

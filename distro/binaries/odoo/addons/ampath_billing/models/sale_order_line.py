@@ -70,6 +70,11 @@ class SaleOrderLine(models.Model):
         copy=False,
         help="If set, included as preAuthFhirClaimId for this service line.",
     )
+    x_openmrs_order_id = fields.Char(
+        string="OpenMRS order UUID",
+        copy=False,
+        help='Drug/order UUID from OpenMRS; EIP sets this when syncing lines.',
+    )
 
     # ------------------------------------------------------------------
     # Computed fields

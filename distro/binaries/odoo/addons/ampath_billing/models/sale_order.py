@@ -65,6 +65,11 @@ class SaleOrder(models.Model):
     x_patient_uuid = fields.Char(string="Patient UUID", copy=False)
     x_external_identifier = fields.Char(string="Customer External ID", copy=False)
     x_customer_dob = fields.Date(string="Customer Date of Birth", copy=False)
+    x_customer_weight = fields.Char(
+        string="Customer weight",
+        copy=False,
+        help='Patient weight from OpenMRS (EIP); corresponds to odoo.customer.weight.field.',
+    )
 
     billing_actions_visible = fields.Boolean(
         compute='_compute_billing_actions_visible',
