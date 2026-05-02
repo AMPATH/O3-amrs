@@ -238,5 +238,8 @@
   },
   "@ampath/esm-procedures-app": {
     "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
+  },
+  "@ampath/esm-poc-features-app": {
+      "etlBaseUrl": "/etl"
   }
 }
