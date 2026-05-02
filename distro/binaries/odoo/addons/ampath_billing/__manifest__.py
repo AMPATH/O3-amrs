@@ -1,10 +1,10 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.34',
+    'version': '1.0.35',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
-    'depends': ['web', 'sale', 'account', 'odoo_initializer'],
+    'depends': ['web', 'sale', 'account'],
     'data': [
         'security/ir.model.access.csv',
         'data/landing_page.xml',
