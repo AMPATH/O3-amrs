@@ -1,0 +1,3 @@
+# SDKMAN: from repo root run `sdk env` (or `./scripts/odoo-docker-mvn.sh package ...`).
+# Set this to the same id as `sdk current java` / the `Identifier` column in `sdk list java`.
+java=17.0.19-tem
