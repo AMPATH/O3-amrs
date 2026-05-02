@@ -23,5 +23,7 @@ class ProductProduct(models.Model):
     x_sha_intervention_code = fields.Char(
         string='SHA intervention code',
         copy=False,
-        help='DHA / SHA intervention code for claims; also loaded from initializer CSV when present.',
+        help='DHA / SHA catalogue code. If set on the line’s product, that line uses SHA claim '
+             'rules (requires approved pre-authorization). Leave empty for PHC-only items '
+             '(including on SHIF visits).',
     )

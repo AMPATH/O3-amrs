@@ -112,37 +112,44 @@ def coverage_id_for_order(order):
     return f'{pid}-sha-coverage'
 
 
-def order_requires_shif_preauth(order):
-    """True when the visit is treated as SHIF: SHA intervention catalogue + pre-authorization."""
-    pm = (order.x_payment_method or '').strip().upper()
-    scheme = (order.x_insurance_scheme or '').strip()
-    return (
-        pm == 'SHIF'
-        or 'SHIF' in pm
-        or 'SHIF' in scheme.upper()
-    )
-
-
-def line_intervention_code_for_claim(line, shif):
-    """Intervention / service code for ETL eligibility and JSON payloads.
-
-    * **SHIF** — line override or product ``x_sha_intervention_code`` (DHA catalogue) only;
-      internal ``default_code`` alone is not accepted.
-    * **PHC / other** — line override, then ``default_code``, then SHA code, then concept code.
-    """
+def line_shif_intervention_code(line):
+    """Resolved SHA/DHA intervention code: line override or ``product.x_sha_intervention_code``."""
     product = line.product_id
-    line_code = (line.x_intervention_code or '').strip()
-    if line_code:
-        return line_code
-    if not product:
-        return ''
-    if shif:
-        return (getattr(product, 'x_sha_intervention_code', None) or '').strip()
     return (
-        (product.default_code or '').strip()
+        (line.x_intervention_code or '').strip()
         or (getattr(product, 'x_sha_intervention_code', None) or '').strip()
-        or (getattr(product, 'x_concept_code', None) or '').strip()
     )
+
+
+def line_requires_sha_intervention_code(line):
+    """SHA / pre-auth path only when this line has an intervention code (line or product).
+
+    A SHIF visit does not change lines without a code: those stay PHC-style (``serviceCode`` false).
+    """
+    return bool(line_shif_intervention_code(line))
+
+
+def etl_service_code_for_line(line):
+    """ETL JSON ``serviceCode``: JSON false when no code; otherwise the resolved intervention string."""
+    code = line_shif_intervention_code(line)
+    return code if code else False
+
+
+def fhir_service_code_for_line(line):
+    """FHIR Claim.item coding ``code`` (non-empty)."""
+    needs = line_requires_sha_intervention_code(line)
+    product = line.product_id
+    if needs:
+        return line_shif_intervention_code(line) or 'SHA-PENDING'
+    explicit = (line.x_intervention_code or '').strip()
+    if explicit:
+        return explicit
+    if product:
+        dc = (product.default_code or '').strip()
+        if dc:
+            return dc
+        return str(product.id)
+    return 'UNKNOWN'
 
 
 def _etl_false_or_str(val):
@@ -170,22 +177,6 @@ def validate_claim_prerequisites(order, lines):
     )
     if not dob:
         msgs.append('Patient date of birth is required (order or partner x_customer_dob).')
-    shif = order_requires_shif_preauth(order)
-    for line in lines:
-        if line.display_type or line.is_downpayment:
-            continue
-        code = line_intervention_code_for_claim(line, shif)
-        if not code:
-            if shif:
-                msgs.append(
-                    f'Line "{line.name[:60]}..." needs a SHA intervention code '
-                    '(set product SHA code or line x_intervention_code; default_code is not used for SHIF).'
-                )
-            else:
-                msgs.append(
-                    f'Line "{line.name[:60]}..." needs a service code '
-                    '(product default code, x_sha_intervention_code, x_concept_code, or line x_intervention_code).'
-                )
     if msgs:
         raise ValueError('Cannot build claim bundle:\n• ' + '\n• '.join(msgs))
 
@@ -233,13 +224,12 @@ def build_preauth_request_payload(order, lines=None):
 
 def _services_from_lines(order, lines):
     services = []
-    shif = order_requires_shif_preauth(order)
     for line in lines:
         if line.display_type or line.is_downpayment:
             continue
         product = line.product_id
-        code = line_intervention_code_for_claim(line, shif)
-        display = (product.name if product else line.name) or code
+        code = etl_service_code_for_line(line)
+        display = (product.name if product else line.name) or ''
         qty = float(line.product_uom_qty or 0)
         unit = float(line.price_unit or 0)
         total = float(line.price_subtotal or 0) or unit * qty
@@ -350,13 +340,12 @@ def build_claim_bundle(order, lines, pre_auth_claim_id=None):
     period_starts = []
     period_ends = []
     net_total = 0.0
-    shif = order_requires_shif_preauth(order)
 
     for line in lines:
         if line.display_type or line.is_downpayment:
             continue
         product = line.product_id
-        code = line_intervention_code_for_claim(line, shif)
+        code = fhir_service_code_for_line(line)
         display = (product.name if product else line.name) or code
         qty = float(line.product_uom_qty or 0)
         unit = float(line.price_unit or 0)

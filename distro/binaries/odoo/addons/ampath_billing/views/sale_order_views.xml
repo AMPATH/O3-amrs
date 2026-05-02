@@ -72,7 +72,6 @@
                     <field name="x_intervention_code" optional="hide"/>
                     <field name="x_service_date_start" optional="hide"/>
                     <field name="x_service_date_end" optional="hide"/>
-                    <field name="insurance_provider_id" optional="show"/>
                     <field name="claim_status" widget="badge" optional="show"
                            decoration-info="claim_status == 'submitted'"
                            decoration-success="claim_status == 'approved'"/>

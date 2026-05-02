@@ -47,14 +47,16 @@ class SaleOrderLine(models.Model):
     is_claim_eligible = fields.Boolean(
         compute='_compute_is_claim_eligible',
         string="Claim eligible",
-        help="True when this line can be included in an AfyaLink / FHIR claim from Odoo.",
+        help="Eligible when patient, diagnoses, and DOB are set. Lines with an intervention code "
+             "(on the product or line) need approved pre-authorization; lines without a code are PHC-style "
+             "even on SHIF visits.",
     )
 
     x_intervention_code = fields.Char(
         string="SHA intervention code",
         copy=False,
-        help="Optional override on the line. For SHIF claims this should be the DHA intervention code; "
-             "for PHC/other it overrides the product code used as serviceCode.",
+        help="Optional line-level intervention code. With product SHA code or this override, the line "
+             "uses SHA/pre-auth rules when pre-authorization is approved.",
     )
     x_service_date_start = fields.Datetime(
         string="Service start (claim)",
@@ -86,23 +88,19 @@ class SaleOrderLine(models.Model):
         'is_downpayment',
         'claim_status',
         'x_intervention_code',
-        'product_id.default_code',
         'product_id.x_sha_intervention_code',
-        'product_id.x_concept_code',
         'order_id.x_patient_uuid',
         'order_id.x_external_identifier',
         'order_id.x_sha_client_registry_id',
-        'order_id.x_payment_method',
-        'order_id.x_insurance_scheme',
         'order_id.x_preauth_status',
         'order_id.x_claim_diagnoses_json',
         'order_id.x_customer_dob',
+        'order_id.partner_id.x_customer_dob',
     )
     def _compute_is_claim_eligible(self):
         from odoo.addons.ampath_billing.services.claim_bundle_builder import (
             diagnoses_list,
-            line_intervention_code_for_claim,
-            order_requires_shif_preauth,
+            line_requires_sha_intervention_code,
         )
 
         for line in self:
@@ -115,8 +113,8 @@ class SaleOrderLine(models.Model):
             order = line.order_id
             patient = (
                 (order.x_sha_client_registry_id or '').strip()
-                or getattr(order, 'x_patient_uuid', None)
-                or order.x_external_identifier
+                or (getattr(order, 'x_patient_uuid', None) or '').strip()
+                or (getattr(order, 'x_external_identifier', None) or '').strip()
             )
             if not patient:
                 line.is_claim_eligible = False
@@ -130,13 +128,8 @@ class SaleOrderLine(models.Model):
             ):
                 line.is_claim_eligible = False
                 continue
-            shif = order_requires_shif_preauth(order)
-            iv_code = line_intervention_code_for_claim(line, shif)
-            if not iv_code:
-                line.is_claim_eligible = False
-                continue
-
-            if shif:
+            sha_path = line_requires_sha_intervention_code(line)
+            if sha_path:
                 pre = (order.x_preauth_status or '').strip().lower()
                 line.is_claim_eligible = pre in (
                     'approved', 'authorized', 'authorisation', 'success', 'active',
@@ -247,9 +240,8 @@ class SaleOrderLine(models.Model):
         if ineligible:
             raise UserError(_(
                 "Some selected lines are not eligible for claims. Check: ICD-11 diagnoses JSON, "
-                "date of birth, patient id; per line: SHIF needs SHA intervention code + "
-                "pre-authorization; PHC/other needs default code (or concept/SHA/line code); "
-                "and claim status."
+                "date of birth, patient id; pre-authorization for lines that have a SHA intervention "
+                "code; claim status (already submitted lines are excluded)."
             ))
         return order, lines
 

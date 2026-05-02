@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.22',
+    'version': '1.0.28',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
