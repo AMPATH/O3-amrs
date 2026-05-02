@@ -23,7 +23,6 @@ class ProductProduct(models.Model):
     x_intervention_code = fields.Char(
         string='Intervention code',
         copy=False,
-        oldname='x_sha_intervention_code',
         help='DHA / SHA catalogue code. Pre-authorization applies when this field is non-empty. '
              'Leave empty so the product stays on the PHC path.',
     )

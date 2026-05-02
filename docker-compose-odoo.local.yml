@@ -1,3 +1,8 @@
+# Local overrides: live-mount ampath_billing + initializer config.
+# If initializer CSV fails with KeyError x_intervention_code on product.product, the billing
+# addon is not installed in the DB yet — install once, then restart Odoo:
+#   docker exec -e PGHOST=postgresql -e PGUSER=odoo -e PGPASSWORD=password \
+#     <odoo-container> /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo -i ampath_billing --stop-after-init
 services:
   odoo:
     environment:
