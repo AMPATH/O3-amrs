@@ -16,6 +16,7 @@
     "@openmrs/esm-implementer-tools-app": "next",
     "@ampath/esm-laboratory-app": "next",
     "@ampath/esm-login-app": "next",
+    "@ampath/esm-labour-care-app": "next",
     "@openmrs/esm-patient-allergies-app": "next",
     "@openmrs/esm-patient-attachments-app": "next",
     "@openmrs/esm-patient-banner-app": "next",
