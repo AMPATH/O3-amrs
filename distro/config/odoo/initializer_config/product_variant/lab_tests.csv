@@ -1,41 +1,41 @@
-id,name,categ_id/id,type,purchase_ok,invoice_policy,lst_price
-init.a898f50c-1350-11df-a1f1-0026b9348838,Complete blood count,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a898b2ea-1350-11df-a1f1-0026b9348838,Liver function tests,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.cde31588-6c57-4260-adca-b13c3cfb82fe,Renal function blood test,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8909524-1350-11df-a1f1-0026b9348838,Malarial smear,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8945c7c-1350-11df-a1f1-0026b9348838,Widal test,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.c66b2f4c-87af-4de5-93a9-209141f167e4,Hemoglobin A2,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.c6ff86c3-9592-4988-9dc8-e427218333bc,Malaria RDT P falciparum and P ovale,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8945ac4-1350-11df-a1f1-0026b9348838,Stool exam,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8909f56-1350-11df-a1f1-0026b9348838,Urine pregnancy test qualitative,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8945678-1350-11df-a1f1-0026b9348838,Syphilis - VDRL qualitative,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8945ba0-1350-11df-a1f1-0026b9348838,Brucella test,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8945d4e-1350-11df-a1f1-0026b9348838,Sputum for acid fast bacilli,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.1b2dc83b-9abf-4494-b18e-2bfd76b5db4d,Full thyroid panel,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8999fb6-1350-11df-a1f1-0026b9348838,HIV enzyme immunoassay qualitative,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a894590c-1350-11df-a1f1-0026b9348838,Urinalysis,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8945754-1350-11df-a1f1-0026b9348838,Blood typing,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8999dfe-1350-11df-a1f1-0026b9348838,HIV rapid test qualitative,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8af7520-1350-11df-a1f1-0026b9348838,Glycosylated hemoglobin,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.00ed7062-a576-4749-9dcb-783840caddc1,Fasting lipid panel,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a89c7a4c-1350-11df-a1f1-0026b9348838,HBV antigen,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a898e9e0-1350-11df-a1f1-0026b9348838,Lipid panel,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.193b3ef7-a9bd-47ea-a935-cf4b744355ec,Helicobacter pylori Ab in serum by immunofluorescence,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.b63a1374-6c74-4af1-8a1f-c403138e4389,Antistreptolysin O titre serum,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.0f6343de-eb9b-404f-959c-def6ef394fde,Helicobacter pylori antigen test in stool,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.ff02d39c-3ccd-4cf8-b252-21658e32b21d,Rheumatoid factor,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.76a01a3d-dc11-46a1-86ea-cbf08de5232c,Salmonella antigen,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8908a16-1350-11df-a1f1-0026b9348838,Hemoglobin,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a898418e-1350-11df-a1f1-0026b9348838,Random blood sugar,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8b018fe-1350-11df-a1f1-0026b9348838,Blood glucose fasting,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.09b4f7a6-d6b7-4d7e-a09d-47e2be77c150,Malaria smear impression,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8a0aa9a-1350-11df-a1f1-0026b9348838,Urinalysis microscopic,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.51aaaadb-00a8-4cf9-b29e-ab7a6a983a44,Urine microscopy panel,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8a8a66e-1350-11df-a1f1-0026b9348838,Serum electrolytes,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.aff79829-0533-4c41-b7f9-e20bb63de7d0,Thyroid stimulating hormone quantitative,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.9924eedc-88af-4252-8156-53317ff9c96e,Antenatal care profile,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8a47152-1350-11df-a1f1-0026b9348838,Serum calcium,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8981d8a-1350-11df-a1f1-0026b9348838,Serum albumin,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a897e450-1350-11df-a1f1-0026b9348838,Serum creatinine,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a89c3834-1350-11df-a1f1-0026b9348838,Serum direct bilirubin,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
-init.a8982550-1350-11df-a1f1-0026b9348838,Serum blood urea nitrogen,init.categ_services_lab_test_orders,service,FALSE,Ordered quantities,0.0
+"id","name","categ_id/id","type","purchase_ok","invoice_policy","lst_price"
+"init.a898f50c-1350-11df-a1f1-0026b9348838","Complete blood count","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a898b2ea-1350-11df-a1f1-0026b9348838","Liver function tests","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.cde31588-6c57-4260-adca-b13c3cfb82fe","Renal function blood test","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8909524-1350-11df-a1f1-0026b9348838","Malarial smear","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945c7c-1350-11df-a1f1-0026b9348838","Widal test","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.c66b2f4c-87af-4de5-93a9-209141f167e4","Hemoglobin A2","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.c6ff86c3-9592-4988-9dc8-e427218333bc","Malaria RDT P falciparum and P ovale","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945ac4-1350-11df-a1f1-0026b9348838","Stool exam","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8909f56-1350-11df-a1f1-0026b9348838","Urine pregnancy test qualitative","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945678-1350-11df-a1f1-0026b9348838","Syphilis - VDRL qualitative","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945ba0-1350-11df-a1f1-0026b9348838","Brucella test","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945d4e-1350-11df-a1f1-0026b9348838","Sputum for acid fast bacilli","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.1b2dc83b-9abf-4494-b18e-2bfd76b5db4d","Full thyroid panel","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8999fb6-1350-11df-a1f1-0026b9348838","HIV enzyme immunoassay qualitative","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894590c-1350-11df-a1f1-0026b9348838","Urinalysis","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945754-1350-11df-a1f1-0026b9348838","Blood typing","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8999dfe-1350-11df-a1f1-0026b9348838","HIV rapid test qualitative","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8af7520-1350-11df-a1f1-0026b9348838","Glycosylated hemoglobin","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.00ed7062-a576-4749-9dcb-783840caddc1","Fasting lipid panel","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a89c7a4c-1350-11df-a1f1-0026b9348838","HBV antigen","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a898e9e0-1350-11df-a1f1-0026b9348838","Lipid panel","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.193b3ef7-a9bd-47ea-a935-cf4b744355ec","Helicobacter pylori Ab in serum by immunofluorescence","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.b63a1374-6c74-4af1-8a1f-c403138e4389","Antistreptolysin O titre serum","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.0f6343de-eb9b-404f-959c-def6ef394fde","Helicobacter pylori antigen test in stool","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.ff02d39c-3ccd-4cf8-b252-21658e32b21d","Rheumatoid factor","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.76a01a3d-dc11-46a1-86ea-cbf08de5232c","Salmonella antigen","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8908a16-1350-11df-a1f1-0026b9348838","Hemoglobin","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a898418e-1350-11df-a1f1-0026b9348838","Random blood sugar","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8b018fe-1350-11df-a1f1-0026b9348838","Blood glucose fasting","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.09b4f7a6-d6b7-4d7e-a09d-47e2be77c150","Malaria smear impression","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8a0aa9a-1350-11df-a1f1-0026b9348838","Urinalysis microscopic","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.51aaaadb-00a8-4cf9-b29e-ab7a6a983a44","Urine microscopy panel","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8a8a66e-1350-11df-a1f1-0026b9348838","Serum electrolytes","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.aff79829-0533-4c41-b7f9-e20bb63de7d0","Thyroid stimulating hormone quantitative","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.9924eedc-88af-4252-8156-53317ff9c96e","Antenatal care profile","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8a47152-1350-11df-a1f1-0026b9348838","Serum calcium","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8981d8a-1350-11df-a1f1-0026b9348838","Serum albumin","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a897e450-1350-11df-a1f1-0026b9348838","Serum creatinine","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a89c3834-1350-11df-a1f1-0026b9348838","Serum direct bilirubin","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8982550-1350-11df-a1f1-0026b9348838","Serum blood urea nitrogen","init.categ_services_lab_test_orders","service","FALSE","Ordered quantities","0.0"

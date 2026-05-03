@@ -23,6 +23,12 @@ class ProductTemplate(models.Model):
         inverse='_set_x_drug_strength',
         help='Stored on the product variant; shown here when the template has a single variant.',
     )
+    x_openmrs_drug_uuid = fields.Char(
+        string='OpenMRS drug UUID',
+        compute='_compute_x_openmrs_drug_uuid',
+        inverse='_set_x_openmrs_drug_uuid',
+        help='Stored on the product variant; OpenMRS Drug resource uuid.',
+    )
     x_intervention_code = fields.Char(
         string='Intervention code',
         compute='_compute_x_intervention_code',
@@ -50,6 +56,13 @@ class ProductTemplate(models.Model):
 
     def _set_x_drug_strength(self):
         self._set_product_variant_field('x_drug_strength')
+
+    @api.depends('product_variant_ids.x_openmrs_drug_uuid')
+    def _compute_x_openmrs_drug_uuid(self):
+        self._compute_template_field_from_variant_field('x_openmrs_drug_uuid')
+
+    def _set_x_openmrs_drug_uuid(self):
+        self._set_product_variant_field('x_openmrs_drug_uuid')
 
     @api.depends('product_variant_ids.x_intervention_code')
     def _compute_x_intervention_code(self):

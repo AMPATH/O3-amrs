@@ -1,14 +1,14 @@
-id,name,categ_id/id,type,purchase_ok,invoice_policy,lst_price
-init.a894d544-1350-11df-a1f1-0026b9348838,X-ray shoulder,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894ca36-1350-11df-a1f1-0026b9348838,X-ray pelvis,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a890d0f2-1350-11df-a1f1-0026b9348838,X-ray abdomen,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a8945f06-1350-11df-a1f1-0026b9348838,X-ray other,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894c266-1350-11df-a1f1-0026b9348838,X-ray skull,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894b6d6-1350-11df-a1f1-0026b9348838,X-ray leg,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894b870-1350-11df-a1f1-0026b9348838,X-ray hand,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894ba0a-1350-11df-a1f1-0026b9348838,X-ray foot,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a8908192-1350-11df-a1f1-0026b9348838,Chest x-ray preliminary findings,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894b474-1350-11df-a1f1-0026b9348838,X-ray arm,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a894c5a4-1350-11df-a1f1-0026b9348838,X-ray spine,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a89dc7ee-1350-11df-a1f1-0026b9348838,Barium swallow,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
-init.a89dc730-1350-11df-a1f1-0026b9348838,Barium meal,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0
+"id","name","categ_id/id","type","purchase_ok","invoice_policy","lst_price"
+"init.a894d544-1350-11df-a1f1-0026b9348838","X-ray shoulder","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894ca36-1350-11df-a1f1-0026b9348838","X-ray pelvis","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a890d0f2-1350-11df-a1f1-0026b9348838","X-ray abdomen","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8945f06-1350-11df-a1f1-0026b9348838","X-ray other","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894c266-1350-11df-a1f1-0026b9348838","X-ray skull","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894b6d6-1350-11df-a1f1-0026b9348838","X-ray leg","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894b870-1350-11df-a1f1-0026b9348838","X-ray hand","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894ba0a-1350-11df-a1f1-0026b9348838","X-ray foot","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8908192-1350-11df-a1f1-0026b9348838","Chest x-ray preliminary findings","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894b474-1350-11df-a1f1-0026b9348838","X-ray arm","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a894c5a4-1350-11df-a1f1-0026b9348838","X-ray spine","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a89dc7ee-1350-11df-a1f1-0026b9348838","Barium swallow","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"
+"init.a89dc730-1350-11df-a1f1-0026b9348838","Barium meal","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0"

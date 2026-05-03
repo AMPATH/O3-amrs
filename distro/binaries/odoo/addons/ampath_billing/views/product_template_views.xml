@@ -8,6 +8,7 @@
             <xpath expr="//page[@name='general_information']//field[@name='categ_id']" position="after">
                 <field name="x_concept_source"/>
                 <field name="x_concept_code"/>
+                <field name="x_openmrs_drug_uuid"/>
                 <field name="x_drug_strength"/>
                 <field name="x_intervention_code"/>
             </xpath>
@@ -21,6 +22,7 @@
             <xpath expr="//page[@name='general_information']//field[@name='categ_id']" position="after">
                 <field name="x_concept_source"/>
                 <field name="x_concept_code"/>
+                <field name="x_openmrs_drug_uuid"/>
                 <field name="x_drug_strength"/>
                 <field name="x_intervention_code"/>
             </xpath>

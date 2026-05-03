@@ -12,6 +12,10 @@ AMPATH ETL / HIE (Odoo-shaped JSON, same builder as pre-auth preview). Set:
   Or on the host / container: AMPATH_ETL_CLAIMS_SUBMIT_URL, AMPATH_ETL_CLAIMS_API_KEY
   (used when the system parameters above are empty).
 
+Submit body is the flat ``BuildClaimBundleRequest`` JSON (``patientUuid``, ``visitUuid``, …)
+like Postman. Set ampath.etl_claims.wrap_request_body=1 (or env AMPATH_ETL_CLAIMS_WRAP_REQUEST=1)
+only if a backend still expects ``{"request": {...}}``.
+
 When ETL URL is set (parameter or env), sale order bulk claim uses this path instead of
 posting a FHIR Bundle to AfyaLink.
 """
@@ -34,6 +38,8 @@ _PARAM_ETL_API_KEY = 'ampath.etl_claims.api_key'
 # Docker / k8s: set these on the odoo container when you prefer env over DB parameters
 _ENV_ETL_SUBMIT_URL = 'AMPATH_ETL_CLAIMS_SUBMIT_URL'
 _ENV_ETL_API_KEY = 'AMPATH_ETL_CLAIMS_API_KEY'
+_PARAM_ETL_WRAP_REQUEST = 'ampath.etl_claims.wrap_request_body'
+_ENV_ETL_WRAP_REQUEST = 'AMPATH_ETL_CLAIMS_WRAP_REQUEST'
 
 
 def _ensure_etl_submit_body_reports_success(body):
@@ -65,6 +71,21 @@ def _param(env, key):
     return (env['ir.config_parameter'].sudo().get_param(key, '') or '').strip()
 
 
+def _etl_submit_wrap_request_body(env):
+    """When True, POST a wrapper with a ``request`` key; otherwise POST flat JSON (Postman shape)."""
+    p = _param(env, _PARAM_ETL_WRAP_REQUEST).lower()
+    if p in ('1', 'true', 'yes'):
+        return True
+    if p in ('0', 'false', 'no'):
+        return False
+    e = (os.environ.get(_ENV_ETL_WRAP_REQUEST) or '').strip().lower()
+    if e in ('1', 'true', 'yes'):
+        return True
+    if e in ('0', 'false', 'no'):
+        return False
+    return False
+
+
 def etl_submit_url_configured(env):
     """True if ETL URL is set via system parameter or environment."""
     return bool(_param(env, _PARAM_ETL_SUBMIT_URL) or (os.environ.get(_ENV_ETL_SUBMIT_URL) or '').strip())
@@ -92,10 +113,12 @@ def submit_claim(env, bundle_dict):
 
 
 def submit_etl_hie_claim(env, payload_dict):
-    """POST Odoo-shaped claim JSON to AMPATH ETL (AMPATH-CLAIMS-KEY), no OAuth.
+    """POST claim JSON to AMPATH ETL (AMPATH-CLAIMS-KEY), no OAuth.
 
-    The submit endpoint expects a wrapper object: ``{"request": { ... BuildClaimBundleRequest }}``
-    (ASP.NET model binding). ``serviceCode`` in each service must be a string, not JSON ``false``.
+    By default the body is **flat** (``patientUuid``, ``visitUuid``, ``services``, …) like Postman.
+    Set ``ampath.etl_claims.wrap_request_body`` / ``AMPATH_ETL_CLAIMS_WRAP_REQUEST`` to wrap in
+    ``{"request": ...}`` if the server requires it. ``serviceCode`` in each service must be a
+    string, not JSON ``false``.
     """
     url = _param(env, _PARAM_ETL_SUBMIT_URL) or (os.environ.get(_ENV_ETL_SUBMIT_URL) or '').strip()
     if not url:
@@ -109,12 +132,12 @@ def submit_etl_hie_claim(env, payload_dict):
             'ETL claims API key is not configured. Set system parameter "%s" '
             'or environment variable "%s".'
         ) % (_PARAM_ETL_API_KEY, _ENV_ETL_API_KEY))
-    wrapped = {'request': payload_dict}
+    body_out = {'request': payload_dict} if _etl_submit_wrap_request_body(env) else payload_dict
     status, body = afyalink_auth.http_json(
         env,
         'POST',
         url,
-        body=wrapped,
+        body=body_out,
         token=None,
         extra_headers={'AMPATH-CLAIMS-KEY': api_key},
     )

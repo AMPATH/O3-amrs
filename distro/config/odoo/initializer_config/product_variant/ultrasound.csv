@@ -1,5 +1,5 @@
-id,name,categ_id/id,type,purchase_ok,invoice_policy,lst_price,x_intervention_code
-init.72178bbe-a3d2-41ca-a634-3324b71d9bc6,Ultrasound renal,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0,
-init.a8982104-1350-11df-a1f1-0026b9348838,Ultrasound hepatic,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0,
-init.a8aff48c-1350-11df-a1f1-0026b9348838,Obstetric ultrasound,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0,
-init.a8981af6-1350-11df-a1f1-0026b9348838,Ultrasound abdomen,init.categ_services_radiology_orders,service,FALSE,Ordered quantities,0.0,SHA-09-070
+"id","name","categ_id/id","type","purchase_ok","invoice_policy","lst_price","x_intervention_code"
+"init.72178bbe-a3d2-41ca-a634-3324b71d9bc6","Ultrasound renal","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0",""
+"init.a8982104-1350-11df-a1f1-0026b9348838","Ultrasound hepatic","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0",""
+"init.a8aff48c-1350-11df-a1f1-0026b9348838","Obstetric ultrasound","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0",""
+"init.a8981af6-1350-11df-a1f1-0026b9348838","Ultrasound abdomen","init.categ_services_radiology_orders","service","FALSE","Ordered quantities","0.0","SHA-09-070"

@@ -1,26 +1,26 @@
-id,name,categ_id/id,type,purchase_ok,invoice_policy,lst_price
-init.369dd7ae-7d43-429e-b76e-bcf5baf4f4b2,Punch biopsy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.c9337a50-074e-4deb-a100-e9da0598b72a,Bronchoscopy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.eaa5796d-0b1c-478b-8c9d-d23cf4c3bddc,Vasectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.4f344ae4-5817-4065-8c2a-e9f9f0b8560a,Ultrasound guided biopsy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.81aad3d5-0535-416a-a833-9079af068e3f,Tubal ligation,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.c3ed398c-eb30-43a4-8737-8ee3995daf7f,Insertion of contraceptive implant,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.dd3aa98a-2230-4bfb-aabb-6be9a00ace87,Removal of contraceptive implant,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.d4d9c056-1a06-4a77-9a67-35ca2e9f98f5,Thyroidectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.a8a713f8-1350-11df-a1f1-0026b9348838,Female sterilization,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.a6506baa-0b8e-49ff-9f65-37bf5716d08e,Hemicolectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.2faf20eb-2a94-4c91-86f6-c9e30aecff14,Nephrectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.2bde812a-d990-4792-b651-f1a322433485,Laminectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.6297ed2a-c21e-4348-8315-d633065188d4,Orchiectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.a747741e-562a-42bb-aa9c-bc2342cc5f42,Oophorectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.11efa11d-16ed-48ba-baad-f9c09d710ae8,Splenectomy,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.a89530d4-1350-11df-a1f1-0026b9348838,Clean and dressing,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.1aa0fb3b-9de8-42ca-83d9-e74e65572114,Closure by suture,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.17112afe-7cb0-4ae7-b34b-da0edb4bedcd,Incision and drainage,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.d917de34-678b-451a-8a5e-af055ef5e72d,Catheterization of urinary bladder,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.b651b323-1d64-4a9b-95ae-3712b4543d03,Insert intravenous (IV) line,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.93e2f92d-5702-4580-b733-cfee1bfd131c,Nebulization,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.cff16470-b89b-46a2-9b2d-8c12de17dc3e,Debridement of skin wound,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.d0a09eb2-8fc7-42fc-bcc3-f8a6687e2a16,Injection administration,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.8705087f-58a5-4de4-9d69-68ade0e3c121,Splint application,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
-init.a8a0a612-1350-11df-a1f1-0026b9348838,Exodontia,init.categ_services_procedure_orders,service,FALSE,Ordered quantities,0.0
+"id","name","categ_id/id","type","purchase_ok","invoice_policy","lst_price"
+"init.369dd7ae-7d43-429e-b76e-bcf5baf4f4b2","Punch biopsy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.c9337a50-074e-4deb-a100-e9da0598b72a","Bronchoscopy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.eaa5796d-0b1c-478b-8c9d-d23cf4c3bddc","Vasectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.4f344ae4-5817-4065-8c2a-e9f9f0b8560a","Ultrasound guided biopsy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.81aad3d5-0535-416a-a833-9079af068e3f","Tubal ligation","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.c3ed398c-eb30-43a4-8737-8ee3995daf7f","Insertion of contraceptive implant","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.dd3aa98a-2230-4bfb-aabb-6be9a00ace87","Removal of contraceptive implant","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.d4d9c056-1a06-4a77-9a67-35ca2e9f98f5","Thyroidectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8a713f8-1350-11df-a1f1-0026b9348838","Female sterilization","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.a6506baa-0b8e-49ff-9f65-37bf5716d08e","Hemicolectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.2faf20eb-2a94-4c91-86f6-c9e30aecff14","Nephrectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.2bde812a-d990-4792-b651-f1a322433485","Laminectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.6297ed2a-c21e-4348-8315-d633065188d4","Orchiectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.a747741e-562a-42bb-aa9c-bc2342cc5f42","Oophorectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.11efa11d-16ed-48ba-baad-f9c09d710ae8","Splenectomy","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.a89530d4-1350-11df-a1f1-0026b9348838","Clean and dressing","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.1aa0fb3b-9de8-42ca-83d9-e74e65572114","Closure by suture","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.17112afe-7cb0-4ae7-b34b-da0edb4bedcd","Incision and drainage","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.d917de34-678b-451a-8a5e-af055ef5e72d","Catheterization of urinary bladder","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.b651b323-1d64-4a9b-95ae-3712b4543d03","Insert intravenous (IV) line","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.93e2f92d-5702-4580-b733-cfee1bfd131c","Nebulization","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.cff16470-b89b-46a2-9b2d-8c12de17dc3e","Debridement of skin wound","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.d0a09eb2-8fc7-42fc-bcc3-f8a6687e2a16","Injection administration","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.8705087f-58a5-4de4-9d69-68ade0e3c121","Splint application","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"
+"init.a8a0a612-1350-11df-a1f1-0026b9348838","Exodontia","init.categ_services_procedure_orders","service","FALSE","Ordered quantities","0.0"

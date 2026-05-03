@@ -20,6 +20,11 @@ class ProductProduct(models.Model):
         copy=False,
         help='Medication strength representation.',
     )
+    x_openmrs_drug_uuid = fields.Char(
+        string='OpenMRS drug UUID',
+        copy=False,
+        help='OpenMRS /ws/rest/v1/drug uuid for this product (not the concept uuid).',
+    )
     x_intervention_code = fields.Char(
         string='Intervention code',
         copy=False,

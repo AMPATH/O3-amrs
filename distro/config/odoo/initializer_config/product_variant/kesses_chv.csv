@@ -1,0 +1,4 @@
+"id","name","categ_id/id","type","uom_id/id","uom_po_id/id","invoice_policy","lst_price","standard_price"
+"init.95922836-696e-5f9d-bdbb-3d5cbb270c58","CHVS BACKPACK CARRIER BAG","init.categ_products_materials_orders","product","init.a8a0630a-1350-11df-a1f1-0026b9348838","init.a8a0630a-1350-11df-a1f1-0026b9348838","Ordered quantities","5000.00","4000.00"
+"init.633bed3d-b19a-5dba-9d9c-f28a7544ffe9","CHVS JACKET LARGE","init.categ_products_materials_orders","product","init.a8a0630a-1350-11df-a1f1-0026b9348838","init.a8a0630a-1350-11df-a1f1-0026b9348838","Ordered quantities","3400.00","2720.00"
+"init.b754e17b-ad83-5b38-98f7-3ce47d7e61d4","CHVS JACKET MEDIUM","init.categ_products_materials_orders","product","init.a8a0630a-1350-11df-a1f1-0026b9348838","init.a8a0630a-1350-11df-a1f1-0026b9348838","Ordered quantities","3600.00","2880.00"
