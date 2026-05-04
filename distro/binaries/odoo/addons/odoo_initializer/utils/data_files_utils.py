@@ -101,8 +101,18 @@ class DataFilesUtils:
 
     @staticmethod
     def build_csv(data):
+        if not data:
+            return ""
+        # Rows may have different keys (e.g. optional lst_price); union preserves all columns.
+        fieldnames = []
+        seen = set()
+        for row in data:
+            for k in row.keys():
+                if k not in seen:
+                    seen.add(k)
+                    fieldnames.append(k)
         tmp_file = tempfile.TemporaryFile(mode="w+")
-        output = csv.DictWriter(tmp_file, fieldnames=data[0].keys())
+        output = csv.DictWriter(tmp_file, fieldnames=fieldnames, extrasaction="ignore")
         output.writeheader()
         output.writerows(data)
         tmp_file.seek(0)
