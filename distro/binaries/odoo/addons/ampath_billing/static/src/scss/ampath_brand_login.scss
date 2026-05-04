@@ -1,0 +1,33 @@
+// Last-resort CSS for /web/login when SCSS variable merging misses (cached assets,
+// third-party *.variables.scss, or enterprise-ish bundles). Scoped to login layout.
+$o-ampath-green: #135c33;
+$o-ampath-green-dark: #0d4023;
+
+body.bg-100 .o_database_list {
+  // Match Odoo map-generated button rules (including [type="submit"])
+  .btn-primary,
+  button.btn-primary[type="submit"] {
+    background-color: $o-ampath-green;
+    border-color: $o-ampath-green;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $o-ampath-green-dark;
+      border-color: $o-ampath-green-dark;
+    }
+  }
+
+  .form-control:focus {
+    border-color: $o-ampath-green;
+    box-shadow: 0 0 0 0.25rem rgba(19, 92, 51, 0.25);
+  }
+
+  a:not(.btn) {
+    color: $o-ampath-green;
+
+    &:hover {
+      color: $o-ampath-green-dark;
+    }
+  }
+}

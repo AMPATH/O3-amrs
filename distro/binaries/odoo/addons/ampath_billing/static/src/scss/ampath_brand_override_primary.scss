@@ -1,0 +1,6 @@
+// Loaded *after* web primary_variables.scss so we win over any earlier !default
+// chain and over modules that only tweak defaults. Keeps login + backend aligned.
+$o-community-color: #135c33;
+$o-brand-odoo: #135c33;
+$o-brand-primary: #135c33;
+$o-action: $o-brand-primary;

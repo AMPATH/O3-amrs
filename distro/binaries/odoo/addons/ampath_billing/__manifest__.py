@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.51',
+    'version': '1.0.52',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
@@ -23,6 +23,17 @@
                 'web/static/src/scss/primary_variables.scss',
                 'ampath_billing/static/src/scss/ampath_brand_variables.scss',
             ),
+            # After core primary_variables so Mekom/other *.variables.scss cannot
+            # leave community purple as the effective brand for derived maps.
+            (
+                'after',
+                'web/static/src/scss/primary_variables.scss',
+                'ampath_billing/static/src/scss/ampath_brand_override_primary.scss',
+            ),
+        ],
+        # Explicit rules for public login (/web/login); survives variable merge issues.
+        'web.assets_frontend': [
+            'ampath_billing/static/src/scss/ampath_brand_login.scss',
         ],
     },
     'post_init_hook': 'post_init_hook',
