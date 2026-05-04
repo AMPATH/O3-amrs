@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.50',
+    'version': '1.0.51',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
@@ -13,8 +13,11 @@
         'views/account_move_views.xml',
         'views/product_template_views.xml',
     ],
+    # Login / public pages use web.assets_frontend, which pulls primary_variables via
+    # web._assets_helpers → web._assets_primary_variables — not web.assets_backend.
+    # Patch the shared bundle so backend, login, and other consumers all see AMPATH colours.
     'assets': {
-        'web.assets_backend': [
+        'web._assets_primary_variables': [
             (
                 'before',
                 'web/static/src/scss/primary_variables.scss',
