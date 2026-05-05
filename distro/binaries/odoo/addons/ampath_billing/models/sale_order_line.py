@@ -2,6 +2,7 @@ import logging
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.tools.float_utils import float_compare
 
 _logger = logging.getLogger(__name__)
 
@@ -210,6 +211,74 @@ class SaleOrderLine(models.Model):
         return res
 
     # ------------------------------------------------------------------
+    # Stock checks (storable products only; services / consumables skipped)
+    # ------------------------------------------------------------------
+
+    def _ampath_requires_stock_for_billing(self):
+        """True when this line's product is storable (inventory must exist to bill/claim)."""
+        self.ensure_one()
+        product = self.product_id
+        if not product:
+            return False
+        # Odoo 17+: is_storable distinguishes stocked goods (including tracked consumables).
+        if 'is_storable' in product._fields:
+            return bool(product.is_storable)
+        # Older: only stockable type 'product' is constrained; service/consu skip.
+        if product.type in ('service', 'consu'):
+            return False
+        return product.type == 'product'
+
+    def _ampath_available_qty_product_uom(self):
+        """On-hand (or free) qty for this product in the order warehouse context."""
+        self.ensure_one()
+        product = self.product_id
+        order = self.order_id
+        ctx = {}
+        wh = order.warehouse_id
+        if wh:
+            ctx['warehouse'] = wh.id
+        prod = product.with_context(**ctx)
+        if 'free_qty' in prod._fields:
+            return prod.free_qty
+        return prod.qty_available
+
+    def _ampath_stock_shortage_message(self, qty_in_line_uom):
+        """Return a human-readable error fragment if storable stock is insufficient."""
+        self.ensure_one()
+        if self.display_type or self.is_downpayment:
+            return None
+        if not self._ampath_requires_stock_for_billing():
+            return None
+        product = self.product_id
+        avail = self._ampath_available_qty_product_uom()
+        needed = self.product_uom._compute_quantity(
+            qty_in_line_uom,
+            product.uom_id,
+            rounding_method='HALF-UP',
+        )
+        prec = product.uom_id.rounding
+        if float_compare(avail, needed, precision_rounding=prec) >= 0:
+            return None
+        wh = self.order_id.warehouse_id
+        return _(
+            '%(product)s: need %(need)s %(uom)s, available %(avail)s %(uom)s (warehouse: %(wh)s)'
+        ) % {
+            'product': product.display_name,
+            'need': needed,
+            'avail': avail,
+            'uom': product.uom_id.name or '',
+            'wh': wh.display_name if wh else _('N/A'),
+        }
+
+    def _ampath_assert_billable_quantity(self, qty_in_line_uom):
+        """Block invoicing/claiming when storable qty is insufficient."""
+        msg = self._ampath_stock_shortage_message(qty_in_line_uom)
+        if msg:
+            raise UserError(
+                _('Cannot invoice or claim — insufficient stock:\n• %s') % msg
+            )
+
+    # ------------------------------------------------------------------
     # Bulk actions
     # ------------------------------------------------------------------
 
@@ -234,6 +303,8 @@ class SaleOrderLine(models.Model):
                 "on the order; pre-authorization when the product has an intervention code; claim "
                 "status (already submitted lines are excluded)."
             ))
+        for line in lines:
+            line._ampath_assert_billable_quantity(line.product_uom_qty)
         return order, lines
 
     def action_submit_etl_claim(self):
@@ -290,6 +361,10 @@ class SaleOrderLine(models.Model):
             ))
 
         order = orders[0]
+        lines_to_bill = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
+        for line in lines_to_bill:
+            line._ampath_assert_billable_quantity(line.product_uom_qty)
+
         invoice_vals = order._prepare_invoice()
         invoice_line_vals_list = []
 

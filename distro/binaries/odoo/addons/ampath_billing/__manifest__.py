@@ -1,10 +1,10 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.52',
+    'version': '1.0.53',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
-    'depends': ['web', 'sale', 'account'],
+    'depends': ['web', 'sale', 'sale_stock', 'account'],
     'data': [
         'security/ir.model.access.csv',
         'data/landing_page.xml',

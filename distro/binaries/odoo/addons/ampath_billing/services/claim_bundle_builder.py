@@ -199,6 +199,18 @@ def _etl_false_or_str(val):
     return s if s else False
 
 
+def _stock_violation_messages(lines):
+    """Lines that are storable and short on hand (for pre-auth, claims, bundle build)."""
+    out = []
+    for line in lines:
+        if line.display_type or line.is_downpayment:
+            continue
+        shortage = line._ampath_stock_shortage_message(line.product_uom_qty)
+        if shortage:
+            out.append(shortage)
+    return out
+
+
 def validate_claim_prerequisites(order, lines):
     """Raise ValueError with a clear message if the quotation cannot build a SHA bundle."""
     msgs = []
@@ -217,6 +229,7 @@ def validate_claim_prerequisites(order, lines):
     )
     if not dob:
         msgs.append('Patient date of birth is required (order or partner x_customer_dob).')
+    msgs.extend(_stock_violation_messages(lines))
     if msgs:
         raise ValueError('Cannot build claim bundle:\n• ' + '\n• '.join(msgs))
 
@@ -224,6 +237,11 @@ def validate_claim_prerequisites(order, lines):
 def build_preauth_request_payload(order, lines=None):
     """JSON body for SHIF pre-authorization: mirrors BuildClaimBundleRequest (no OpenMRS bill fetch)."""
     lines = lines or order.order_line.filtered(lambda l: not l.display_type and not l.is_downpayment)
+    stock_msgs = _stock_violation_messages(lines)
+    if stock_msgs:
+        raise UserError(_(
+            'Cannot pre-authorize — insufficient stock for storable items:\n• %s'
+        ) % '\n• '.join(stock_msgs))
     services = _services_from_lines(order, lines)
     diagnoses = diagnoses_list(order)
     partner = order.partner_id

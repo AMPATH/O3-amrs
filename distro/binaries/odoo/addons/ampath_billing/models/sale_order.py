@@ -277,3 +277,17 @@ class SaleOrder(models.Model):
             'x_preauth_request_id': '',
             'x_preauth_fhir_claim_id': '',
         })
+
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        """Require on-hand stock for storable products before standard Odoo invoicing."""
+        for order in self:
+            for line in order.order_line:
+                if line.display_type or line.is_downpayment:
+                    continue
+                qty = getattr(line, 'qty_to_invoice', None)
+                if qty is None or qty <= 0:
+                    continue
+                line._ampath_assert_billable_quantity(qty)
+        return super()._create_invoices(
+            grouped=grouped, final=final, date=date,
+        )
