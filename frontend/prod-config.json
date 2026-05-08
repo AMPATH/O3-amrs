@@ -4,7 +4,13 @@
       "src": "https://ngx.ampath.or.ke/openmrs/etl/county-logo",
       "alt": "AMPATH",
       "link": "${openmrsSpaBase}/home/registry"
-    }
+    },
+    "externalRefLinks": [
+      {
+        "title": "Pharmacy, Billing & Inventory",
+        "redirect": "https://billing_test.ampath.or.ke"
+      }
+    ]
   },
   "@openmrs/esm-patient-registration-app": {
     "defaultPatientIdentifierTypes": [],
