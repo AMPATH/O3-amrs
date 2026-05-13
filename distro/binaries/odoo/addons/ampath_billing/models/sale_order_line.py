@@ -307,6 +307,21 @@ class SaleOrderLine(models.Model):
             line._ampath_assert_billable_quantity(line.product_uom_qty)
         return order, lines
 
+    def action_bulk_fhir_claim(self):
+        """Build the FHIR claim bundle from selected lines and open a JSON preview (no HTTP)."""
+        order, lines = self._ampath_claim_lines_common()
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_claim_bundle
+
+        pre_id = (order.x_preauth_fhir_claim_id or '').strip() or None
+        try:
+            bundle, _internal_claim_id = build_claim_bundle(order, lines, pre_auth_claim_id=pre_id)
+        except ValueError as e:
+            raise UserError(str(e)) from e
+        return order._action_open_payload_preview(
+            _('FHIR claim bundle (JSON)'),
+            bundle,
+        )
+
     def action_submit_etl_claim(self):
         """POST BuildClaimBundleRequest-shaped JSON to AMPATH ETL (env / system params)."""
         order, lines = self._ampath_claim_lines_common()
@@ -341,6 +356,21 @@ class SaleOrderLine(models.Model):
             _('ETL claim response (JSON)'),
             body if isinstance(body, dict) else {'raw': body},
         )
+
+    def mark_claim_submitted_from_submit_response(self, submit_body):
+        """After a successful payer POST, set *Submitted* and optional ``fhir_claim_id``."""
+        from odoo.addons.ampath_billing.services.afyalink_client import claim_id_from_submit_response
+
+        lines = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
+        lines = lines.filtered(lambda l: l.claim_status != 'approved')
+        if not lines:
+            return self.browse()
+        vals = {'claim_status': 'submitted'}
+        cid = claim_id_from_submit_response(submit_body) if submit_body is not None else None
+        if cid:
+            vals['fhir_claim_id'] = cid
+        lines.write(vals)
+        return lines
 
     def action_invoice_this_line(self):
         """Invoice only this single line — no checkbox required."""

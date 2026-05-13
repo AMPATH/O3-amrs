@@ -112,6 +112,11 @@ def submit_claim(env, bundle_dict):
     return None
 
 
+def claim_submit_indicates_success(body):
+    """True only when the payer returns a JSON object with ``success`` exactly True."""
+    return isinstance(body, dict) and body.get('success') is True
+
+
 def submit_etl_hie_claim(env, payload_dict):
     """POST claim JSON to AMPATH ETL (AMPATH-CLAIMS-KEY), no OAuth.
 
@@ -217,6 +222,14 @@ def claim_id_from_submit_response(body):
             if msg.get(k):
                 return str(msg[k])
         cids = msg.get('Claim_Ids') or msg.get('claim_Ids') or msg.get('claim_ids')
+        if isinstance(cids, list) and cids:
+            return str(cids[0])
+    nested = body.get('data')
+    if isinstance(nested, dict):
+        for k in ('claimId', 'claim_id', 'fhirClaimId', 'mediator_id', 'Mediator_Id'):
+            if nested.get(k):
+                return str(nested[k])
+        cids = nested.get('Claim_Ids') or nested.get('claim_ids')
         if isinstance(cids, list) and cids:
             return str(cids[0])
     if body.get('resourceType') == 'Claim' and body.get('id'):

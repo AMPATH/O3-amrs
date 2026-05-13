@@ -9,6 +9,7 @@
         'security/ir.model.access.csv',
         'data/landing_page.xml',
         'views/ampath_payload_preview_wizard_views.xml',
+        'views/ampath_claim_submit_result_wizard_views.xml',
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
         'views/product_template_views.xml',

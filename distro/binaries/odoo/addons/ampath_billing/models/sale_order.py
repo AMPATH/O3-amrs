@@ -148,6 +148,30 @@ class SaleOrder(models.Model):
             'target': 'new',
         }
 
+    def _action_open_claim_submit_result(self, lines_updated_count, response_body):
+        """Short summary line + full payer JSON so nothing replaces the raw response."""
+        self.ensure_one()
+        if isinstance(response_body, (dict, list)):
+            full_text = json.dumps(response_body, indent=2, ensure_ascii=False, default=str)
+        else:
+            full_text = str(response_body) if response_body is not None else ''
+        headline = _(
+            'Claim sent successfully. %(n)s sale order line(s) were set to Submitted.'
+        ) % {'n': lines_updated_count}
+        wiz = self.env['ampath.billing.claim.submit.result'].create({
+            'sale_order_id': self.id,
+            'headline': headline,
+            'response_full': full_text,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Claim submission result'),
+            'res_model': 'ampath.billing.claim.submit.result',
+            'res_id': wiz.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
     def _get_selected_lines(self, action=None):
         """
         Return selected product lines that are eligible for *action*.
@@ -225,6 +249,14 @@ class SaleOrder(models.Model):
         lines.action_bulk_waive()
         lines.write({'selected': False})
 
+    def action_claim_selected(self):
+        """Generate FHIR claim bundle JSON from selected lines and show it in a dialog."""
+        self.ensure_one()
+        lines = self._get_selected_lines(action='claim')
+        result = lines.action_bulk_fhir_claim()
+        lines.write({'selected': False})
+        return result
+
     def action_submit_etl_claim_selected(self):
         """POST **all** qualifying lines to AMPATH ETL (not checkbox selection).
 
@@ -239,6 +271,39 @@ class SaleOrder(models.Model):
                 'excluded. Remaining lines must be claim-eligible and still **Not Invoiced**.'
             ))
         return lines.action_submit_etl_claim()
+
+    def action_submit_claim_selected(self):
+        """POST the FHIR bundle to the payer (AfyaLink); on success mark lines Submitted."""
+        self.ensure_one()
+        lines = self._get_selected_lines(action='claim')
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_claim_bundle
+        from odoo.addons.ampath_billing.services.afyalink_client import (
+            claim_submit_indicates_success,
+            submit_claim,
+        )
+
+        order = self
+        pre_id = (order.x_preauth_fhir_claim_id or '').strip() or None
+        try:
+            bundle, _claim_uuid = build_claim_bundle(order, lines, pre_auth_claim_id=pre_id)
+        except ValueError as e:
+            raise UserError(str(e)) from e
+
+        body = submit_claim(self.env, bundle)
+        if not claim_submit_indicates_success(body):
+            detail = (
+                json.dumps(body, indent=2, ensure_ascii=False, default=str)
+                if isinstance(body, (dict, list))
+                else str(body)
+            )
+            raise UserError(_(
+                'The payer reported that the claim was not accepted (success is not true).\n\n'
+                'Full response:\n%s'
+            ) % detail)
+
+        updated = lines.mark_claim_submitted_from_submit_response(body)
+        lines.write({'selected': False})
+        return self._action_open_claim_submit_result(len(updated), body)
 
     def action_invoice_selected(self):
         """Create a partial invoice for the checked lines and open it."""

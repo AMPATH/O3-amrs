@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sale_order_line_ampath,sale.order.line.ampath,sale.model_sale_order_line,,1,1,1,1
 access_account_move_line_ampath,account.move.line.ampath,account.model_account_move_line,,1,1,1,1
 access_ampath_payload_preview_user,ampath.billing.payload.preview user,model_ampath_billing_payload_preview,base.group_user,1,1,1,1
+access_ampath_claim_submit_result_user,ampath.billing.claim.submit.result user,model_ampath_billing_claim_submit_result,base.group_user,1,1,1,1

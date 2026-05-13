@@ -6,6 +6,41 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
 
+                <!-- Fields used by header button modifiers (Odoo requires them in the arch) -->
+                <xpath expr="//sheet" position="inside">
+                    <field name="billing_actions_visible" invisible="1"/>
+                    <field name="has_claim_eligible_lines" invisible="1"/>
+                    <field name="has_claim_submit_lines" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//header" position="inside">
+                    <button name="action_waive_selected" type="object"
+                            string="Waive selected"
+                            class="btn-secondary"
+                            invisible="not billing_actions_visible"
+                            confirm="Apply a 100%% waiver discount to every selected line?"/>
+                    <button name="action_claim_selected" type="object"
+                            string="Preview claim JSON"
+                            class="btn-secondary"
+                            invisible="not billing_actions_visible or not has_claim_eligible_lines"
+                            confirm="Generate the FHIR claim bundle from checked lines and show JSON?"/>
+                    <button name="action_submit_claim_selected" type="object"
+                            string="Submit claim to payer"
+                            class="btn-secondary"
+                            invisible="not billing_actions_visible or not has_claim_eligible_lines"
+                            confirm="POST the FHIR bundle to the payer (AfyaLink). Selected lines will be marked Submitted if the payer accepts."/>
+                    <button name="action_submit_etl_claim_selected" type="object"
+                            string="Submit claim (ETL)"
+                            class="btn-secondary"
+                            invisible="not billing_actions_visible or not has_claim_submit_lines"
+                            confirm="Submit eligible lines to AMPATH ETL? Waived and already invoiced lines are excluded."/>
+                    <button name="action_invoice_selected" type="object"
+                            string="Invoice selected"
+                            class="btn-secondary"
+                            invisible="not billing_actions_visible"
+                            confirm="Create an invoice for every selected line?"/>
+                </xpath>
+
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <group string="Patient data" name="ampath_patient_data" colspan="2">
                         <field name="x_patient_uuid" readonly="1"/>
@@ -14,27 +49,6 @@
                         <field name="x_customer_weight" readonly="1"/>
                         <field name="x_patient_gender" readonly="1"/>
                     </group>
-                </xpath>
-
-                <!-- Bulk action buttons above the order lines -->
-                <xpath expr="//field[@name='order_line']" position="before">
-                    <field name="billing_actions_visible" invisible="1"/>
-                    <field name="has_claim_eligible_lines" invisible="1"/>
-                    <field name="has_claim_submit_lines" invisible="1"/>
-                    <div class="d-flex gap-2 mb-2 align-items-center"
-                         invisible="not billing_actions_visible">
-                        <span class="text-muted small me-1">Selected lines:</span>
-                        <button name="action_waive_selected" type="object"
-                                string="Waive" class="btn-warning btn-sm"
-                                confirm="Apply a 100%% waiver discount to every selected line?"/>
-                        <button name="action_submit_etl_claim_selected" type="object"
-                                string="Submit claim" class="btn-info btn-sm"
-                                invisible="not has_claim_submit_lines"
-                                confirm="Submit eligible selected lines to AMPATH? Invoiced and fully waived lines are skipped."/>
-                        <button name="action_invoice_selected" type="object"
-                                string="Invoice selected" class="btn-primary btn-sm"
-                                confirm="Create an invoice for every selected line?"/>
-                    </div>
                 </xpath>
 
                 <!-- Row styling: muted+green = paid; blue = invoiced but unpaid -->
