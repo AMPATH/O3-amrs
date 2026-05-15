@@ -19,6 +19,17 @@ class SaleOrderLine(models.Model):
 
     insurance_provider_id = fields.Many2one('res.partner', string="Insurance Payer")
     fhir_claim_id = fields.Char("FHIR ID", copy=False)
+    ampath_prescription_printed = fields.Boolean(
+        string='Prescription printed',
+        default=False,
+        copy=False,
+        help=(
+            'Set when this line is included on a prescription PDF. '
+            'It is excluded from customer invoices, from the understock '
+            'invoice block until you clear the hold, and from warehouse '
+            'deliveries until the hold is cleared.'
+        ),
+    )
     billing_actions_visible = fields.Boolean(
         related='order_id.billing_actions_visible',
     )
@@ -179,6 +190,18 @@ class SaleOrderLine(models.Model):
         'product_uom_qty', 'price_unit', 'discount',
     })
 
+    def _ampath_cancel_prescription_delivery_moves(self):
+        """Cancel open fulfillment moves so the line disappears from delivery pickings."""
+        for line in self:
+            moves = line.move_ids.filtered(
+                lambda m: m.state not in ('done', 'cancel')
+                and not m.scrapped
+                and m.product_id == line.product_id
+                and not (m.location_id.usage == 'customer' and m.to_refund)
+            )
+            if moves:
+                moves._action_cancel()
+
     def write(self, vals):
         if bool(self._PRICE_FIELDS & set(vals)):
             locked = self.filtered(
@@ -195,7 +218,36 @@ class SaleOrderLine(models.Model):
                     "Cannot modify the following line(s) — they are covered by "
                     "a paid invoice:\n%s"
                 ) % names)
-        return super().write(vals)
+        prev_presc = None
+        if 'ampath_prescription_printed' in vals:
+            prev_presc = {line.id: line.ampath_prescription_printed for line in self}
+        res = super().write(vals)
+        if prev_presc is not None:
+            new_val = vals['ampath_prescription_printed']
+            to_relaunch = self.env['sale.order.line']
+            for line in self:
+                old_val = prev_presc.get(line.id, False)
+                if new_val and not old_val:
+                    line._ampath_cancel_prescription_delivery_moves()
+                elif not new_val and old_val and line.state == 'sale':
+                    to_relaunch |= line
+            if to_relaunch:
+                to_relaunch._action_launch_stock_rule()
+        return res
+
+    def _action_launch_stock_rule(self, previous_product_uom_qty=False):
+        """Do not create or extend pickings for lines on prescription hold."""
+        to_procure = self.filtered(lambda l: not l.ampath_prescription_printed)
+        if not to_procure:
+            return True
+        prev = previous_product_uom_qty
+        if prev:
+            prev = {k: v for k, v in prev.items() if k in to_procure.ids}
+            if not prev:
+                prev = False
+        return super(SaleOrderLine, to_procure)._action_launch_stock_rule(
+            previous_product_uom_qty=prev
+        )
 
     # ------------------------------------------------------------------
     # Invoice preparation: carry custom fields onto the invoice line
@@ -392,6 +444,12 @@ class SaleOrderLine(models.Model):
 
         order = orders[0]
         lines_to_bill = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
+        held = lines_to_bill.filtered('ampath_prescription_printed')
+        if held:
+            raise UserError(_(
+                'These lines are on prescription hold and cannot be invoiced until you use '
+                '"Clear prescription hold" on the order: %s'
+            ) % ', '.join(held.mapped('product_id.display_name')[:12]))
         for line in lines_to_bill:
             line._ampath_assert_billable_quantity(line.product_uom_qty)
 

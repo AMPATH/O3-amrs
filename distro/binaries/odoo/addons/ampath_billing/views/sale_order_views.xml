@@ -6,11 +6,27 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
 
-                <!-- Fields used by header button modifiers (Odoo requires them in the arch) -->
+                <!-- Fields used in header / alert modifiers (Odoo requires them in the arch) -->
                 <xpath expr="//sheet" position="inside">
                     <field name="billing_actions_visible" invisible="1"/>
                     <field name="has_claim_eligible_lines" invisible="1"/>
                     <field name="has_claim_submit_lines" invisible="1"/>
+                    <field name="ampath_has_understock_lines" invisible="1"/>
+                    <field name="ampath_has_prescription_hold" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//sheet" position="before">
+                    <div
+                        class="alert alert-warning mb-3"
+                        role="alert"
+                        invisible="not ampath_has_understock_lines"
+                    >
+                        Some medications do not have enough stock to invoice yet.
+                        Use <strong>Print prescription</strong> first: those lines are marked and
+                        <strong>skipped on customer invoices</strong> and
+                        <strong>removed from delivery pickings</strong> until you clear the hold.
+                        Other lines can still be invoiced.
+                    </div>
                 </xpath>
 
                 <xpath expr="//header" position="inside">
@@ -39,6 +55,15 @@
                             class="btn-secondary"
                             invisible="not billing_actions_visible"
                             confirm="Create an invoice for every selected line?"/>
+                    <button name="action_print_prescription" type="object"
+                            string="Print prescription"
+                            class="btn-secondary"
+                            invisible="state == 'cancel'"/>
+                    <button name="action_clear_prescription_invoice_hold" type="object"
+                            string="Clear prescription hold"
+                            class="btn-secondary"
+                            invisible="not ampath_has_prescription_hold"
+                            confirm="Medication lines will be included on invoices and delivery pickings again (subject to stock). Continue?"/>
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="after">
@@ -79,7 +104,7 @@
                             icon="fa-file-text-o"
                             title="Invoice this line"
                             class="btn-sm btn-link text-primary"
-                            invisible="ampath_line_invoice_status != 'to_invoice' or is_downpayment"/>
+                            invisible="ampath_line_invoice_status != 'to_invoice' or is_downpayment or ampath_prescription_printed"/>
 
                     <!-- Invoice status icon: blank / 📄 / ✅ -->
                     <field name="invoice_indicator" string="Inv." readonly="1" optional="show"/>
@@ -92,6 +117,13 @@
                            decoration-info="claim_status == 'submitted'"
                            decoration-success="claim_status == 'approved'"/>
 
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                    <field name="ampath_prescription_printed"
+                           string="Rx printed"
+                           optional="show"
+                           readonly="1"/>
                 </xpath>
 
                 <!-- Lock price/qty/discount when the line's invoice is paid -->

@@ -3,3 +3,5 @@ access_sale_order_line_ampath,sale.order.line.ampath,sale.model_sale_order_line,
 access_account_move_line_ampath,account.move.line.ampath,account.model_account_move_line,,1,1,1,1
 access_ampath_payload_preview_user,ampath.billing.payload.preview user,model_ampath_billing_payload_preview,base.group_user,1,1,1,1
 access_ampath_claim_submit_result_user,ampath.billing.claim.submit.result user,model_ampath_billing_claim_submit_result,base.group_user,1,1,1,1
+access_ampath_prescription_print_wizard_user,ampath.prescription.print.wizard user,model_ampath_prescription_print_wizard,base.group_user,1,1,1,1
+access_ampath_prescription_print_wizard_line_user,ampath.prescription.print.wizard.line user,model_ampath_prescription_print_wizard_line,base.group_user,1,1,1,1

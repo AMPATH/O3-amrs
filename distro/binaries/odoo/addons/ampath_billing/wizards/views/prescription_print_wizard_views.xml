@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ampath_prescription_print_wizard_form" model="ir.ui.view">
+        <field name="name">ampath.prescription.print.wizard.form</field>
+        <field name="model">ampath.prescription.print.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Print prescription">
+                <group>
+                    <field name="sale_order_id" invisible="1" force_save="1"/>
+                    <field name="prescription_pdf_name" invisible="1"/>
+                </group>
+                <field
+                    name="line_ids"
+                    nolabel="1"
+                    colspan="2"
+                    invisible="prescription_pdf"
+                >
+                    <tree create="false" delete="false" editable="bottom">
+                        <field name="selected" string="Print"/>
+                        <field
+                            name="sale_line_id"
+                            widget="many2one"
+                            readonly="1"
+                            force_save="1"
+                            options="{'no_open': True, 'no_create': True}"
+                        />
+                    </tree>
+                </field>
+                <div
+                    class="alert alert-warning mt-3"
+                    role="alert"
+                    invisible="prescription_pdf"
+                >
+                    <p class="mb-2">
+                        The PDF lists <strong>only medications you leave checked</strong>
+                        (consultations, imaging, and other services never appear).
+                        <strong>No prices</strong> on the prescription.
+                    </p>
+                    <p class="mb-2">
+                        You can print a subset even when stock is available — uncheck
+                        lines you do not want on the paper Rx.
+                    </p>
+                    <p class="mb-2">
+                        <strong>Generate &amp; preview</strong> marks checked lines as
+                        <strong>prescription printed</strong> (skipped on customer invoices
+                        and removed from delivery pickings until
+                        <strong>Clear prescription hold</strong> on the sale order).
+                    </p>
+                    <p class="mb-0 small text-muted">
+                        Optional add-on lines linked to another order line are not listed here.
+                    </p>
+                </div>
+                <div
+                    invisible="not prescription_pdf"
+                    class="o_prescription_preview border rounded mb-3 p-2"
+                >
+                    <p class="text-muted small mb-2">
+                        PDF generated. Use <strong>Download PDF file</strong> to open or save it.
+                    </p>
+                    <field
+                        name="prescription_pdf"
+                        widget="binary"
+                        filename="prescription_pdf_name"
+                        nolabel="1"
+                        readonly="1"
+                    />
+                </div>
+                <footer>
+                    <button
+                        name="action_print_prescription_pdf"
+                        type="object"
+                        string="Generate &amp; preview"
+                        class="btn-primary"
+                        invisible="prescription_pdf"
+                        data-hotkey="q"
+                    />
+                    <button
+                        name="action_download_prescription_pdf"
+                        type="object"
+                        string="Download PDF file"
+                        class="btn-secondary"
+                        invisible="not prescription_pdf"
+                    />
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

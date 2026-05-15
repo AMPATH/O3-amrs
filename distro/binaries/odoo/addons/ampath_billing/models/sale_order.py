@@ -2,6 +2,7 @@ import json
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.tools.float_utils import float_compare
 
 
 class SaleOrder(models.Model):
@@ -82,6 +83,28 @@ class SaleOrder(models.Model):
         help='True when at least one line can be submitted (eligible, not waived, not yet invoiced).',
     )
 
+    # Prescription print (ported from Transcare health_care)
+    ampath_has_understock_lines = fields.Boolean(
+        compute='_compute_ampath_has_understock_lines',
+        string='Understock for invoicing',
+        help=(
+            'Storable products still have quantity to invoice, not enough free stock, '
+            'and are not yet marked by printing the prescription.'
+        ),
+    )
+    ampath_has_prescription_hold = fields.Boolean(
+        compute='_compute_ampath_has_prescription_hold',
+        string='Has prescription invoice hold',
+    )
+    ampath_prescription_pdf_line_ids = fields.Many2many(
+        'sale.order.line',
+        'ampath_so_prescript_pdf_line_rel',
+        'order_id',
+        'line_id',
+        string='Prescription PDF lines (staging)',
+        copy=False,
+    )
+
     @api.depends('order_line.is_claim_eligible')
     def _compute_has_claim_eligible_lines(self):
         for order in self:
@@ -129,6 +152,118 @@ class SaleOrder(models.Model):
                 order.billing_actions_visible = not all_paid
             else:
                 order.billing_actions_visible = True
+
+    @api.depends('order_line.ampath_prescription_printed')
+    def _compute_ampath_has_prescription_hold(self):
+        for order in self:
+            order.ampath_has_prescription_hold = bool(
+                order.order_line.filtered('ampath_prescription_printed')
+            )
+
+    @api.depends(
+        'order_line',
+        'order_line.display_type',
+        'order_line.product_id',
+        'order_line.product_id.type',
+        'order_line.qty_to_invoice',
+        'order_line.qty_delivered',
+        'order_line.qty_invoiced',
+        'order_line.product_uom',
+        'order_line.ampath_prescription_printed',
+        'warehouse_id',
+        'company_id',
+    )
+    def _compute_ampath_has_understock_lines(self):
+        for order in self:
+            order.ampath_has_understock_lines = bool(
+                order._ampath_understock_invoiceable_lines()
+            )
+
+    def _ampath_stock_warehouse(self):
+        self.ensure_one()
+        wh = self.warehouse_id
+        if not wh:
+            wh = (
+                self.env['stock.warehouse']
+                .sudo()
+                .search([('company_id', 'in', self.company_id.ids)], limit=1)
+            )
+        return wh
+
+    def _ampath_understock_invoiceable_lines(self):
+        """Storable lines to invoice with insufficient free qty (excl. prescription hold)."""
+        self.ensure_one()
+        wh = self._ampath_stock_warehouse()
+        bad = self.env['sale.order.line']
+        for line in self.order_line:
+            if line.display_type in ('line_section', 'line_note'):
+                continue
+            if line.ampath_prescription_printed:
+                continue
+            if line.product_id.type != 'product':
+                continue
+            qty_to_inv = line.qty_to_invoice
+            if qty_to_inv <= 0:
+                continue
+            product = line.product_id
+            if wh:
+                product = product.with_context(warehouse=wh.id)
+            avail = product.free_qty
+            qty_in_product_uom = line.product_uom._compute_quantity(
+                qty_to_inv,
+                line.product_id.uom_id,
+            )
+            precision = line.product_id.uom_id.rounding
+            if float_compare(avail, qty_in_product_uom, precision_rounding=precision) < 0:
+                bad |= line
+        return bad
+
+    def _ampath_prescription_lines(self):
+        """Medication-style lines only: goods (storable/consumable), not services.
+
+        Excludes optional-product child lines (``linked_line_id`` when present).
+        """
+        self.ensure_one()
+        lines = self.env['sale.order.line']
+        has_linked = 'linked_line_id' in self.env['sale.order.line']._fields
+        for line in self.order_line:
+            if line.display_type:
+                continue
+            if not line.product_id:
+                continue
+            if line.product_id.type not in ('product', 'consu'):
+                continue
+            if has_linked and line.linked_line_id:
+                continue
+            lines |= line
+        return lines
+
+    def _get_invoiceable_lines(self, final=False):
+        lines = super()._get_invoiceable_lines(final=final)
+        return lines.filtered(
+            lambda l: l.display_type in ('line_section', 'line_note')
+            or not l.ampath_prescription_printed
+        )
+
+    def action_print_prescription(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Print prescription'),
+            'res_model': 'ampath.prescription.print.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_sale_order_id': self.id},
+        }
+
+    def action_clear_prescription_invoice_hold(self):
+        """Include prescription-printed medication lines on invoices again."""
+        for order in self:
+            order.order_line.filtered('ampath_prescription_printed').write(
+                {'ampath_prescription_printed': False}
+            )
+            order.ampath_prescription_pdf_line_ids = [(5, 0, 0)]
+        return True
 
     def _action_open_payload_preview(self, title, payload_dict):
         """Open a modal with pretty-printed JSON (no external HTTP)."""
@@ -227,12 +362,14 @@ class SaleOrder(models.Model):
                 ))
 
         elif action == 'invoice':
+            lines = lines.filtered(lambda l: not l.ampath_prescription_printed)
             lines = lines.filtered(
                 lambda l: l.ampath_line_invoice_status == 'to_invoice'
             )
             if not lines:
                 raise UserError(_(
-                    "All selected lines have already been invoiced."
+                    "All selected lines have already been invoiced, or are on prescription hold "
+                    "(use \"Clear prescription hold\" on the order first)."
                 ))
 
         else:
@@ -344,10 +481,26 @@ class SaleOrder(models.Model):
         })
 
     def _create_invoices(self, grouped=False, final=False, date=None):
-        """Require on-hand stock for storable products before standard Odoo invoicing."""
+        """Block invoicing when understock until prescription is printed; then stock checks."""
+        for order in self:
+            bad_lines = order._ampath_understock_invoiceable_lines()
+            if bad_lines:
+                names = ', '.join(bad_lines.mapped('product_id.display_name')[:12])
+                if len(bad_lines) > 12:
+                    names = '%s, …' % names
+                raise UserError(
+                    _(
+                        'Not enough stock to invoice: %(products)s.\n\n'
+                        'Print the prescription first (medications on the PDF are marked and '
+                        'skipped on customer invoices until you use "Clear prescription hold"). '
+                        'You can then create invoices for the remaining lines.',
+                    ) % {'products': names},
+                )
         for order in self:
             for line in order.order_line:
                 if line.display_type or line.is_downpayment:
+                    continue
+                if line.ampath_prescription_printed:
                     continue
                 qty = getattr(line, 'qty_to_invoice', None)
                 if qty is None or qty <= 0:

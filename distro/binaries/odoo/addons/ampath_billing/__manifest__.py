@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.53',
+    'version': '1.0.55',
     'summary': 'Billing module for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
@@ -10,6 +10,8 @@
         'data/landing_page.xml',
         'views/ampath_payload_preview_wizard_views.xml',
         'views/ampath_claim_submit_result_wizard_views.xml',
+        'report/sale_order_prescription_report.xml',
+        'wizards/views/prescription_print_wizard_views.xml',
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
         'views/product_template_views.xml',
