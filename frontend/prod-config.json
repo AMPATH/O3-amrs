@@ -623,7 +623,7 @@
     "shaConsulationConceptUuid": "1764494b-1f0b-491a-8f55-9970be56ce70",
     "outPatientCareSettingUuid": "6f0c9a92-6f24-11e3-af88-005056821db0",
     "orderEncounterTypeUuid": "d8e0f981-62e0-4c2a-b3ca-890c51afc350",
-    "nonSHAPaymentModes": ["80563536-8fb0-4447-8238-c6a467ffd5c6"]
+    "nonSHAPaymentModes": ["0fef5b74-ffb3-44f3-a832-3f958c2c5a9e", "e5205599-bb7b-41ac-87b3-9c8630f4c59a", "682023fe-16c3-44e3-a286-7ea8a611cf9c"]
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "https://ngx.ampath.or.ke/hie"
