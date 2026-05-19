@@ -385,7 +385,7 @@ class SaleOrderLine(models.Model):
             line.write({'discount': 100.0})
 
     def _ampath_claim_lines_common(self):
-        """Shared validation for claim preview / ETL submit on selected lines."""
+        """Validate PHC claim lines for ETL submit (no warehouse stock requirement)."""
         lines = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
         if not lines:
             raise UserError(_("No billable lines selected for claim actions."))
@@ -395,28 +395,27 @@ class SaleOrderLine(models.Model):
         order = orders[0]
         ineligible = lines.filtered(lambda l: not l.is_claim_eligible)
         if ineligible:
+            names = ', '.join(ineligible.mapped('product_id.display_name')[:8])
             raise UserError(_(
-                "Some selected lines are not eligible for claims. Check: date of birth, patient id "
-                "on the order; pre-authorization when the product has an intervention code; claim "
-                "status (already submitted lines are excluded)."
-            ))
+                'These lines are not PHC claim eligible: %(names)s. Check patient id and date '
+                'of birth on the order; use Preauth and set visit pre-authorization to approved '
+                'when the product has an intervention code.',
+            ) % {'names': names})
         skipped = lines - order._ampath_lines_skip_for_stock_and_rx(lines)
         lines = order._ampath_lines_skip_for_stock_and_rx(lines)
         if not lines:
             raise UserError(_(
-                'No lines to claim: selected rows may be on prescription hold or out of stock. '
-                'Use "Print prescription" for understock medications, or select in-stock / '
-                'service lines.'
+                'No lines to claim: rows may be on prescription hold or out of stock. '
+                'Use "Print prescription" for understock medications; service lines should '
+                'still submit if PHC claim eligible.'
             ))
         if skipped:
             _logger.info(
-                'Claim action skipped %s line(s) on order %s (Rx hold or understock): %s',
+                'Claim submit skipped %s line(s) on order %s (Rx hold or understock): %s',
                 len(skipped),
                 order.name,
                 ', '.join(skipped.mapped('product_id.display_name')[:8]),
             )
-        for line in lines:
-            line._ampath_assert_billable_quantity(line.product_uom_qty)
         return order, lines
 
     def action_submit_etl_claim(self):

@@ -247,18 +247,24 @@ def validate_claim_prerequisites(order, lines):
 
 
 def build_preauth_request_payload(order, lines=None):
-    """JSON body for SHIF pre-authorization: mirrors BuildClaimBundleRequest (no OpenMRS bill fetch)."""
-    lines = lines or order.order_line.filtered(
-        lambda l: not l.display_type and not l.is_downpayment,
-    )
-    if hasattr(order, '_ampath_preauth_action_lines'):
-        lines = order._ampath_preauth_action_lines(lines)
-    elif hasattr(order, '_ampath_lines_skip_for_stock_and_rx'):
-        lines = order._ampath_lines_skip_for_stock_and_rx(lines)
+    """JSON body for SHIF pre-authorization or PHC ETL claim submit (BuildClaimBundleRequest).
+
+    When *lines* is passed explicitly (PHC claim submit or preauth wizard), those rows are
+    used as-is. When *lines* is omitted, default to intervention lines still needing pre-auth.
+    """
+    if lines is None:
+        lines = order.order_line.filtered(
+            lambda l: not l.display_type and not l.is_downpayment,
+        )
+        if hasattr(order, '_ampath_preauth_action_lines'):
+            lines = order._ampath_preauth_action_lines(lines)
+    else:
+        lines = lines.filtered(lambda l: not l.display_type and not l.is_downpayment)
     if not lines:
         raise UserError(_(
-            'No lines available for pre-authorization. Add intervention-code products '
-            'with patient id and date of birth, and ensure pre-authorization is not already approved.'
+            'No billable lines for this request. For pre-authorization, add intervention-code '
+            'products with patient id and date of birth. For PHC claim submit, ensure lines are '
+            'claim-eligible (pre-authorization approved when required).'
         ))
     services = _services_from_lines(order, lines)
     diagnoses = diagnoses_list(order)
