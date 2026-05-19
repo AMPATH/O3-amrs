@@ -19,6 +19,17 @@
       }
     }
   },
+   "@openmrs/esm-appointments-app": {
+    "extensionSlots": {
+       "configure": {
+         "clinical-appointments-dashboard-link": {
+             "Display conditions": {
+                 "privileges": ["O3 View Appointments Dashboard"]
+             }
+         }
+       }
+    }
+  },
   "@openmrs/esm-patient-banner": {
     "extensionSlots": {
       "patient-banner-tags-slot": {
