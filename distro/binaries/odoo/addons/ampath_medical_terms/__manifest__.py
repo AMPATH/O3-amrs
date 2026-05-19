@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Medical Terminology',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1.0.1',
     'summary': 'Replaces generic business terms with medical terminology',
     'author': 'AMPATH Kenya',
     'category': 'Customizations',

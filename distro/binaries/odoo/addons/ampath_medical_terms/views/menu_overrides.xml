@@ -10,7 +10,7 @@
         <field name="name">Service Orders</field>
     </record>
 
-    <record id="sale.res_partner_menu_customer" model="ir.ui.menu">
+    <record id="sale.res_partner_menu" model="ir.ui.menu">
         <field name="name">Patients</field>
     </record>
 
