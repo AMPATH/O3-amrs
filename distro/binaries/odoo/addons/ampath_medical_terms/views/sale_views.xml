@@ -23,7 +23,7 @@
         </field>
     </record>
 
-    <!-- ── Action renames ── -->
+    <!-- Action renames (sale.action_orders_customers removed in Odoo 17; Patients menu is sale.res_partner_menu_customer in menu_overrides.xml) -->
     <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
         <field name="name">Service Quotes</field>
     </record>
@@ -34,27 +34,6 @@
 
     <record id="sale.action_orders" model="ir.actions.act_window">
         <field name="name">Service Orders</field>
-    </record>
-
-    <record id="sale.action_orders_customers" model="ir.actions.act_window">
-        <field name="name">Patients</field>
-    </record>
-
-    <!-- ── Action renames ── -->
-    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
-        <field name="name">Service Quotes</field>
-    </record>
-
-    <record id="sale.action_quotations" model="ir.actions.act_window">
-        <field name="name">Service Quotes</field>
-    </record>
-
-    <record id="sale.action_orders" model="ir.actions.act_window">
-        <field name="name">Service Orders</field>
-    </record>
-
-    <record id="sale.action_orders_customers" model="ir.actions.act_window">
-        <field name="name">Patients</field>
     </record>
 
 </odoo>
