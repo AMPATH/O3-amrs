@@ -19,15 +19,17 @@
       }
     }
   },
-   "@openmrs/esm-appointments-app": {
+  "@openmrs/esm-appointments-app": {
     "extensionSlots": {
-       "configure": {
-         "clinical-appointments-dashboard-link": {
-             "Display conditions": {
-                 "privileges": ["O3 View Appointments Dashboard"]
-             }
-         }
-       }
+      "configure": {
+        "clinical-appointments-dashboard-link": {
+          "Display conditions": {
+            "privileges": [
+              "O3 View Appointments Dashboard"
+            ]
+          }
+        }
+      }
     }
   },
   "@openmrs/esm-patient-banner": {
@@ -247,10 +249,13 @@
   "@ampath/esm-clinical-reminders-app": {
     "etlBaseUrl": "/etl"
   },
+  "@ampath/esm-poc-features-app": {
+    "etlBaseUrl": "/etl"
+  },
   "@ampath/esm-procedures-app": {
     "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
   },
-  "@ampath/esm-poc-features-app": {
-      "etlBaseUrl": "/etl"
+  "@openmrs/esm-patient-notes-app": {
+    "stickyNoteConceptUuid": "1af9de80-6755-485e-82ec-e1fdc0cd18da"
   }
 }

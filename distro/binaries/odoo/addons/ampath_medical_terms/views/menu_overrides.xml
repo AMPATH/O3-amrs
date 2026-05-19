@@ -10,6 +10,10 @@
         <field name="name">Service Orders</field>
     </record>
 
+    <record id="sale.res_partner_menu_customer" model="ir.ui.menu">
+        <field name="name">Patients</field>
+    </record>
+
     <!-- ══ INVENTORY MENUS ══ -->
     <record id="stock.menu_action_production_lot_form" model="ir.ui.menu">
         <field name="name">Batch/Serial Numbers</field>
@@ -34,6 +38,10 @@
     <!-- ══ ACCOUNTING MENUS ══ -->
     <record id="account.menu_action_move_out_invoice_type" model="ir.ui.menu">
         <field name="name">Patient Invoices</field>
+    </record>
+
+    <record id="account.menu_account_customer" model="ir.ui.menu">
+        <field name="name">Patients</field>
     </record>
 
     <record id="account.menu_action_move_out_refund_type" model="ir.ui.menu">

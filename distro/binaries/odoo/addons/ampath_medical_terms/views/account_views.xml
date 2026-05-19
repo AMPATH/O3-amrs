@@ -30,4 +30,8 @@
         <field name="name">Supplier Bills</field>
     </record>
 
+    <record id="account.res_partner_action_customer" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+    </record>
+
 </odoo>
