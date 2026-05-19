@@ -200,10 +200,22 @@ def _etl_false_or_str(val):
 
 
 def _stock_violation_messages(lines):
-    """Lines that are storable and short on hand (for pre-auth, claims, bundle build)."""
+    """Storable lines short on hand (callers should already exclude Rx hold / understock)."""
     out = []
+    if not lines:
+        return out
+    order = lines[:1].order_id
+    understock = (
+        order._ampath_understock_invoiceable_lines()
+        if order and hasattr(order, '_ampath_understock_invoiceable_lines')
+        else lines.browse()
+    )
     for line in lines:
         if line.display_type or line.is_downpayment:
+            continue
+        if getattr(line, 'ampath_prescription_printed', False):
+            continue
+        if line in understock:
             continue
         shortage = line._ampath_stock_shortage_message(line.product_uom_qty)
         if shortage:
@@ -236,12 +248,18 @@ def validate_claim_prerequisites(order, lines):
 
 def build_preauth_request_payload(order, lines=None):
     """JSON body for SHIF pre-authorization: mirrors BuildClaimBundleRequest (no OpenMRS bill fetch)."""
-    lines = lines or order.order_line.filtered(lambda l: not l.display_type and not l.is_downpayment)
-    stock_msgs = _stock_violation_messages(lines)
-    if stock_msgs:
+    lines = lines or order.order_line.filtered(
+        lambda l: not l.display_type and not l.is_downpayment,
+    )
+    if hasattr(order, '_ampath_preauth_action_lines'):
+        lines = order._ampath_preauth_action_lines(lines)
+    elif hasattr(order, '_ampath_lines_skip_for_stock_and_rx'):
+        lines = order._ampath_lines_skip_for_stock_and_rx(lines)
+    if not lines:
         raise UserError(_(
-            'Cannot pre-authorize — insufficient stock for storable items:\n• %s'
-        ) % '\n• '.join(stock_msgs))
+            'No lines available for pre-authorization. Add intervention-code products '
+            'with patient id and date of birth, and ensure pre-authorization is not already approved.'
+        ))
     services = _services_from_lines(order, lines)
     diagnoses = diagnoses_list(order)
     partner = order.partner_id

@@ -56,11 +56,16 @@ class SaleOrderLine(models.Model):
         help="True when the line's invoice has been paid.",
     )
 
+    is_preauth_eligible = fields.Boolean(
+        compute='_compute_is_preauth_eligible',
+        string='Pre-auth eligible',
+        help='Line has an intervention code and still needs SHA pre-authorization on the order.',
+    )
     is_claim_eligible = fields.Boolean(
         compute='_compute_is_claim_eligible',
-        string="Claim eligible",
-        help="Eligible when patient id and DOB are set (diagnosis checks disabled for now). "
-             "SHA pre-authorization applies when the **product** has an intervention code set.",
+        string='PHC claim eligible',
+        help='Eligible to submit as a PHC (SHA) claim for payment instead of cash: patient id '
+             'and DOB set; intervention-code products also require approved pre-authorization.',
     )
     x_service_date_start = fields.Datetime(
         string="Service start (claim)",
@@ -92,6 +97,58 @@ class SaleOrderLine(models.Model):
     # Computed fields
     # ------------------------------------------------------------------
 
+    def _ampath_line_has_claim_patient_data(self):
+        """Patient id + DOB present on order or partner (shared by pre-auth and PHC claim)."""
+        self.ensure_one()
+        order = self.order_id
+        patient = (
+            (order.x_sha_client_registry_id or '').strip()
+            or (getattr(order, 'x_patient_uuid', None) or '').strip()
+            or (getattr(order, 'x_external_identifier', None) or '').strip()
+        )
+        if not patient:
+            return False
+        return bool(
+            getattr(order, 'x_customer_dob', None)
+            or (order.partner_id and getattr(order.partner_id, 'x_customer_dob', None))
+        )
+
+    @api.depends(
+        'display_type',
+        'is_downpayment',
+        'claim_status',
+        'product_id.x_intervention_code',
+        'order_id.x_patient_uuid',
+        'order_id.x_external_identifier',
+        'order_id.x_sha_client_registry_id',
+        'order_id.x_preauth_status',
+        'order_id.x_customer_dob',
+        'order_id.partner_id.x_customer_dob',
+    )
+    def _compute_is_preauth_eligible(self):
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import (
+            line_requires_sha_intervention_code,
+        )
+
+        approved_preauth = frozenset({
+            'approved', 'authorized', 'authorisation', 'success', 'active',
+        })
+        for line in self:
+            if line.display_type or line.is_downpayment:
+                line.is_preauth_eligible = False
+                continue
+            if line.claim_status in ('submitted', 'approved'):
+                line.is_preauth_eligible = False
+                continue
+            if not line_requires_sha_intervention_code(line):
+                line.is_preauth_eligible = False
+                continue
+            if not line._ampath_line_has_claim_patient_data():
+                line.is_preauth_eligible = False
+                continue
+            pre = (line.order_id.x_preauth_status or '').strip().lower()
+            line.is_preauth_eligible = pre not in approved_preauth
+
     @api.depends(
         'display_type',
         'is_downpayment',
@@ -109,6 +166,9 @@ class SaleOrderLine(models.Model):
             line_requires_sha_intervention_code,
         )
 
+        approved_preauth = frozenset({
+            'approved', 'authorized', 'authorisation', 'success', 'active',
+        })
         for line in self:
             if line.display_type or line.is_downpayment:
                 line.is_claim_eligible = False
@@ -116,27 +176,12 @@ class SaleOrderLine(models.Model):
             if line.claim_status in ('submitted', 'approved'):
                 line.is_claim_eligible = False
                 continue
-            order = line.order_id
-            patient = (
-                (order.x_sha_client_registry_id or '').strip()
-                or (getattr(order, 'x_patient_uuid', None) or '').strip()
-                or (getattr(order, 'x_external_identifier', None) or '').strip()
-            )
-            if not patient:
+            if not line._ampath_line_has_claim_patient_data():
                 line.is_claim_eligible = False
                 continue
-            if not (
-                getattr(order, 'x_customer_dob', None)
-                or (order.partner_id and getattr(order.partner_id, 'x_customer_dob', None))
-            ):
-                line.is_claim_eligible = False
-                continue
-            sha_path = line_requires_sha_intervention_code(line)
-            if sha_path:
-                pre = (order.x_preauth_status or '').strip().lower()
-                line.is_claim_eligible = pre in (
-                    'approved', 'authorized', 'authorisation', 'success', 'active',
-                )
+            if line_requires_sha_intervention_code(line):
+                pre = (line.order_id.x_preauth_status or '').strip().lower()
+                line.is_claim_eligible = pre in approved_preauth
             else:
                 line.is_claim_eligible = True
 
@@ -355,24 +400,24 @@ class SaleOrderLine(models.Model):
                 "on the order; pre-authorization when the product has an intervention code; claim "
                 "status (already submitted lines are excluded)."
             ))
+        skipped = lines - order._ampath_lines_skip_for_stock_and_rx(lines)
+        lines = order._ampath_lines_skip_for_stock_and_rx(lines)
+        if not lines:
+            raise UserError(_(
+                'No lines to claim: selected rows may be on prescription hold or out of stock. '
+                'Use "Print prescription" for understock medications, or select in-stock / '
+                'service lines.'
+            ))
+        if skipped:
+            _logger.info(
+                'Claim action skipped %s line(s) on order %s (Rx hold or understock): %s',
+                len(skipped),
+                order.name,
+                ', '.join(skipped.mapped('product_id.display_name')[:8]),
+            )
         for line in lines:
             line._ampath_assert_billable_quantity(line.product_uom_qty)
         return order, lines
-
-    def action_bulk_fhir_claim(self):
-        """Build the FHIR claim bundle from selected lines and open a JSON preview (no HTTP)."""
-        order, lines = self._ampath_claim_lines_common()
-        from odoo.addons.ampath_billing.services.claim_bundle_builder import build_claim_bundle
-
-        pre_id = (order.x_preauth_fhir_claim_id or '').strip() or None
-        try:
-            bundle, _internal_claim_id = build_claim_bundle(order, lines, pre_auth_claim_id=pre_id)
-        except ValueError as e:
-            raise UserError(str(e)) from e
-        return order._action_open_payload_preview(
-            _('FHIR claim bundle (JSON)'),
-            bundle,
-        )
 
     def action_submit_etl_claim(self):
         """POST BuildClaimBundleRequest-shaped JSON to AMPATH ETL (env / system params)."""
@@ -450,15 +495,22 @@ class SaleOrderLine(models.Model):
                 'These lines are on prescription hold and cannot be invoiced until you use '
                 '"Clear prescription hold" on the order: %s'
             ) % ', '.join(held.mapped('product_id.display_name')[:12]))
+
+        understock = order._ampath_understock_invoiceable_lines()
+        skipped_understock = lines_to_bill & understock
+        lines_to_bill = lines_to_bill - skipped_understock
+        if skipped_understock and not lines_to_bill:
+            raise UserError(_(
+                'Selected lines have insufficient stock. Use "Print prescription" for those '
+                'medications (they are held off invoices and deliveries), or select other lines.'
+            ))
         for line in lines_to_bill:
             line._ampath_assert_billable_quantity(line.product_uom_qty)
 
         invoice_vals = order._prepare_invoice()
         invoice_line_vals_list = []
 
-        for line in self:
-            if line.display_type or line.is_downpayment:
-                continue
+        for line in lines_to_bill:
             line_vals = line._prepare_invoice_line()
             # Always bill the full line quantity, not just qty_to_invoice,
             # since we are doing explicit partial invoicing per selected line.

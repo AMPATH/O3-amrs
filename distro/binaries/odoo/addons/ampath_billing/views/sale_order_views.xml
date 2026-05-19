@@ -9,7 +9,7 @@
                 <!-- Fields used in header / alert modifiers (Odoo requires them in the arch) -->
                 <xpath expr="//sheet" position="inside">
                     <field name="billing_actions_visible" invisible="1"/>
-                    <field name="has_claim_eligible_lines" invisible="1"/>
+                    <field name="has_preauth_eligible_lines" invisible="1"/>
                     <field name="has_claim_submit_lines" invisible="1"/>
                     <field name="ampath_has_understock_lines" invisible="1"/>
                     <field name="ampath_has_prescription_hold" invisible="1"/>
@@ -21,11 +21,11 @@
                         role="alert"
                         invisible="not ampath_has_understock_lines"
                     >
-                        Some medications do not have enough stock to invoice yet.
+                        Some medications do not have enough stock to bill or claim yet.
                         Use <strong>Print prescription</strong> first: those lines are marked and
-                        <strong>skipped on customer invoices</strong> and
+                        <strong>skipped on invoices and claims</strong> and
                         <strong>removed from delivery pickings</strong> until you clear the hold.
-                        Other lines can still be invoiced.
+                        Other lines can still be invoiced or submitted to the payer.
                     </div>
                 </xpath>
 
@@ -35,21 +35,16 @@
                             class="btn-secondary"
                             invisible="not billing_actions_visible"
                             confirm="Apply a 100%% waiver discount to every selected line?"/>
-                    <button name="action_claim_selected" type="object"
-                            string="Preview claim JSON"
+                    <button name="action_request_preauth" type="object"
+                            string="Preauth"
                             class="btn-secondary"
-                            invisible="not billing_actions_visible or not has_claim_eligible_lines"
-                            confirm="Generate the FHIR claim bundle from checked lines and show JSON?"/>
-                    <button name="action_submit_claim_selected" type="object"
-                            string="Submit claim to payer"
-                            class="btn-secondary"
-                            invisible="not billing_actions_visible or not has_claim_eligible_lines"
-                            confirm="POST the FHIR bundle to the payer (AfyaLink). Selected lines will be marked Submitted if the payer accepts."/>
+                            invisible="not billing_actions_visible or not has_preauth_eligible_lines"
+                            confirm="Build SHA pre-authorization JSON for intervention-code lines on this order?"/>
                     <button name="action_submit_etl_claim_selected" type="object"
-                            string="Submit claim (ETL)"
+                            string="Submit claim"
                             class="btn-secondary"
                             invisible="not billing_actions_visible or not has_claim_submit_lines"
-                            confirm="Submit eligible lines to AMPATH ETL? Waived and already invoiced lines are excluded."/>
+                            confirm="Submit all eligible PHC claim lines to AMPATH ETL as insurance payment (instead of cash)? Waived, prescription-hold, and out-of-stock lines are excluded."/>
                     <button name="action_invoice_selected" type="object"
                             string="Invoice selected"
                             class="btn-secondary"
