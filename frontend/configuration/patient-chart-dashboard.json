@@ -5,13 +5,13 @@
         "add": [
           "nav-group#GeneralMedicine",
           "nav-group#MNCH",
-          "nav-group#NCD",
+          "nav-group#ChronicDiseaseCentre",
           "nav-group#HTS"
         ],
         "order": [
           "nav-group#GeneralMedicine",
           "nav-group#MNCH",
-          "nav-group#NCD",
+          "nav-group#ChronicDiseaseCentre",
           "nav-group#HTS"
         ],
         "configure": {
@@ -35,13 +35,13 @@
               }
             }
           },
-          "nav-group#NCD": {
-            "title": "ncd",
-            "slotName": "ncd-group-slot",
+          "nav-group#ChronicDiseaseCentre": {
+            "title": "chronicDiseaseCentre",
+            "slotName": "chronic-disease-centre-group-slot",
             "isExpanded": true,
             "Translation overrides": {
               "en": {
-                "ncd": "NCD"
+                "chronicDiseaseCentre": "Chronic Disease Centre"
               }
             }
           },
@@ -62,15 +62,13 @@
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
           "dashboard#tb-treatment",
-          "dashboard#dental",
-          "dashboard#cervical-cancer"
+          "dashboard#dental"
         ],
         "order": [
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
           "dashboard#tb-treatment",
-          "dashboard#dental",
-          "dashboard#cervical-cancer"
+          "dashboard#dental"
         ],
         "configure": {
           "dashboard#general-opd-triage": {
@@ -110,16 +108,6 @@
             "Translation overrides": {
               "en": {
                 "dental": "Dental"
-              }
-            }
-          },
-          "dashboard#cervical-cancer": {
-            "title": "cervicalCancer",
-            "path": "cervical-cancer",
-            "slot": "cervical-cancer-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "cervicalCancer": "Cervical Cancer"
               }
             }
           }
@@ -217,12 +205,14 @@
           }
         }
       },
-      "ncd-group-slot": {
+      "chronic-disease-centre-group-slot": {
         "add": [
-          "dashboard#ncd"
+          "dashboard#ncd",
+          "dashboard#cervical-cancer"
         ],
         "order": [
-          "dashboard#ncd"
+          "dashboard#ncd",
+          "dashboard#cervical-cancer"
         ],
         "configure": {
           "dashboard#ncd": {
@@ -232,6 +222,16 @@
             "Translation overrides": {
               "en": {
                 "ncd": "NCD"
+              }
+            }
+          },
+          "dashboard#cervical-cancer": {
+            "title": "cervicalCancer",
+            "path": "cervical-cancer",
+            "slot": "cervical-cancer-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "cervicalCancer": "Cancer"
               }
             }
           }
