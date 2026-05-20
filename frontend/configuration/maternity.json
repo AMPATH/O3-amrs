@@ -2,7 +2,7 @@
   "@openmrs/esm-patient-chart-app": {
     "extensionSlots": {
       "maternity-dashboard-slot": {
-        "add": ["encounter-list"],
+        "add": ["encounter-list", "labour-care-widget"],
         "configure": {
           "encounter-list": {
             "tabDefinitions": [
@@ -142,6 +142,9 @@
               }
             ],
             "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider"}}
+          },
+          "labour-care-widget": {
+            "title": "Labour Care Guide"
           }
         }
       }
