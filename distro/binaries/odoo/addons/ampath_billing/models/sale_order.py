@@ -378,6 +378,34 @@ class SaleOrder(models.Model):
         bad = self._ampath_understock_invoiceable_lines()
         return lines - bad
 
+    def _nothing_to_invoice_error_message(self):
+        """Clearer message when claim-submitted lines are excluded from patient invoices."""
+        if len(self) == 1:
+            order = self
+            product_lines = order._ampath_billable_product_lines()
+            on_claim = product_lines.filtered(
+                lambda l: l.claim_status in ('submitted', 'approved')
+            )
+            invoiceable = order._get_invoiceable_lines(final=False).filtered(
+                lambda l: not l.display_type
+            )
+            if on_claim and not invoiceable:
+                cash_remaining = product_lines.filtered(
+                    lambda l: l.claim_status not in ('submitted', 'approved')
+                )
+                if not cash_remaining:
+                    return _(
+                        'Cannot create a patient invoice. Every product line on this order '
+                        'was submitted on an insurance claim and is not billed to the patient '
+                        'in cash. See Visit billing summary for insurance vs cash amounts.'
+                    )
+                return _(
+                    'Cannot create a patient invoice. Insurance claim lines are excluded. '
+                    'Remaining cash lines are not ready to invoice yet (delivery or product '
+                    'invoicing policy), or are on prescription hold / out of stock.\n\n%s'
+                ) % super()._nothing_to_invoice_error_message()
+        return super()._nothing_to_invoice_error_message()
+
     def action_print_prescription(self):
         self.ensure_one()
         return {

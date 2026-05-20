@@ -235,15 +235,6 @@ class SaleOrderLine(models.Model):
                 line.ampath_line_invoice_status, ''
             )
 
-    def _compute_qty_to_invoice(self):
-        super()._compute_qty_to_invoice()
-        for line in self.filtered(
-            lambda l: l._ampath_excluded_from_customer_invoice()
-            and not l.display_type
-            and not l.is_downpayment
-        ):
-            line.qty_to_invoice = 0.0
-
     @api.depends('ampath_line_invoice_status')
     def _compute_is_line_locked(self):
         for line in self:
