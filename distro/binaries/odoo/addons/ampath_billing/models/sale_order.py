@@ -109,6 +109,65 @@ class SaleOrder(models.Model):
         copy=False,
     )
 
+    ampath_amount_visit_total = fields.Monetary(
+        string='Visit total (untaxed)',
+        compute='_compute_ampath_billing_totals',
+        store=True,
+        currency_field='currency_id',
+        help='Sum of untaxed line amounts on this order (product lines only).',
+    )
+    ampath_amount_insurance_claim = fields.Monetary(
+        string='Insurance (claim submitted)',
+        compute='_compute_ampath_billing_totals',
+        store=True,
+        currency_field='currency_id',
+        help='Untaxed value of lines submitted or approved on an insurance claim.',
+    )
+    ampath_amount_cash_invoiced = fields.Monetary(
+        string='Cash invoiced',
+        compute='_compute_ampath_billing_totals',
+        store=True,
+        currency_field='currency_id',
+        help='Untaxed value of lines already on a posted patient invoice.',
+    )
+    ampath_amount_cash_to_invoice = fields.Monetary(
+        string='Cash to invoice',
+        compute='_compute_ampath_billing_totals',
+        store=True,
+        currency_field='currency_id',
+        help='Untaxed value of lines still to bill to the patient in cash.',
+    )
+
+    def _ampath_billable_product_lines(self):
+        self.ensure_one()
+        return self.order_line.filtered(
+            lambda l: not l.display_type and not l.is_downpayment
+        )
+
+    @api.depends(
+        'order_line.price_subtotal',
+        'order_line.claim_status',
+        'order_line.ampath_line_invoice_status',
+        'order_line.display_type',
+        'order_line.is_downpayment',
+        'currency_id',
+    )
+    def _compute_ampath_billing_totals(self):
+        claim_states = frozenset({'submitted', 'approved'})
+        for order in self:
+            lines = order._ampath_billable_product_lines()
+            order.ampath_amount_visit_total = sum(lines.mapped('price_subtotal'))
+            claim_lines = lines.filtered(lambda l: l.claim_status in claim_states)
+            order.ampath_amount_insurance_claim = sum(claim_lines.mapped('price_subtotal'))
+            cash_invoiced = lines.filtered(
+                lambda l: l.ampath_line_invoice_status in ('invoiced', 'paid')
+            )
+            order.ampath_amount_cash_invoiced = sum(cash_invoiced.mapped('price_subtotal'))
+            cash_to_inv = lines.filtered(
+                lambda l: l.ampath_line_invoice_status == 'to_invoice'
+            )
+            order.ampath_amount_cash_to_invoice = sum(cash_to_inv.mapped('price_subtotal'))
+
     @api.depends(
         'order_line.is_preauth_eligible',
         'order_line.product_id.x_intervention_code',
@@ -260,6 +319,8 @@ class SaleOrder(models.Model):
                 continue
             if line.ampath_prescription_printed:
                 continue
+            if line.claim_status in ('submitted', 'approved'):
+                continue
             if not line._ampath_requires_stock_for_billing():
                 continue
             qty_to_inv = line.qty_to_invoice
@@ -310,6 +371,10 @@ class SaleOrder(models.Model):
             lambda l: l.display_type in ('line_section', 'line_note')
             or not l.ampath_prescription_printed
         )
+        lines = lines.filtered(
+            lambda l: l.display_type in ('line_section', 'line_note')
+            or l.claim_status not in ('submitted', 'approved')
+        )
         bad = self._ampath_understock_invoiceable_lines()
         return lines - bad
 
@@ -346,6 +411,32 @@ class SaleOrder(models.Model):
             'type': 'ir.actions.act_window',
             'name': title,
             'res_model': 'ampath.billing.payload.preview',
+            'res_id': wiz.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+    def _action_open_claim_submit_result(self, body, submitted_lines=None):
+        """Modal after a successful claim submit (not the offline payload preview)."""
+        self.ensure_one()
+        from odoo.addons.ampath_billing.services.afyalink_client import etl_claim_response_headline
+
+        headline = etl_claim_response_headline(body)
+        response_full = json.dumps(
+            body if isinstance(body, dict) else {'raw': body},
+            indent=2,
+            ensure_ascii=False,
+            default=str,
+        )
+        wiz = self.env['ampath.billing.claim.submit.result'].create({
+            'sale_order_id': self.id,
+            'headline': headline,
+            'response_full': response_full,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Claim sent'),
+            'res_model': 'ampath.billing.claim.submit.result',
             'res_id': wiz.id,
             'view_mode': 'form',
             'target': 'new',
@@ -388,6 +479,9 @@ class SaleOrder(models.Model):
 
         elif action == 'invoice':
             lines = lines.filtered(lambda l: not l.ampath_prescription_printed)
+            lines = lines.filtered(
+                lambda l: l.claim_status not in ('submitted', 'approved')
+            )
             understock = self._ampath_understock_invoiceable_lines()
             lines = lines - understock
             lines = lines.filtered(
@@ -395,9 +489,9 @@ class SaleOrder(models.Model):
             )
             if not lines:
                 raise UserError(_(
-                    'No lines to invoice: they may already be invoiced, on prescription hold '
-                    '(use "Clear prescription hold"), or out of stock (use "Print prescription" '
-                    'for those medications, then invoice other lines).'
+                    'No lines to invoice: they may already be invoiced, submitted on an '
+                    'insurance claim, on prescription hold (use "Clear prescription hold"), '
+                    'or out of stock (use "Print prescription" for those medications).'
                 ))
 
         else:

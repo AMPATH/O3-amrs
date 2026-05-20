@@ -8,7 +8,7 @@ class AccountMoveLine(models.Model):
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected')
-    ], string="FHIR Status")
+    ], string="Claim status")
     
     insurance_provider_id = fields.Many2one('res.partner', string="Insurance Payer")
     fhir_claim_id = fields.Char("FHIR ID")

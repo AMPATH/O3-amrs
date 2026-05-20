@@ -11,7 +11,7 @@
                             <field name="sale_order_id" readonly="1"/>
                         </group>
                         <div class="alert alert-info" role="alert">
-                            Copy this JSON for your integration endpoint. Nothing was sent over the network.
+                            Preview only — copy this JSON if needed. Nothing is sent until you use a live submit action.
                         </div>
                         <field name="payload_text" widget="text" nolabel="1" readonly="1"
                                class="font-monospace"/>

@@ -169,7 +169,34 @@ def etl_claim_external_id_from_response(body):
         for k in ('Mediator_Id', 'mediator_Id', 'mediator_id'):
             if msg.get(k):
                 return str(msg[k])
+    nested = body.get('data')
+    if isinstance(nested, dict):
+        for k in ('claimId', 'claim_id', 'fhirClaimId', 'mediator_id', 'Mediator_Id', 'id'):
+            if nested.get(k):
+                return str(nested[k])
     return None
+
+
+def etl_claim_response_headline(body):
+    """One-line summary from claim submit JSON (after a successful HTTP response)."""
+    if not isinstance(body, dict):
+        return _('Claim sent.')
+    data = body.get('data')
+    if isinstance(data, dict):
+        for key in ('message', 'Message', 'statusMessage', 'status'):
+            value = data.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+    for key in ('message', 'Message'):
+        value = body.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    success = body.get('success')
+    if success is True or success == 1 or (
+        isinstance(success, str) and success.strip().lower() in ('true', '1', 'yes')
+    ):
+        return _('Claim sent successfully.')
+    return _('Claim sent.')
 
 
 def request_preauth(env, order):

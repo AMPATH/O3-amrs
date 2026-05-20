@@ -4,18 +4,13 @@
             <field name="name">ampath.billing.claim.submit.result.form</field>
             <field name="model">ampath.billing.claim.submit.result</field>
             <field name="arch" type="xml">
-                <form string="Claim submission result">
+                <form string="Claim sent">
                     <sheet>
                         <group>
                             <field name="sale_order_id" readonly="1"/>
-                            <field name="headline" readonly="1"/>
+                            <field name="headline" readonly="1" nolabel="1" colspan="2"/>
                         </group>
-                        <div class="alert alert-secondary mb-2" role="status">
-                            Summary above; full payer response is preserved below (scroll as needed).
-                        </div>
-                        <label for="response_full" string="Full response from payer"/>
-                        <field name="response_full" widget="text" nolabel="1" readonly="1"
-                               class="font-monospace"/>
+                        <field name="response_full" invisible="1"/>
                     </sheet>
                     <footer>
                         <button special="cancel" string="Close" class="btn-primary"/>

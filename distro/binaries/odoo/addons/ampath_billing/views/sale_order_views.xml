@@ -44,7 +44,7 @@
                             string="Submit claim"
                             class="btn-secondary"
                             invisible="not billing_actions_visible or not has_claim_submit_lines"
-                            confirm="Submit all eligible PHC claim lines to AMPATH ETL as insurance payment (instead of cash)? Waived, prescription-hold, and out-of-stock lines are excluded."/>
+                            confirm="Submit all eligible PHC claim lines as insurance payment (instead of cash)? Waived, prescription-hold, and out-of-stock lines are excluded."/>
                     <button name="action_invoice_selected" type="object"
                             string="Invoice selected"
                             class="btn-secondary"
@@ -69,6 +69,12 @@
                         <field name="x_customer_weight" readonly="1"/>
                         <field name="x_patient_gender" readonly="1"/>
                     </group>
+                    <group string="Visit billing summary" name="ampath_visit_billing_summary" colspan="2">
+                        <field name="ampath_amount_visit_total" widget="monetary" readonly="1"/>
+                        <field name="ampath_amount_insurance_claim" widget="monetary" readonly="1"/>
+                        <field name="ampath_amount_cash_invoiced" widget="monetary" readonly="1"/>
+                        <field name="ampath_amount_cash_to_invoice" widget="monetary" readonly="1"/>
+                    </group>
                 </xpath>
 
                 <!-- Row styling: muted+green = paid; blue = invoiced but unpaid -->
@@ -76,6 +82,7 @@
                     <attribute name="decoration-muted">is_line_locked</attribute>
                     <attribute name="decoration-success">ampath_line_invoice_status == 'paid'</attribute>
                     <attribute name="decoration-info">ampath_line_invoice_status == 'invoiced'</attribute>
+                    <attribute name="decoration-warning">ampath_line_invoice_status == 'on_claim'</attribute>
                 </xpath>
 
                 <!-- Extra columns added to the order lines tree -->
@@ -99,7 +106,7 @@
                             icon="fa-file-text-o"
                             title="Invoice this line"
                             class="btn-sm btn-link text-primary"
-                            invisible="ampath_line_invoice_status != 'to_invoice' or is_downpayment or ampath_prescription_printed"/>
+                            invisible="ampath_line_invoice_status != 'to_invoice' or is_downpayment or ampath_prescription_printed or claim_status in ('submitted', 'approved')"/>
 
                     <!-- Invoice status icon: blank / 📄 / ✅ -->
                     <field name="invoice_indicator" string="Inv." readonly="1" optional="show"/>
@@ -108,7 +115,7 @@
                     <field name="x_openmrs_order_id" optional="hide" readonly="1"/>
                     <field name="x_service_date_start" optional="hide"/>
                     <field name="x_service_date_end" optional="hide"/>
-                    <field name="claim_status" widget="badge" optional="show"
+                    <field name="claim_status" string="Claim status" widget="badge" optional="show"
                            decoration-info="claim_status == 'submitted'"
                            decoration-success="claim_status == 'approved'"/>
 

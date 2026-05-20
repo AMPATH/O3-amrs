@@ -6,6 +6,9 @@ from odoo.tools.float_utils import float_compare
 
 _logger = logging.getLogger(__name__)
 
+# Lines in these claim states are paid via insurance, not on the patient cash invoice.
+_CLAIM_EXCLUDE_FROM_CUSTOMER_INVOICE = frozenset({'submitted', 'approved'})
+
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
@@ -15,7 +18,7 @@ class SaleOrderLine(models.Model):
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected')
-    ], default='draft', string="FHIR Status", copy=False)
+    ], default='draft', string="Claim status", copy=False)
 
     insurance_provider_id = fields.Many2one('res.partner', string="Insurance Payer")
     fhir_claim_id = fields.Char("FHIR ID", copy=False)
@@ -37,6 +40,7 @@ class SaleOrderLine(models.Model):
 
     ampath_line_invoice_status = fields.Selection([
         ('to_invoice', 'Not Invoiced'),
+        ('on_claim', 'On insurance claim'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid'),
     ], compute='_compute_ampath_line_invoice_status',
@@ -47,7 +51,7 @@ class SaleOrderLine(models.Model):
     invoice_indicator = fields.Char(
         compute='_compute_invoice_indicator',
         string="Inv.",
-        help="✅ = paid  |  📄 = invoiced (awaiting payment)  |  blank = not yet invoiced",
+        help="✅ paid  |  📄 invoiced  |  🏥 on insurance claim  |  blank = cash not yet invoiced",
     )
 
     is_line_locked = fields.Boolean(
@@ -96,6 +100,11 @@ class SaleOrderLine(models.Model):
     # ------------------------------------------------------------------
     # Computed fields
     # ------------------------------------------------------------------
+
+    def _ampath_excluded_from_customer_invoice(self):
+        """True when this line is settled via an insurance claim, not patient cash invoice."""
+        self.ensure_one()
+        return self.claim_status in _CLAIM_EXCLUDE_FROM_CUSTOMER_INVOICE
 
     def _ampath_line_has_claim_patient_data(self):
         """Patient id + DOB present on order or partner (shared by pre-auth and PHC claim)."""
@@ -189,6 +198,7 @@ class SaleOrderLine(models.Model):
         'invoice_lines.move_id.state',
         'invoice_lines.move_id.payment_state',
         'invoice_lines.move_id.move_type',
+        'claim_status',
     )
     def _compute_ampath_line_invoice_status(self):
         for line in self:
@@ -199,6 +209,9 @@ class SaleOrderLine(models.Model):
                 lambda il: il.move_id.move_type == 'out_invoice'
                 and il.move_id.state == 'posted'
             )
+            if not posted and line._ampath_excluded_from_customer_invoice():
+                line.ampath_line_invoice_status = 'on_claim'
+                continue
             if not posted:
                 line.ampath_line_invoice_status = 'to_invoice'
             elif any(
@@ -211,11 +224,25 @@ class SaleOrderLine(models.Model):
 
     @api.depends('ampath_line_invoice_status')
     def _compute_invoice_indicator(self):
-        icons = {'paid': '✅', 'invoiced': '📄', 'to_invoice': ''}
+        icons = {
+            'paid': '✅',
+            'invoiced': '📄',
+            'on_claim': '🏥',
+            'to_invoice': '',
+        }
         for line in self:
             line.invoice_indicator = icons.get(
                 line.ampath_line_invoice_status, ''
             )
+
+    def _compute_qty_to_invoice(self):
+        super()._compute_qty_to_invoice()
+        for line in self.filtered(
+            lambda l: l._ampath_excluded_from_customer_invoice()
+            and not l.display_type
+            and not l.is_downpayment
+        ):
+            line.qty_to_invoice = 0.0
 
     @api.depends('ampath_line_invoice_status')
     def _compute_is_line_locked(self):
@@ -448,10 +475,7 @@ class SaleOrderLine(models.Model):
         if ext_id:
             line_vals['fhir_claim_id'] = ext_id
         lines.write(line_vals)
-        return order._action_open_payload_preview(
-            _('ETL claim response (JSON)'),
-            body if isinstance(body, dict) else {'raw': body},
-        )
+        return order._action_open_claim_submit_result(body, submitted_lines=lines)
 
     def mark_claim_submitted_from_submit_response(self, submit_body):
         """After a successful payer POST, set *Submitted* and optional ``fhir_claim_id``."""
@@ -494,6 +518,16 @@ class SaleOrderLine(models.Model):
                 'These lines are on prescription hold and cannot be invoiced until you use '
                 '"Clear prescription hold" on the order: %s'
             ) % ', '.join(held.mapped('product_id.display_name')[:12]))
+
+        on_claim = lines_to_bill.filtered(
+            lambda l: l._ampath_excluded_from_customer_invoice()
+        )
+        lines_to_bill = lines_to_bill - on_claim
+        if on_claim and not lines_to_bill:
+            raise UserError(_(
+                'Selected lines were submitted as insurance claims and are not billed on '
+                'the patient invoice: %s'
+            ) % ', '.join(on_claim.mapped('product_id.display_name')[:12]))
 
         understock = order._ampath_understock_invoiceable_lines()
         skipped_understock = lines_to_bill & understock
