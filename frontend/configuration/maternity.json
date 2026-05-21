@@ -3,6 +3,7 @@
     "extensionSlots": {
       "maternity-dashboard-slot": {
         "add": ["encounter-list", "labour-care-widget"],
+        "order": ["encounter-list", "labour-care-widget"],
         "configure": {
           "encounter-list": {
             "tabDefinitions": [
