@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Open quotations (draft / sent) -->
+        <record id="action_ampath_open_quotations" model="ir.actions.act_window">
+            <field name="name">Open quotations</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="domain">[('state', 'in', ('draft', 'sent'))]</field>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a quotation for this visit.
+                </p>
+            </field>
+        </record>
+
+        <!-- Confirmed sale orders (in progress) -->
+        <record id="action_ampath_sale_orders" model="ir.actions.act_window">
+            <field name="name">Sale orders</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="domain">[('state', '=', 'sale')]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No confirmed sale orders yet.
+                </p>
+            </field>
+        </record>
+
+        <!-- Fully delivered orders (sale_stock) -->
+        <record id="action_ampath_delivered_orders" model="ir.actions.act_window">
+            <field name="name">Delivered orders</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="domain">[
+                ('state', 'in', ('sale', 'done')),
+                ('delivery_status', '=', 'full'),
+            ]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No fully delivered orders yet.
+                </p>
+            </field>
+        </record>
+
+        <!-- Sales app tabs (under the Sales root menu) -->
+        <menuitem
+            id="menu_ampath_open_quotations"
+            name="Open quotations"
+            parent="sale.sale_menu_root"
+            action="action_ampath_open_quotations"
+            sequence="5"
+        />
+        <menuitem
+            id="menu_ampath_sale_orders"
+            name="Sale orders"
+            parent="sale.sale_menu_root"
+            action="action_ampath_sale_orders"
+            sequence="10"
+        />
+        <menuitem
+            id="menu_ampath_delivered_orders"
+            name="Delivered orders"
+            parent="sale.sale_menu_root"
+            action="action_ampath_delivered_orders"
+            sequence="15"
+        />
+
+    </data>
+</odoo>

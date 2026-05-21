@@ -96,6 +96,14 @@ class SaleOrder(models.Model):
             'and are not yet marked by printing the prescription.'
         ),
     )
+    ampath_has_claim_understock_lines = fields.Boolean(
+        compute='_compute_ampath_has_claim_understock_lines',
+        string='Understock for claims',
+        help=(
+            'Storable products on this order are short on stock for insurance claim submit; '
+            'print the prescription first (same as cash invoicing).'
+        ),
+    )
     ampath_has_prescription_hold = fields.Boolean(
         compute='_compute_ampath_has_prescription_hold',
         string='Has prescription invoice hold',
@@ -143,6 +151,49 @@ class SaleOrder(models.Model):
         return self.order_line.filtered(
             lambda l: not l.display_type and not l.is_downpayment
         )
+
+    def _ampath_billing_settled_without_cash_invoice(self):
+        """No patient invoice is needed or possible (e.g. every line on insurance claim)."""
+        self.ensure_one()
+        lines = self._ampath_billable_product_lines()
+        if not lines:
+            return False
+        pending_cash = lines.filtered(
+            lambda l: l.ampath_line_invoice_status == 'to_invoice'
+            and l.claim_status not in ('submitted', 'approved')
+        )
+        if pending_cash:
+            return False
+        invoiceable = self._get_invoiceable_lines(final=False).filtered(
+            lambda l: not l.display_type
+        )
+        return not invoiceable
+
+    @api.depends(
+        'state',
+        'order_line.invoice_status',
+        'order_line.claim_status',
+        'order_line.ampath_line_invoice_status',
+        'order_line.qty_to_invoice',
+    )
+    def _compute_invoice_status(self):
+        super()._compute_invoice_status()
+        for order in self.filtered(lambda o: o.state == 'sale'):
+            if order._ampath_billing_settled_without_cash_invoice():
+                order.invoice_status = 'invoiced'
+
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        """Skip raising when the order is fully settled via insurance (no cash invoice)."""
+        settled = self.filtered(
+            lambda o: o.state == 'sale' and o._ampath_billing_settled_without_cash_invoice()
+        )
+        to_invoice = self - settled
+        moves = self.env['account.move']
+        if to_invoice:
+            moves = super(SaleOrder, to_invoice)._create_invoices(
+                grouped=grouped, final=final, date=date,
+            )
+        return moves
 
     @api.depends(
         'order_line.price_subtotal',
@@ -218,8 +269,45 @@ class SaleOrder(models.Model):
         """Drop prescription-hold and understock storable lines (invoice + claim parity)."""
         self.ensure_one()
         lines = lines.filtered(lambda l: not l.display_type and not l.is_downpayment)
-        return lines.filtered(lambda l: not l.ampath_prescription_printed) - (
-            self._ampath_understock_invoiceable_lines()
+        understock = self._ampath_understock_claim_lines()
+        return lines.filtered(lambda l: not l.ampath_prescription_printed) - (understock & lines)
+
+    def _ampath_claim_patient_ready_lines(self, lines=None):
+        """Lines that pass patient / preauth checks (before stock and Rx hold)."""
+        from odoo.addons.ampath_billing.services.claim_bundle_builder import (
+            line_requires_sha_intervention_code,
+        )
+
+        self.ensure_one()
+        if lines is None:
+            lines = self.order_line
+        approved_preauth = frozenset({
+            'approved', 'authorized', 'authorisation', 'success', 'active',
+        })
+        result = self.env['sale.order.line']
+        for line in lines.filtered(
+            lambda l: (
+                not l.display_type
+                and not l.is_downpayment
+                and (l.discount or 0) < 100.0
+                and l.ampath_line_invoice_status == 'to_invoice'
+                and l.claim_status not in ('submitted', 'approved')
+            )
+        ):
+            if not line._ampath_line_has_claim_patient_data():
+                continue
+            if line_requires_sha_intervention_code(line):
+                pre = (line.order_id.x_preauth_status or '').strip().lower()
+                if pre not in approved_preauth:
+                    continue
+            result |= line
+        return result
+
+    def _ampath_claim_line_candidates(self, lines=None):
+        """PHC claim-eligible lines before Rx hold and stock checks."""
+        self.ensure_one()
+        return self._ampath_claim_patient_ready_lines(lines).filtered(
+            lambda l: l.is_claim_eligible
         )
 
     def _ampath_preauth_action_lines(self, lines=None):
@@ -238,19 +326,9 @@ class SaleOrder(models.Model):
     def _ampath_claim_action_lines(self, lines=None):
         """PHC claim lines for ETL submit (payment instead of cash), excl. Rx hold / understock."""
         self.ensure_one()
-        if lines is None:
-            lines = self.order_line
-        candidates = lines.filtered(
-            lambda l: (
-                not l.display_type
-                and not l.is_downpayment
-                and (l.discount or 0) < 100.0
-                and l.ampath_line_invoice_status == 'to_invoice'
-                and l.claim_status not in ('submitted', 'approved')
-                and l.is_claim_eligible
-            )
+        return self._ampath_lines_skip_for_stock_and_rx(
+            self._ampath_claim_line_candidates(lines),
         )
-        return self._ampath_lines_skip_for_stock_and_rx(candidates)
 
     def _order_lines_for_etl_claim_submit(self):
         """All qualifying PHC claim lines for Submit claim (ETL)."""
@@ -297,6 +375,27 @@ class SaleOrder(models.Model):
             order.ampath_has_understock_lines = bool(
                 order._ampath_understock_invoiceable_lines()
             )
+
+    @api.depends(
+        'order_line',
+        'order_line.product_id',
+        'order_line.product_uom_qty',
+        'order_line.ampath_prescription_printed',
+        'order_line.claim_status',
+        'warehouse_id',
+    )
+    def _compute_ampath_has_claim_understock_lines(self):
+        for order in self:
+            order.ampath_has_claim_understock_lines = bool(
+                order._ampath_understock_claim_lines()
+            )
+
+    def _ampath_understock_claim_lines(self):
+        """Storable lines short on hand for claim submit (ordered qty), excl. Rx printed."""
+        self.ensure_one()
+        return self._ampath_billable_product_lines().filtered(
+            lambda l: l._ampath_is_understock_for_claim()
+        )
 
     def _ampath_stock_warehouse(self):
         self.ensure_one()
@@ -444,12 +543,19 @@ class SaleOrder(models.Model):
             'target': 'new',
         }
 
-    def _action_open_claim_submit_result(self, body, submitted_lines=None):
+    def _action_open_claim_submit_result(
+        self, body, submitted_lines=None, skipped_lines=None,
+    ):
         """Modal after a successful claim submit (not the offline payload preview)."""
         self.ensure_one()
         from odoo.addons.ampath_billing.services.afyalink_client import etl_claim_response_headline
 
         headline = etl_claim_response_headline(body)
+        if skipped_lines:
+            names = ', '.join(skipped_lines.mapped('product_id.display_name')[:8])
+            headline = _(
+                '%(headline)s Skipped (out of stock — print prescription first): %(names)s'
+            ) % {'headline': headline, 'names': names}
         response_full = json.dumps(
             body if isinstance(body, dict) else {'raw': body},
             indent=2,
@@ -539,12 +645,27 @@ class SaleOrder(models.Model):
     def action_submit_etl_claim_selected(self):
         """POST all qualifying PHC claim lines to AMPATH ETL (insurance payment, not cash)."""
         self.ensure_one()
+        ready = self._ampath_claim_patient_ready_lines()
         lines = self._order_lines_for_etl_claim_submit()
+        skipped = ready - lines
         if not lines:
+            understock = self._ampath_understock_claim_lines() & ready
+            if understock:
+                names = ', '.join(understock.mapped('product_id.display_name')[:12])
+                raise UserError(_(
+                    'No claim lines to submit. These medications are out of stock — use '
+                    '"Print prescription" first, then submit the claim for other lines: %(names)s'
+                ) % {'names': names})
+            if skipped:
+                names = ', '.join(skipped.mapped('product_id.display_name')[:12])
+                raise UserError(_(
+                    'No claim lines to submit. Skipped lines (prescription hold or out of stock): '
+                    '%(names)s'
+                ) % {'names': names})
             raise UserError(_(
                 'No PHC claim lines to submit. Waived, invoiced, or already-submitted lines '
                 'are excluded. Intervention-code products need approved pre-authorization '
-                '(use Preauth first). Out-of-stock medications need Print prescription first.'
+                '(use Preauth first).'
             ))
         return lines.action_submit_etl_claim()
 

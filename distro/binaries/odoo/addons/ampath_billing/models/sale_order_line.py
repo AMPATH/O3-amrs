@@ -163,12 +163,16 @@ class SaleOrderLine(models.Model):
         'is_downpayment',
         'claim_status',
         'product_id.x_intervention_code',
+        'product_id',
+        'product_uom_qty',
+        'ampath_prescription_printed',
         'order_id.x_patient_uuid',
         'order_id.x_external_identifier',
         'order_id.x_sha_client_registry_id',
         'order_id.x_preauth_status',
         'order_id.x_customer_dob',
         'order_id.partner_id.x_customer_dob',
+        'order_id.warehouse_id',
     )
     def _compute_is_claim_eligible(self):
         from odoo.addons.ampath_billing.services.claim_bundle_builder import (
@@ -186,6 +190,9 @@ class SaleOrderLine(models.Model):
                 line.is_claim_eligible = False
                 continue
             if not line._ampath_line_has_claim_patient_data():
+                line.is_claim_eligible = False
+                continue
+            if line._ampath_is_understock_for_claim():
                 line.is_claim_eligible = False
                 continue
             if line_requires_sha_intervention_code(line):
@@ -234,6 +241,17 @@ class SaleOrderLine(models.Model):
             line.invoice_indicator = icons.get(
                 line.ampath_line_invoice_status, ''
             )
+
+    @api.depends('qty_invoiced', 'qty_delivered', 'product_uom_qty', 'state', 'claim_status')
+    def _compute_qty_to_invoice(self):
+        """Insurance claim lines are not billed on the patient invoice (qty stays 0)."""
+        super()._compute_qty_to_invoice()
+        for line in self.filtered(
+            lambda l: l._ampath_excluded_from_customer_invoice()
+            and not l.display_type
+            and not l.is_downpayment
+        ):
+            line.qty_to_invoice = 0.0
 
     @api.depends('ampath_line_invoice_status')
     def _compute_is_line_locked(self):
@@ -357,6 +375,15 @@ class SaleOrderLine(models.Model):
             return prod.free_qty
         return prod.qty_available
 
+    def _ampath_is_understock_for_claim(self):
+        """True when a storable line has insufficient stock for the ordered quantity."""
+        self.ensure_one()
+        if self.display_type or self.is_downpayment or self.ampath_prescription_printed:
+            return False
+        if self.claim_status in _CLAIM_EXCLUDE_FROM_CUSTOMER_INVOICE:
+            return False
+        return bool(self._ampath_stock_shortage_message(self.product_uom_qty))
+
     def _ampath_stock_shortage_message(self, qty_in_line_uom):
         """Return a human-readable error fragment if storable stock is insufficient."""
         self.ensure_one()
@@ -403,7 +430,7 @@ class SaleOrderLine(models.Model):
             line.write({'discount': 100.0})
 
     def _ampath_claim_lines_common(self):
-        """Validate PHC claim lines for ETL submit (no warehouse stock requirement)."""
+        """Validate PHC claim lines for ETL submit (excludes understock / Rx hold)."""
         lines = self.filtered(lambda l: not l.display_type and not l.is_downpayment)
         if not lines:
             raise UserError(_("No billable lines selected for claim actions."))
@@ -434,11 +461,28 @@ class SaleOrderLine(models.Model):
                 order.name,
                 ', '.join(skipped.mapped('product_id.display_name')[:8]),
             )
-        return order, lines
+        return order, lines, skipped
 
     def action_submit_etl_claim(self):
         """POST BuildClaimBundleRequest-shaped JSON to AMPATH ETL (env / system params)."""
-        order, lines = self._ampath_claim_lines_common()
+        orders = self.mapped('order_id')
+        if len(orders) != 1:
+            raise UserError(_("Please submit claims from a single order at a time."))
+        order = orders[0]
+        lines = order._order_lines_for_etl_claim_submit()
+        ready = order._ampath_claim_patient_ready_lines()
+        skipped = ready - lines
+        if not lines:
+            understock = order._ampath_understock_claim_lines() & ready
+            if understock:
+                names = ', '.join(understock.mapped('product_id.display_name')[:12])
+                raise UserError(_(
+                    'No claim lines to submit. Out of stock — use "Print prescription" first: '
+                    '%(names)s'
+                ) % {'names': names})
+            raise UserError(_(
+                'No PHC claim lines to submit on this order.'
+            ))
         env = self.env
         from odoo.addons.ampath_billing.services import afyalink_client
 
@@ -466,7 +510,11 @@ class SaleOrderLine(models.Model):
         if ext_id:
             line_vals['fhir_claim_id'] = ext_id
         lines.write(line_vals)
-        return order._action_open_claim_submit_result(body, submitted_lines=lines)
+        return order._action_open_claim_submit_result(
+            body,
+            submitted_lines=lines,
+            skipped_lines=skipped,
+        )
 
     def mark_claim_submitted_from_submit_response(self, submit_body):
         """After a successful payer POST, set *Submitted* and optional ``fhir_claim_id``."""

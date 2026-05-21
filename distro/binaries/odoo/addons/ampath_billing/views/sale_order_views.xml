@@ -12,10 +12,22 @@
                     <field name="has_preauth_eligible_lines" invisible="1"/>
                     <field name="has_claim_submit_lines" invisible="1"/>
                     <field name="ampath_has_understock_lines" invisible="1"/>
+                    <field name="ampath_has_claim_understock_lines" invisible="1"/>
                     <field name="ampath_has_prescription_hold" invisible="1"/>
+                    <field name="ampath_amount_cash_to_invoice" invisible="1"/>
+                    <field name="ampath_amount_insurance_claim" invisible="1"/>
                 </xpath>
 
                 <xpath expr="//sheet" position="before">
+                    <div
+                        class="alert alert-info mb-3"
+                        role="status"
+                        invisible="ampath_amount_cash_to_invoice != 0 or ampath_amount_insurance_claim == 0"
+                    >
+                        Every line is on an insurance claim — no patient (cash) invoice is required.
+                        Cash billing is marked <strong>Invoiced</strong> on this order. Lock the sales
+                        order when delivery is complete.
+                    </div>
                     <div
                         class="alert alert-warning mb-3"
                         role="alert"
@@ -25,7 +37,18 @@
                         Use <strong>Print prescription</strong> first: those lines are marked and
                         <strong>skipped on invoices and claims</strong> and
                         <strong>removed from delivery pickings</strong> until you clear the hold.
-                        Other lines can still be invoiced or submitted to the payer.
+                        Other lines can still be invoiced or submitted on a claim.
+                    </div>
+                    <div
+                        class="alert alert-warning mb-3"
+                        role="alert"
+                        invisible="not ampath_has_claim_understock_lines or ampath_has_understock_lines"
+                    >
+                        Some medications are <strong>out of stock for insurance claims</strong>
+                        (ordered quantity exceeds available stock). Use
+                        <strong>Print prescription</strong> first — those lines are
+                        <strong>skipped on Submit claim</strong> until stock is available or the
+                        hold is cleared. Services and in-stock lines can still be claimed.
                     </div>
                 </xpath>
 
