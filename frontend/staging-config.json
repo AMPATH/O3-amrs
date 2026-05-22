@@ -611,7 +611,7 @@
     "claimsBaseUrl": "https://staging.ampath.or.ke/etl-claims/api/hie",
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
     "registrationBillableServices": ["3675fefd-ce4e-4ed1-9de2-7e70bc01170c","d024d785-e6af-44eb-9840-eba412c87ce5"],
-    "registrationServicequeues": ["79dcf9da-f315-462e-8439-e24b3fc871e9","2ace884d-914d-4788-9334-15ad53cd1796"],
+    "registrationServicequeues": ["79dcf9da-f315-462e-8439-e24b3fc871e9","2ace884d-914d-4788-9334-15ad53cd1796","c39c61a3-db25-4a0f-bdde-d83774d7a423"],
     "cashConsultationOrderTypeUuid": "2da15461-81db-43bc-a2c0-853741bece90",
     "cashConsulationConceptUuid": "ec73e2d6-7e69-47fb-b0af-a5f9c756c12c",
     "shaConsultationOrderTypeUuid": "a6a1b98c-ceaf-4481-ae61-67251e43a128",
