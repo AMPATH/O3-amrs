@@ -617,7 +617,7 @@
     "claimsBaseUrl": "https://ngx.ampath.or.ke/etl-claims/api/hie",
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
     "registrationBillableServices": ["da3f7edc-5650-4beb-9942-61eb60315a17","ea9e46c5-df4b-4709-9113-a49f53775d74"],
-    "registrationServicequeues": ["d488a8fc-5717-4c8f-b9a9-d23f3b93e3f9","7e24eb77-d04f-4515-bb90-69fcc2d86261"],
+    "registrationServicequeues": ["d488a8fc-5717-4c8f-b9a9-d23f3b93e3f9","7e24eb77-d04f-4515-bb90-69fcc2d86261","3a2f0d55-f1f7-4f56-82f1-c50b000f46cf"],
     "cashConsultationOrderTypeUuid": "2da15461-81db-43bc-a2c0-853741bece90",
     "cashConsulationConceptUuid": "ec73e2d6-7e69-47fb-b0af-a5f9c756c12c",
     "shaConsultationOrderTypeUuid": "a6a1b98c-ceaf-4481-ae61-67251e43a128",
