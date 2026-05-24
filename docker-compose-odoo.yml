@@ -62,6 +62,8 @@ services:
     restart: unless-stopped
     volumes:
       - "${MYSQL_DATADIR:-mysql-data}:/var/lib/mysql"
+      # Creates openmrs_eip_mgt_odoo (+ user) on first empty volume only; see odoo-docker/mysql-init/
+      - ./odoo-docker/mysql-init:/docker-entrypoint-initdb.d:ro
 
   # ---------- Env substitution (Odoo config) ----------
   env-substitution:
