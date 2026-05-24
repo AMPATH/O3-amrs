@@ -29,6 +29,9 @@
             }
           },
           "nav-group#MNCH": {
+            "Display conditions": {
+               "privileges": ["O3 VIew MNCH Patient Chart Tab"]
+            },
             "title": "mnch",
             "slotName": "mnch-group-slot",
             "isExpanded": true,
@@ -39,6 +42,9 @@
             }
           },
           "nav-group#ChronicDiseaseCentre": {
+            "Display conditions": {
+               "privileges": ["O3 View CDC Patient Chart Tab"]
+            },
             "title": "chronicDiseaseCentre",
             "slotName": "chronic-disease-centre-group-slot",
             "isExpanded": true,
@@ -49,6 +55,9 @@
             }
           },
           "nav-group#HTS": {
+            "Display conditions": {
+               "privileges": ["O3 View HTS Patient Chart Tab"]
+            },
             "title": "hts",
             "slotName": "hts-group-slot",
             "isExpanded": true,
@@ -114,6 +123,9 @@
             }
           },
           "dashboard#dental": {
+            "Display conditions": {
+               "privileges": ["O3 View General Medicine Dental Section"]
+            },
             "title": "dental",
             "path": "dental",
             "slot": "dental-dashboard-slot",
@@ -146,6 +158,9 @@
         ],
         "configure": {
           "dashboard#cwc": {
+            "Display conditions": {
+               "privileges": ["O3 View CWC Patient Chart Section Details"]
+            },
             "title": "cwc",
             "path": "cwc",
             "slot": "cwc-dashboard-slot",
@@ -156,6 +171,9 @@
             }
           },
           "dashboard#anc": {
+            "Display conditions": {
+               "privileges": ["O3 View ANC Patient Chart Section Details"]
+            },
             "title": "anc",
             "path": "anc",
             "slot": "anc-dashboard-slot",
@@ -166,6 +184,9 @@
             }
           },
           "dashboard#pnc": {
+            "Display conditions": {
+               "privileges": ["O3 View PNC Patient Chart Section Details"]
+            },
             "title": "pnc",
             "path": "pnc",
             "slot": "pnc-dashboard-slot",
@@ -176,6 +197,9 @@
             }
           },
           "dashboard#immunisation": {
+            "Display conditions": {
+               "privileges": ["O3 View Immunisation Patient Chart Section Details"]
+            },
             "title": "immunisation",
             "path": "immunisation",
             "slot": "immunisation-dashboard-slot",
@@ -186,6 +210,9 @@
             }
           },
           "dashboard#family-planning": {
+            "Display conditions": {
+               "privileges": ["O3 View Family Planning Patient Chart Section Details"]
+            },
             "title": "familyPlanning",
             "path": "family-planning",
             "slot": "family-planning-dashboard-slot",
@@ -196,6 +223,9 @@
             }
           },
           "dashboard#maternity": {
+             "Display conditions": {
+               "privileges": ["O3 View Meternity Patient Chart Section Details"]
+            },
             "title": "maternity",
             "path": "maternity",
             "slot": "maternity-dashboard-slot",
@@ -206,6 +236,9 @@
             }
           },
           "dashboard#prep": {
+             "Display conditions": {
+               "privileges": ["O3 View Prep Patient Chart Section Details"]
+            },
             "title": "prep",
             "path": "prep",
             "slot": "prep-dashboard-slot",
@@ -228,6 +261,9 @@
         ],
         "configure": {
           "dashboard#ncd": {
+            "Display conditions": {
+               "privileges": ["O3 View NCD Patient Chart Section Details"]
+            },
             "title": "ncd",
             "path": "ncd",
             "slot": "ncd-dashboard-slot",
@@ -238,6 +274,9 @@
             }
           },
           "dashboard#cervical-cancer": {
+            "Display conditions": {
+               "privileges": ["O3 View Cancer Patient Chart Section Details"]
+            },
             "title": "cervicalCancer",
             "path": "cervical-cancer",
             "slot": "cervical-cancer-dashboard-slot",
@@ -258,6 +297,9 @@
         ],
         "configure": {
           "dashboard#hts": {
+             "Display conditions": {
+               "privileges": ["O3 View HTS Patient Chart Section Details"]
+            },
             "title": "hts",
             "path": "hts",
             "slot": "hts-dashboard-slot",
