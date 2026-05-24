@@ -17,7 +17,7 @@
         "configure": {
           "nav-group#GeneralMedicine": {
             "Display conditions": {
-               "privileges": ["O3 View General Medicine Triage","O3 View General Medicine Consultation","O3 View General Medicine TB Section"]
+               "privileges": ["O3 View General Medicine Tab"]
             },
             "title": "generalMedicine",
             "slotName": "general-medicine-group-slot",
