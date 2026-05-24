@@ -16,6 +16,9 @@
         ],
         "configure": {
           "nav-group#GeneralMedicine": {
+            "Display conditions": {
+               "privileges": ["O3 View General Medicine Triage","O3 View General Medicine Consultation","O3 View General Medicine TB Section"]
+            },
             "title": "generalMedicine",
             "slotName": "general-medicine-group-slot",
             "isExpanded": true,
@@ -72,6 +75,9 @@
         ],
         "configure": {
           "dashboard#general-opd-triage": {
+            "Display conditions": {
+               "privileges": ["O3 View General Medicine Triage"]
+            },
             "title": "generalOpdTriage",
             "path": "general-opd-triage",
             "slot": "general-opd-triage-dashboard-slot",
@@ -82,6 +88,9 @@
             }
           },
           "dashboard#general-opd-consultation": {
+            "Display conditions": {
+               "privileges": ["O3 View General Medicine Consultation"]
+            },
             "title": "generalOpdConsultation",
             "path": "general-opd-consultation",
             "slot": "general-opd-consultation-dashboard-slot",
@@ -92,6 +101,9 @@
             }
           },
           "dashboard#tb-treatment": {
+            "Display conditions": {
+               "privileges": ["O3 View General Medicine TB Section"]
+            },
             "title": "tbTreatment",
             "path": "tb-treatment",
             "slot": "tb-treatment-dashboard-slot",
