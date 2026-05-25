@@ -32,7 +32,7 @@
           },
           "nav-group#SpecialClinics": {
             "Display conditions": {
-              "privileges": ["O3 View General Medicine Tab"]
+              "privileges": ["O3 View Special Clinics Tab"]
             },
             "title": "specialClinics",
             "slotName": "special-clinics-group-slot",
@@ -45,7 +45,7 @@
           },
           "nav-group#PreventionServices": {
             "Display conditions": {
-              "privileges": ["O3 View HTS Patient Chart Tab"]
+              "privileges": ["O3 View Prevention Services Patient Chart Tab"]
             },
             "title": "preventionServices",
             "slotName": "prevention-services-group-slot",
@@ -124,7 +124,7 @@
           },
           "dashboard#general-nutrition": {
             "Display conditions": {
-              "privileges": ["O3 View General Medicine Consultation"]
+              "privileges": ["O3 View General Medicine Nutrition Section"]
             },
             "title": "nutrition",
             "path": "general-nutrition",
@@ -149,7 +149,7 @@
         "configure": {
           "dashboard#tb-treatment": {
             "Display conditions": {
-              "privileges": ["O3 View General Medicine TB Section"]
+              "privileges": ["O3 View Special Clinics TB Section"]
             },
             "title": "tbTreatment",
             "path": "tb-treatment",
@@ -162,7 +162,7 @@
           },
           "dashboard#dental": {
             "Display conditions": {
-              "privileges": ["O3 View General Medicine Dental Section"]
+              "privileges": ["O3 View Special Clinics Dental Section"]
             },
             "title": "dental",
             "path": "dental",
@@ -233,7 +233,7 @@
         "configure": {
           "dashboard#nutrition": {
             "Display conditions": {
-              "privileges": ["O3 View CWC Patient Chart Section Details"]
+              "privileges": ["O3 View MNCH Nutrition Patient Chart Section Details"]
             },
             "title": "nutrition",
             "path": "nutrition",
@@ -272,7 +272,7 @@
           },
           "dashboard#immunisation": {
             "Display conditions": {
-              "privileges": ["O3 View Immunisation Patient Chart Section Details"]
+              "privileges": ["O3 View CWC Immunisation Patient Chart Section Details"]
             },
             "title": "cwcImmunization",
             "path": "immunisation",
