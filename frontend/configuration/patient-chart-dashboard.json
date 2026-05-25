@@ -15,11 +15,6 @@
           "nav-group#HTS"
         ],
         "configure": {
-          "billing-summary-dashboard-link":{
-            "Display conditions": {
-                "privileges": ["O3 View Patient Chart Billing History"]
-            }
-          },
           "nav-group#GeneralMedicine": {
             "Display conditions": {
                "privileges": ["O3 View General Medicine Tab"]
