@@ -207,6 +207,9 @@
       "alt": "AMPATH"
     }
   },
+  "@ampath/esm-patient-care-workflows-app": {
+    "etlBaseUrl": "/openmrs/etl"
+  },
   "@ampath/esm-morgue-app": {},
   "@ampath/esm-dispensing-app": {
     "locationBehavior": {

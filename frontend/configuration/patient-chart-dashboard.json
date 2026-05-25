@@ -4,20 +4,22 @@
       "patient-chart-dashboard-slot": {
         "add": [
           "nav-group#GeneralMedicine",
+          "nav-group#SpecialClinics",
+          "nav-group#PreventionServices",
           "nav-group#MNCH",
-          "nav-group#ChronicDiseaseCentre",
-          "nav-group#HTS"
+          "nav-group#ChronicDiseaseCentre"
         ],
         "order": [
           "nav-group#GeneralMedicine",
+          "nav-group#SpecialClinics",
+          "nav-group#PreventionServices",
           "nav-group#MNCH",
-          "nav-group#ChronicDiseaseCentre",
-          "nav-group#HTS"
+          "nav-group#ChronicDiseaseCentre"
         ],
         "configure": {
           "nav-group#GeneralMedicine": {
             "Display conditions": {
-               "privileges": ["O3 View General Medicine Tab"]
+              "privileges": ["O3 View General Medicine Tab"]
             },
             "title": "generalMedicine",
             "slotName": "general-medicine-group-slot",
@@ -28,9 +30,35 @@
               }
             }
           },
+          "nav-group#SpecialClinics": {
+            "Display conditions": {
+              "privileges": ["O3 View General Medicine Tab"]
+            },
+            "title": "specialClinics",
+            "slotName": "special-clinics-group-slot",
+            "isExpanded": true,
+            "Translation overrides": {
+              "en": {
+                "specialClinics": "Special Clinics"
+              }
+            }
+          },
+          "nav-group#PreventionServices": {
+            "Display conditions": {
+              "privileges": ["O3 View HTS Patient Chart Tab"]
+            },
+            "title": "preventionServices",
+            "slotName": "prevention-services-group-slot",
+            "isExpanded": true,
+            "Translation overrides": {
+              "en": {
+                "preventionServices": "Prevention Services"
+              }
+            }
+          },
           "nav-group#MNCH": {
             "Display conditions": {
-               "privileges": ["O3 VIew MNCH Patient Chart Tab"]
+              "privileges": ["O3 VIew MNCH Patient Chart Tab"]
             },
             "title": "mnch",
             "slotName": "mnch-group-slot",
@@ -43,7 +71,7 @@
           },
           "nav-group#ChronicDiseaseCentre": {
             "Display conditions": {
-               "privileges": ["O3 View CDC Patient Chart Tab"]
+              "privileges": ["O3 View CDC Patient Chart Tab"]
             },
             "title": "chronicDiseaseCentre",
             "slotName": "chronic-disease-centre-group-slot",
@@ -53,19 +81,6 @@
                 "chronicDiseaseCentre": "Chronic Disease Centre"
               }
             }
-          },
-          "nav-group#HTS": {
-            "Display conditions": {
-               "privileges": ["O3 View HTS Patient Chart Tab"]
-            },
-            "title": "hts",
-            "slotName": "hts-group-slot",
-            "isExpanded": true,
-            "Translation overrides": {
-              "en": {
-                "hts": "HTS"
-              }
-            }
           }
         }
       },
@@ -73,19 +88,17 @@
         "add": [
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
-          "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#general-nutrition"
         ],
         "order": [
           "dashboard#general-opd-triage",
           "dashboard#general-opd-consultation",
-          "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#general-nutrition"
         ],
         "configure": {
           "dashboard#general-opd-triage": {
             "Display conditions": {
-               "privileges": ["O3 View General Medicine Triage"]
+              "privileges": ["O3 View General Medicine Triage"]
             },
             "title": "generalOpdTriage",
             "path": "general-opd-triage",
@@ -98,7 +111,7 @@
           },
           "dashboard#general-opd-consultation": {
             "Display conditions": {
-               "privileges": ["O3 View General Medicine Consultation"]
+              "privileges": ["O3 View General Medicine Consultation"]
             },
             "title": "generalOpdConsultation",
             "path": "general-opd-consultation",
@@ -109,22 +122,47 @@
               }
             }
           },
+          "dashboard#general-nutrition": {
+            "Display conditions": {
+              "privileges": ["O3 View General Medicine Consultation"]
+            },
+            "title": "nutrition",
+            "path": "general-nutrition",
+            "slot": "nutrition-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "nutrition": "Nutrition"
+              }
+            }
+          }
+        }
+      },
+      "special-clinics-group-slot": {
+        "add": [
+          "dashboard#tb-treatment",
+          "dashboard#dental"
+        ],
+        "order": [
+          "dashboard#tb-treatment",
+          "dashboard#dental"
+        ],
+        "configure": {
           "dashboard#tb-treatment": {
             "Display conditions": {
-               "privileges": ["O3 View General Medicine TB Section"]
+              "privileges": ["O3 View General Medicine TB Section"]
             },
             "title": "tbTreatment",
             "path": "tb-treatment",
             "slot": "tb-treatment-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "tbTreatment": "TB Treatment"
+                "tbTreatment": "TB"
               }
             }
           },
           "dashboard#dental": {
             "Display conditions": {
-               "privileges": ["O3 View General Medicine Dental Section"]
+              "privileges": ["O3 View General Medicine Dental Section"]
             },
             "title": "dental",
             "path": "dental",
@@ -137,107 +175,32 @@
           }
         }
       },
-      "mnch-group-slot": {
+      "prevention-services-group-slot": {
         "add": [
-          "dashboard#cwc",
-          "dashboard#anc",
-          "dashboard#pnc",
-          "dashboard#immunisation",
-          "dashboard#family-planning",
-          "dashboard#maternity",
+          "dashboard#hts",
           "dashboard#prep"
         ],
         "order": [
-          "dashboard#cwc",
-          "dashboard#anc",
-          "dashboard#pnc",
-          "dashboard#immunisation",
-          "dashboard#family-planning",
-          "dashboard#maternity",
+          "dashboard#hts",
           "dashboard#prep"
         ],
         "configure": {
-          "dashboard#cwc": {
+          "dashboard#hts": {
             "Display conditions": {
-               "privileges": ["O3 View CWC Patient Chart Section Details"]
+              "privileges": ["O3 View HTS Patient Chart Section Details"]
             },
-            "title": "cwc",
-            "path": "cwc",
-            "slot": "cwc-dashboard-slot",
+            "title": "hts",
+            "path": "hts",
+            "slot": "hts-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "cwc": "CWC"
-              }
-            }
-          },
-          "dashboard#anc": {
-            "Display conditions": {
-               "privileges": ["O3 View ANC Patient Chart Section Details"]
-            },
-            "title": "anc",
-            "path": "anc",
-            "slot": "anc-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "anc": "ANC"
-              }
-            }
-          },
-          "dashboard#pnc": {
-            "Display conditions": {
-               "privileges": ["O3 View PNC Patient Chart Section Details"]
-            },
-            "title": "pnc",
-            "path": "pnc",
-            "slot": "pnc-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "pnc": "PNC"
-              }
-            }
-          },
-          "dashboard#immunisation": {
-            "Display conditions": {
-               "privileges": ["O3 View Immunisation Patient Chart Section Details"]
-            },
-            "title": "immunisation",
-            "path": "immunisation",
-            "slot": "immunisation-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "immunisation": "Immunisation"
-              }
-            }
-          },
-          "dashboard#family-planning": {
-            "Display conditions": {
-               "privileges": ["O3 View Family Planning Patient Chart Section Details"]
-            },
-            "title": "familyPlanning",
-            "path": "family-planning",
-            "slot": "family-planning-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "familyPlanning": "Family Planning"
-              }
-            }
-          },
-          "dashboard#maternity": {
-             "Display conditions": {
-               "privileges": ["O3 View Meternity Patient Chart Section Details"]
-            },
-            "title": "maternity",
-            "path": "maternity",
-            "slot": "maternity-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "maternity": "Maternity"
+                "hts": "HTS"
               }
             }
           },
           "dashboard#prep": {
-             "Display conditions": {
-               "privileges": ["O3 View Prep Patient Chart Section Details"]
+            "Display conditions": {
+              "privileges": ["O3 View Prep Patient Chart Section Details"]
             },
             "title": "prep",
             "path": "prep",
@@ -250,19 +213,119 @@
           }
         }
       },
+      "mnch-group-slot": {
+        "add": [
+          "dashboard#nutrition",
+          "dashboard#anc",
+          "dashboard#pnc",
+          "dashboard#immunisation",
+          "dashboard#family-planning",
+          "dashboard#maternity"
+        ],
+        "order": [
+          "dashboard#nutrition",
+          "dashboard#anc",
+          "dashboard#pnc",
+          "dashboard#immunisation",
+          "dashboard#family-planning",
+          "dashboard#maternity"
+        ],
+        "configure": {
+          "dashboard#nutrition": {
+            "Display conditions": {
+              "privileges": ["O3 View CWC Patient Chart Section Details"]
+            },
+            "title": "nutrition",
+            "path": "nutrition",
+            "slot": "nutrition-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "nutrition": "Nutrition"
+              }
+            }
+          },
+          "dashboard#anc": {
+            "Display conditions": {
+              "privileges": ["O3 View ANC Patient Chart Section Details"]
+            },
+            "title": "anc",
+            "path": "anc",
+            "slot": "anc-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "anc": "ANC"
+              }
+            }
+          },
+          "dashboard#pnc": {
+            "Display conditions": {
+              "privileges": ["O3 View PNC Patient Chart Section Details"]
+            },
+            "title": "pnc",
+            "path": "pnc",
+            "slot": "pnc-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "pnc": "PNC"
+              }
+            }
+          },
+          "dashboard#immunisation": {
+            "Display conditions": {
+              "privileges": ["O3 View Immunisation Patient Chart Section Details"]
+            },
+            "title": "cwcImmunization",
+            "path": "immunisation",
+            "slot": "immunisation-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "cwcImmunization": "CWC Immunization"
+              }
+            }
+          },
+          "dashboard#family-planning": {
+            "Display conditions": {
+              "privileges": ["O3 View Family Planning Patient Chart Section Details"]
+            },
+            "title": "familyPlanning",
+            "path": "family-planning",
+            "slot": "family-planning-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "familyPlanning": "Family Planning"
+              }
+            }
+          },
+          "dashboard#maternity": {
+            "Display conditions": {
+              "privileges": ["O3 View Meternity Patient Chart Section Details"]
+            },
+            "title": "maternity",
+            "path": "maternity",
+            "slot": "maternity-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "maternity": "Maternity"
+              }
+            }
+          }
+        }
+      },
       "chronic-disease-centre-group-slot": {
         "add": [
           "dashboard#ncd",
-          "dashboard#cervical-cancer"
+          "dashboard#cervical-cancer",
+          "@ampath/esm-patient-care-workflows-app#patient-care-dashboard-link"
         ],
         "order": [
           "dashboard#ncd",
-          "dashboard#cervical-cancer"
+          "dashboard#cervical-cancer",
+          "@ampath/esm-patient-care-workflows-app#patient-care-dashboard-link"
         ],
         "configure": {
           "dashboard#ncd": {
             "Display conditions": {
-               "privileges": ["O3 View NCD Patient Chart Section Details"]
+              "privileges": ["O3 View NCD Patient Chart Section Details"]
             },
             "title": "ncd",
             "path": "ncd",
@@ -275,7 +338,7 @@
           },
           "dashboard#cervical-cancer": {
             "Display conditions": {
-               "privileges": ["O3 View Cancer Patient Chart Section Details"]
+              "privileges": ["O3 View Cancer Patient Chart Section Details"]
             },
             "title": "cervicalCancer",
             "path": "cervical-cancer",
@@ -285,27 +348,17 @@
                 "cervicalCancer": "Cancer"
               }
             }
-          }
-        }
-      },
-      "hts-group-slot": {
-        "add": [
-          "dashboard#hts"
-        ],
-        "order": [
-          "dashboard#hts"
-        ],
-        "configure": {
-          "dashboard#hts": {
-             "Display conditions": {
-               "privileges": ["O3 View HTS Patient Chart Section Details"]
+          },
+          "@ampath/esm-patient-care-workflows-app#patient-care-dashboard-link": {
+            "Display conditions": {
+              "privileges": ["O3 View CDC Patient Chart Tab"]
             },
-            "title": "hts",
-            "path": "hts",
-            "slot": "hts-dashboard-slot",
+            "title": "hiv",
+            "path": "patient-care",
+            "slot": "patient-care-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "hts": "HTS"
+                "hiv": "HIV"
               }
             }
           }
