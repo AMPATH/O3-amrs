@@ -579,7 +579,7 @@
         "required": false
       }
     },
-    "hieBaseUrl": "https://staging.ampath.or.ke/hie",
+    "hieBaseUrl": "/hie",
     "subDomainUrl": "https://staging.ampath.or.ke"
   },
   "@ampath/esm-dha-workflow-app": {
@@ -607,7 +607,7 @@
     "defaultFacilityUrl": "",
     "subDomainUrl": "https://staging.ampath.or.ke",
     "etlBaseUrl": "/etl",
-    "hieBaseUrl": "https://staging.ampath.or.ke/hie",
+    "hieBaseUrl": "/hie",
     "claimsBaseUrl": "https://staging.ampath.or.ke/etl-claims/api/hie",
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
     "registrationBillableServices": ["3675fefd-ce4e-4ed1-9de2-7e70bc01170c","d024d785-e6af-44eb-9840-eba412c87ce5"],
@@ -621,7 +621,7 @@
     "nonSHAPaymentModes": ["63eff7a4-6f82-43c4-a333-dbcc58fe9f74","eb6173cb-9678-4614-bbe1-0ccf7ed9d1d4","6abe1031-f43b-4437-b48a-decc93cff0af"]
   },
   "@ampath/esm-hie-registry-manager-app": {
-    "hieBaseUrl": "https://staging.ampath.or.ke/hie"
+    "hieBaseUrl": "/hie"
   },
   "@ampath/esm-login-app": {
     "etlBaseUrl": "/etl",
