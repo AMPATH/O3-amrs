@@ -621,7 +621,8 @@
     "nonSHAPaymentModes": ["63eff7a4-6f82-43c4-a333-dbcc58fe9f74","eb6173cb-9678-4614-bbe1-0ccf7ed9d1d4","6abe1031-f43b-4437-b48a-decc93cff0af"]
   },
   "@ampath/esm-hie-registry-manager-app": {
-    "hieBaseUrl": "/hie"
+    "hieBaseUrl": "/hie",
+    "facilityRegistrationCodeUuid": "124a2571-43de-40f3-829a-0e0352360891"
   },
   "@ampath/esm-login-app": {
     "etlBaseUrl": "/etl",
