@@ -585,7 +585,7 @@
         "required": false
       }
     },
-    "hieBaseUrl": "https://ngx.ampath.or.ke/hie",
+    "hieBaseUrl": "/hie",
     "subDomainUrl": "https://ngx.ampath.or.ke"
   },
   "@ampath/esm-dha-workflow-app": {
@@ -613,7 +613,7 @@
     "defaultFacilityUrl": "",
     "subDomainUrl": "https://ngx.ampath.or.ke",
     "etlBaseUrl": "/etl",
-    "hieBaseUrl": "https://ngx.ampath.or.ke/hie",
+    "hieBaseUrl": "/hie",
     "claimsBaseUrl": "https://ngx.ampath.or.ke/etl-claims/api/hie",
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
     "registrationBillableServices": ["da3f7edc-5650-4beb-9942-61eb60315a17","ea9e46c5-df4b-4709-9113-a49f53775d74"],
@@ -627,7 +627,8 @@
     "nonSHAPaymentModes": ["0fef5b74-ffb3-44f3-a832-3f958c2c5a9e", "e5205599-bb7b-41ac-87b3-9c8630f4c59a", "682023fe-16c3-44e3-a286-7ea8a611cf9c"]
   },
   "@ampath/esm-hie-registry-manager-app": {
-    "hieBaseUrl": "https://ngx.ampath.or.ke/hie"
+    "hieBaseUrl": "/hie",
+    "facilityRegistrationCodeUuid": "124a2571-43de-40f3-829a-0e0352360891"
   },
   "@ampath/esm-login-app": {
     "etlBaseUrl": "/etl",
