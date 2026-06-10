@@ -622,6 +622,7 @@
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "/hie",
+    "etlBaseUrl": "/etl",
     "facilityRegistrationCodeUuid": "124a2571-43de-40f3-829a-0e0352360891"
   },
   "@ampath/esm-login-app": {
