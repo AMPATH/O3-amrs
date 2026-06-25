@@ -42,7 +42,7 @@
     "@openmrs/esm-patient-forms-app": "next",
     "@ampath/esm-patient-registration-app": "next",
     "@ampath/esm-hie-registry-manager-app": "next",
-    "@ampath/esm-dha-workflow-app": "next",
+    "@ampath/esm-dha-workflow-app": "claim-workflows",
     "@ampath/esm-morgue-app": "next",
     "@ampath/esm-patient-care-workflows-app": "next",
     "@ampath/esm-procedures-app": "next",
