@@ -131,7 +131,18 @@
         "0cb778e1-aa83-456f-8099-6b241dbfd647"
       ]
     },
-    "showReferenceNumberField": false
+    "showReferenceNumberField": false,
+    "labTestsWithOrderReasons": [
+      {
+        "labTestUuid": "a8982474-1350-11df-a1f1-0026b9348838",
+        "required": true,
+        "orderReasons": [
+          "d7a8dd98-d5de-4774-823a-a8ab06134d63",
+          "5931c4d4-4406-4d71-b75d-2205d905cc24",
+          "a89d109c-1350-11df-a1f1-0026b9348838"
+        ]
+      }
+    ]
   },
   "@openmrs/esm-patient-vitals-app": {
     "concepts": {
