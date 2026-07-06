@@ -1,7 +1,7 @@
 {
   "@openmrs/esm-primary-navigation-app": {
     "logo": {
-      "src": "https://staging.ampath.or.ke/openmrs/etl/county-logo",
+      "src": "https://kibana.ampath.or.ke/openmrs/etl/county-logo",
       "alt": "AMPATH",
       "link": "${openmrsSpaBase}/home/registry"
     }
