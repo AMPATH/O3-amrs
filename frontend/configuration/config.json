@@ -5,14 +5,10 @@
     "showServiceQueueFields": true,
     "extensionSlots": {
       "action-menu-patient-chart-items-slot": {
-        "order": [
-          "order-basket-action-menu"
-        ]
+        "order": ["order-basket-action-menu"]
       },
       "extra-visit-attribute-slot": {
-        "remove": [
-          "billing-checkin-form"
-        ]
+        "remove": ["billing-checkin-form"]
       },
       "visit-form-bottom-slot": {
         "remove": []
@@ -24,9 +20,7 @@
       "configure": {
         "clinical-appointments-dashboard-link": {
           "Display conditions": {
-            "privileges": [
-              "O3 View Appointments Dashboard"
-            ]
+            "privileges": ["O3 View Appointments Dashboard"]
           }
         }
       }
@@ -35,18 +29,14 @@
   "@openmrs/esm-patient-banner": {
     "extensionSlots": {
       "patient-banner-tags-slot": {
-        "remove": [
-          "queue-patient-info-queue-entry-status"
-        ]
+        "remove": ["queue-patient-info-queue-entry-status"]
       }
     }
   },
   "@openmrs/esm-ward-app": {
     "extensionSlots": {
       "action-menu-ward-patient-items-slot": {
-        "add": [
-          "order-basket-action-menu"
-        ]
+        "add": ["order-basket-action-menu"]
       }
     },
     "Translation overrides": {
@@ -128,7 +118,8 @@
     "orders": {
       "labOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838",
       "labOrderableConcepts": [
-        "0cb778e1-aa83-456f-8099-6b241dbfd647"
+        "0cb778e1-aa83-456f-8099-6b241dbfd647",
+        "a896cce6-1350-11df-a1f1-0026b9348838"
       ]
     },
     "showReferenceNumberField": false,
@@ -137,9 +128,44 @@
         "labTestUuid": "a8982474-1350-11df-a1f1-0026b9348838",
         "required": true,
         "orderReasons": [
+          "0a98f01f-57f1-44b7-aacf-e1121650a967",
           "d7a8dd98-d5de-4774-823a-a8ab06134d63",
           "5931c4d4-4406-4d71-b75d-2205d905cc24",
-          "a89d109c-1350-11df-a1f1-0026b9348838"
+          "a8a00158-1350-11df-a1f1-0026b9348838",
+          "92a2818f-662c-4dbc-aa20-d9f4edec2654",
+          "535f6faa-14bc-4989-a189-7f15de3f65d5",
+          "635f446c-bab9-428a-9930-ae4f46363c0c",
+          "e883376e-80cb-4ec7-a958-f0fbc0a0bad3",
+          "0998e404-d0ea-4271-abe0-a8a69c08c2cf",
+          "4d74eab9-4cad-4efb-8d58-82b53d23fcb9"
+        ]
+      },
+      {
+        "labTestUuid": "a898fe80-1350-11df-a1f1-0026b9348838",
+        "required": false,
+        "orderReasons": [
+          "5fa91048-651b-4e66-82e5-cc047434a61d",
+          "43c9e462-6d9b-4f05-9a91-ae9fe56e86fa",
+          "369cf77d-725a-4c2b-a2f2-f2e906aa2363",
+          "68962236-c3c1-411c-9185-c4abd286598b",
+          "6a2446ca-d131-4fe4-b4a9-5611d0b64c3b",
+          "51393355-2767-4615-9095-e8bb34a2c54f",
+          "a8999dfe-1350-11df-a1f1-0026b9348838",
+          "a89c4f0e-1350-11df-a1f1-0026b9348838",
+          "8421d746-ca30-4d17-a629-b12f9eff21d1",
+          "0a91f50f-b4a8-49db-9707-9dc9f29aa421"
+        ]
+      },
+      {
+        "labTestUuid": "a8a8bb18-1350-11df-a1f1-0026b9348838",
+        "required": false,
+        "orderReasons": [
+          "7300e4a0-5ce3-44bc-8d28-b7f13019524a",
+          "13e72035-c017-489e-815b-31dd528c084a",
+          "93fe19e8-fec4-4e4b-85f1-239e1fabd761",
+          "5103f427-691d-4033-bfd3-77fc21890553",
+          "31962167-5c45-4ce6-b7fb-6dd2bed1b6fd",
+          "057dae68-3d6f-4d79-926c-ed75a0ce7fd5"
         ]
       }
     ]
@@ -175,9 +201,7 @@
       },
       {
         "orderTypeUuid": "2315ab24-9a4e-4b36-b189-8e74d2c77394",
-        "orderableConceptSets": [
-          "eef060d3-d503-4695-a9ba-47f5af44135b"
-        ],
+        "orderableConceptSets": ["eef060d3-d503-4695-a9ba-47f5af44135b"],
         "label": "Procedure Orders",
         "icon": "omrs-icon-syringe"
       }
@@ -240,9 +264,7 @@
     },
     "completeOrderWithThisDispense": true,
     "medicationRequestExpirationPeriodInDays": 1,
-    "dispenserProviderRoles": [
-      ""
-    ],
+    "dispenserProviderRoles": [""],
     "dispenseBehavior": {
       "endActiveVisitOnCompletingOrder": true
     },
