@@ -1,7 +1,7 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.67',
-    'summary': 'Billing module for AMPATH',
+    'version': '1.0.68',
+    'summary': 'Billing and inventory APIs for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
     'depends': ['web', 'sale', 'sale_stock', 'account'],
