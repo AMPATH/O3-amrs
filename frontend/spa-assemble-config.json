@@ -34,7 +34,6 @@
     "@openmrs/esm-patient-vitals-app": "next",
     "@openmrs/esm-primary-navigation-app": "next",
     "@openmrs/esm-service-queues-app": "next",
-    "@openmrs/esm-stock-management-app": "3.1.0",
     "@openmrs/esm-system-admin-app": "next",
     "@openmrs/esm-user-onboarding-app": "next",
     "@openmrs/esm-ward-app": "next",
@@ -49,7 +48,6 @@
     "@ampath/esm-clinical-reminders-app": "next",
     "@ampath/esm-radiology-app": "next",
     "@ampath/esm-reports-app": "next",
-    "@mekomsolutions/esm-patient-billing-status-app": "1.0.1-pre.27",
     "@ampath/esm-poc-features-app": "next"
   },
   "excludedFrontendModules": []
