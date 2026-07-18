@@ -13,7 +13,9 @@
       "visit-form-bottom-slot": {
         "remove": []
       }
-    }
+    },
+    "encounterEditableDuration": 1,
+    "encounterEditableDurationOverridePrivileges": ["System Developer"]
   },
   "@openmrs/esm-appointments-app": {
     "extensionSlots": {
