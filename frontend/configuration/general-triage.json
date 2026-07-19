@@ -64,12 +64,42 @@
                                         "uuid": "25b243bb-a913-3c04-94dd-7013dca86560"
                                     }
                                 ]
+                            },
+                            {
+                                "tabName": "ebolaScreening",
+                                "hasFilter": false,
+                                "headerTitle": "ebolaScreening",
+                                "displayText": "ebolaScreening",
+                                "encounterType": "31a27b46-0cf3-43ff-aa16-01a25f2797f5",
+                                "columns": [
+                                    {
+                                        "id": "encounterDate",
+                                        "title": "encounterDateTitle",
+                                        "type": "encounterDatetime"
+                                    },
+                                    {
+                                        "id": "provider",
+                                        "title": "providerTitle",
+                                        "type": "provider"
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "799122f0-342e-3da7-9e73-2a78e7a2fec0"
+                                    }
+                                ]
                             }
                         ],
                         "Translation overrides": {
                             "en": {
                                 "vitals": "Vitals",
-                                "tbScreening": "TB Screening"
+                                "tbScreening": "TB Screening",
+                                "ebolaScreening": "Ebola Screening",
+                                "encounterDateTitle": "Encounter Date",
+                                "providerTitle": "Provider"
                             }
                         }
                     }
