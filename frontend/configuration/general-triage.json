@@ -70,7 +70,7 @@
                                 "hasFilter": false,
                                 "headerTitle": "ebolaScreening",
                                 "displayText": "ebolaScreening",
-                                "encounterType": "31a27b46-0cf3-43ff-aa16-01a25f2797f5",
+                                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
                                 "columns": [
                                     {
                                         "id": "encounterDate",
@@ -81,6 +81,22 @@
                                         "id": "provider",
                                         "title": "providerTitle",
                                         "type": "provider"
+                                    },
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC OPD Triage Encounter Form v1.1",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC OPD Triage Encounter Form v1.1",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
                                     }
                                 ],
                                 "launchOptions": {
@@ -88,7 +104,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "799122f0-342e-3da7-9e73-2a78e7a2fec0"
+                                        "uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"
                                     }
                                 ]
                             }
