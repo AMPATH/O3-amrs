@@ -286,7 +286,8 @@
     "etlBaseUrl": "/etl"
   },
   "@ampath/esm-poc-features-app": {
-    "etlBaseUrl": "/etl"
+    "etlBaseUrl": "/etl",
+    "tbScreeningConceptUuid": "02ad9357-b996-4530-b1a4-aff91a105383"
   },
   "@ampath/esm-procedures-app": {
     "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
