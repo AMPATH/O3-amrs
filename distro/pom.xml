@@ -50,7 +50,7 @@
     <o3forms.version>2.3.0</o3forms.version>
     <emrapi.version>2.3.0</emrapi.version>
     <morgue.version>1.0.0-SNAPSHOT</morgue.version>
-    <event.version>3.0.0</event.version>
+    <event.version>4.0.0</event.version>
     <bedmanagement.version>6.2.0-SNAPSHOT</bedmanagement.version>
     <!-- Stock Management and Billing -->
     <stockmanagement.version>2.0.3</stockmanagement.version>
