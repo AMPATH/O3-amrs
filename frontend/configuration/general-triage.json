@@ -20,14 +20,12 @@
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "AMPATH POC Vitals Form v1.0",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC OPD Triage Encounter Form v1.1",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "AMPATH POC Vitals Form v1.0",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC OPD Triage Encounter Form v1.1",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -39,7 +37,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"
+                                        "uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"
                                     }
                                 ]
                             },
@@ -70,7 +68,7 @@
                                 "hasFilter": false,
                                 "headerTitle": "ebolaScreening",
                                 "displayText": "ebolaScreening",
-                                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
+                                "encounterType": "31a27b46-0cf3-43ff-aa16-01a25f2797f5",
                                 "columns": [
                                     {
                                         "id": "encounterDate",
@@ -81,22 +79,6 @@
                                         "id": "provider",
                                         "title": "providerTitle",
                                         "type": "provider"
-                                    },
-                                    {
-                                        "id": "actions",
-                                        "title": "actionsTitle",
-                                        "actionOptions": [
-                                            {
-                                                "formName": "POC OPD Triage Encounter Form v1.1",
-                                                "label": "viewDetails",
-                                                "mode": "view"
-                                            },
-                                            {
-                                                "formName": "POC OPD Triage Encounter Form v1.1",
-                                                "label": "editForm",
-                                                "mode": "edit"
-                                            }
-                                        ]
                                     }
                                 ],
                                 "launchOptions": {
@@ -104,7 +86,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"
+                                        "uuid": "799122f0-342e-3da7-9e73-2a78e7a2fec0"
                                     }
                                 ]
                             }
