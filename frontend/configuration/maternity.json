@@ -34,16 +34,31 @@
                 "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
                 "columns": [
                   {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC Doctor's Review Notes v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Doctor's Review Notes v1.0", "label": "editForm", "mode": "edit"}
+                      {"formName": "POC Clinical Review Notes v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Clinical Review Notes v1.0", "label": "editForm", "mode": "edit"}
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "799e4490-22a9-3162-89ef-46a6f3fb14f4"}]
+                "formList": [{"uuid": "c16f33ed-b491-3d26-a39d-d2bd6460a693"}]
               },
               {
                 "tabName": "cadex",
@@ -161,7 +176,7 @@
                 "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Doctor's Review Notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Clinical review notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider", "notesTitle": "Notes"}}
           },
           "labour-care-widget": {
             "title": "Labour Care Guide"
