@@ -27,6 +27,25 @@
                 "formList": [{"uuid": "3a9cbd83-4e6b-3f94-97be-e994680e3522"}]
               },
               {
+                "tabName": "doctorsReviewNotes",
+                "hasFilter": false,
+                "headerTitle": "doctorsReviewNotes",
+                "displayText": "doctorsReviewNotes",
+                "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Doctor's Review Notes v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Doctor's Review Notes v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "799e4490-22a9-3162-89ef-46a6f3fb14f4"}]
+              },
+              {
                 "tabName": "cadex",
                 "hasFilter": false,
                 "headerTitle": "cadex",
@@ -142,7 +161,7 @@
                 "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider"}}
+            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Doctor's Review Notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider"}}
           },
           "labour-care-widget": {
             "title": "Labour Care Guide"
