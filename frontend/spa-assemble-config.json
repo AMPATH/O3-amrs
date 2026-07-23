@@ -48,7 +48,8 @@
     "@ampath/esm-clinical-reminders-app": "next",
     "@ampath/esm-radiology-app": "next",
     "@ampath/esm-reports-app": "next",
-    "@ampath/esm-poc-features-app": "next"
+    "@ampath/esm-poc-features-app": "next",
+    "@ampath/mediviya-esm-operation-theater-module": "next"
   },
   "excludedFrontendModules": []
 }
