@@ -18,15 +18,20 @@
                     "title": "actionsTitle",
                     "actionOptions": [
                       {
-                        "formName": "POC Ward Admission Form v10.0",
+                        "formName": "POC Ward Admission Form v1.0",
                         "label": "viewDetails",
                         "mode": "view"
+                      },
+                      {
+                        "formName": "POC Ward Admission Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
                       }
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "f4075ff1-ccab-31fa-bbcc-c5a400c3c961"}]
+                "formList": [{"uuid": "5232d2c3-a302-3a3e-a322-52885c1994e3"}]
               },
               {
                 "tabName": "doctorsReviewNotes",
