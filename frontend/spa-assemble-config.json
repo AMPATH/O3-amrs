@@ -50,7 +50,8 @@
     "@ampath/esm-radiology-app": "next",
     "@ampath/esm-reports-app": "next",
     "@mekomsolutions/esm-patient-billing-status-app": "1.0.1-pre.27",
-    "@ampath/esm-poc-features-app": "next"
+    "@ampath/esm-poc-features-app": "next",
+    "@ampath/mediviya-esm-operation-theater-module": "next"  
   },
   "excludedFrontendModules": []
 }
