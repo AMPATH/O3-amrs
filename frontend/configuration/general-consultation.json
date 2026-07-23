@@ -13,21 +13,19 @@
                                 "hasFilter": false,
                                 "headerTitle": "consultationForm",
                                 "displayText": "consultationForm",
-                                "encounterType": "465a92f2-baf8-42e9-9612-53064be868e8",
+                                "encounterType": "81166f83-1ee6-486e-8f56-aca528fc0fc0",
                                 "columns": [
                                     {
                                         "id": "actions",
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "Forms",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC Clinical Encounter Form v1.1",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "Forms",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC Clinical Encounter Form v1.1",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -39,7 +37,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "fb7287ac-ee2a-3015-aecd-414c4028949a"
+                                        "uuid": "441da659-3e4b-33ab-8293-a7a287dcdd12"
                                     }
                                 ]
                             },
