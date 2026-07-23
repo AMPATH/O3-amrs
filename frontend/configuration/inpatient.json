@@ -1,0 +1,225 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "inpatient-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "admission",
+                "hasFilter": false,
+                "headerTitle": "admission",
+                "displayText": "admission",
+                "encounterType": "b062e97b-71fb-4c80-9f7d-72076475884a",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Ward Admission Form v10.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "f4075ff1-ccab-31fa-bbcc-c5a400c3c961"}]
+              },
+              {
+                "tabName": "doctorsReviewNotes",
+                "hasFilter": false,
+                "headerTitle": "doctorsReviewNotes",
+                "displayText": "doctorsReviewNotes",
+                "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
+                "columns": [
+                  {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Clinical Review Notes v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Clinical Review Notes v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "c16f33ed-b491-3d26-a39d-d2bd6460a693"}]
+              },
+              {
+                "tabName": "cadex",
+                "hasFilter": false,
+                "headerTitle": "cadex",
+                "displayText": "cadex",
+                "encounterType": "64e0f9f4-5f25-4098-bbca-ba8db6ce1696",
+                "columns": [
+                  {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
+                    "id": "admissionDate",
+                    "title": "admissionDateTitle",
+                    "concept": "a8a01652-1350-11df-a1f1-0026b9348838"
+                  },
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "AMPATH POC Cardex Form v1.0", "package": "hiv-care-treatment", "label": "viewDetails", "mode": "view"},
+                      {"formName": "AMPATH POC Cardex Form v1.0", "package": "hiv-care-treatment", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"}]
+              },
+              {
+                "tabName": "vitals",
+                "hasFilter": false,
+                "headerTitle": "vitals",
+                "displayText": "vitals",
+                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "AMPATH POC Vitals Form v1.0", "package": "hiv-care-treatment", "label": "viewDetails", "mode": "view"},
+                      {"formName": "AMPATH POC Vitals Form v1.0", "package": "hiv-care-treatment", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"}]
+              },
+              {
+                "tabName": "preAnaesthesiaChecklist",
+                "hasFilter": false,
+                "headerTitle": "preAnaesthesiaChecklist",
+                "displayText": "preAnaesthesiaChecklist",
+                "encounterType": "ee8233da-c8fb-48f1-8652-76ce3c040090",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "b040ee33-00fc-37a5-b2c0-28ae3975dd5b"}]
+              },
+              {
+                "tabName": "theatreNursingNotes",
+                "hasFilter": false,
+                "headerTitle": "theatreNursingNotes",
+                "displayText": "theatreNursingNotes",
+                "encounterType": "98314046-ff7d-4cfc-bbf9-7d9e4e72607d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Theatre Nursing Notes v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Theatre Nursing Notes v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "90094e65-0b31-31c1-8065-649d0cb6c7fe"}]
+              },
+              {
+                "tabName": "postProcedure",
+                "hasFilter": false,
+                "headerTitle": "postProcedure",
+                "displayText": "postProcedure",
+                "encounterType": "d85b0700-89a4-47c2-a80e-84dcff43d07a",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Post Procedure Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Post Procedure Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "51ecd052-ccbc-30a4-af07-e7ab4517d66d"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "admission": "Ward Admission",
+                "doctorsReviewNotes": "Clinical review notes",
+                "cadex": "Cardex",
+                "vitals": "Vitals",
+                "preAnaesthesiaChecklist": "Pre-Anaesthesia Checklist",
+                "theatreNursingNotes": "Theatre Nursing Notes",
+                "postProcedure": "Post Procedure",
+                "admissionDateTitle": "Admission Date",
+                "encounterDateTitle": "Encounter Date",
+                "providerTitle": "Provider",
+                "notesTitle": "Notes"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
