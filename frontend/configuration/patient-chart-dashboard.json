@@ -4,6 +4,7 @@
       "patient-chart-dashboard-slot": {
         "add": [
           "nav-group#GeneralMedicine",
+          "nav-group#Inpatient",
           "nav-group#SpecialClinics",
           "nav-group#PreventionServices",
           "nav-group#MNCH",
@@ -11,6 +12,7 @@
         ],
         "order": [
           "nav-group#GeneralMedicine",
+          "nav-group#Inpatient",
           "nav-group#SpecialClinics",
           "nav-group#PreventionServices",
           "nav-group#MNCH",
@@ -27,6 +29,19 @@
             "Translation overrides": {
               "en": {
                 "generalMedicine": "General Medicine"
+              }
+            }
+          },
+          "nav-group#Inpatient": {
+            "Display conditions": {
+              "privileges": ["O3 View Inpatient Tab"]
+            },
+            "title": "inpatient",
+            "slotName": "inpatient-group-slot",
+            "isExpanded": true,
+            "Translation overrides": {
+              "en": {
+                "inpatient": "Inpatient"
               }
             }
           },
@@ -132,6 +147,29 @@
             "Translation overrides": {
               "en": {
                 "nutrition": "Nutrition"
+              }
+            }
+          }
+        }
+      },
+      "inpatient-group-slot": {
+        "add": [
+          "dashboard#inpatient"
+        ],
+        "order": [
+          "dashboard#inpatient"
+        ],
+        "configure": {
+          "dashboard#inpatient": {
+            "Display conditions": {
+              "privileges": ["O3 View Inpatient Patient Chart Section Details"]
+            },
+            "title": "inpatient",
+            "path": "inpatient",
+            "slot": "inpatient-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "inpatient": "Admission"
               }
             }
           }
