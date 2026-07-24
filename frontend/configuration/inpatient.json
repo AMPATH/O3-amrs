@@ -151,60 +151,6 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "b040ee33-00fc-37a5-b2c0-28ae3975dd5b"}]
-              },
-              {
-                "tabName": "theatreNursingNotes",
-                "hasFilter": false,
-                "headerTitle": "theatreNursingNotes",
-                "displayText": "theatreNursingNotes",
-                "encounterType": "98314046-ff7d-4cfc-bbf9-7d9e4e72607d",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {
-                        "formName": "POC Theatre Nursing Notes v1.0",
-                        "label": "viewDetails",
-                        "mode": "view"
-                      },
-                      {
-                        "formName": "POC Theatre Nursing Notes v1.0",
-                        "label": "editForm",
-                        "mode": "edit"
-                      }
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "90094e65-0b31-31c1-8065-649d0cb6c7fe"}]
-              },
-              {
-                "tabName": "postProcedure",
-                "hasFilter": false,
-                "headerTitle": "postProcedure",
-                "displayText": "postProcedure",
-                "encounterType": "d85b0700-89a4-47c2-a80e-84dcff43d07a",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {
-                        "formName": "POC Post Procedure Form v1.0",
-                        "label": "viewDetails",
-                        "mode": "view"
-                      },
-                      {
-                        "formName": "POC Post Procedure Form v1.0",
-                        "label": "editForm",
-                        "mode": "edit"
-                      }
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "51ecd052-ccbc-30a4-af07-e7ab4517d66d"}]
               }
             ],
             "Translation overrides": {
@@ -214,8 +160,6 @@
                 "cadex": "Cardex",
                 "vitals": "Vitals",
                 "preAnaesthesiaChecklist": "Pre-Anaesthesia Checklist",
-                "theatreNursingNotes": "Theatre Nursing Notes",
-                "postProcedure": "Post Procedure",
                 "admissionDateTitle": "Admission Date",
                 "encounterDateTitle": "Encounter Date",
                 "providerTitle": "Provider",

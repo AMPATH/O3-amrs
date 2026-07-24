@@ -154,22 +154,52 @@
       },
       "inpatient-group-slot": {
         "add": [
-          "dashboard#inpatient"
+          "dashboard#maternity",
+          "dashboard#general-admission",
+          "dashboard#theatre"
         ],
         "order": [
-          "dashboard#inpatient"
+          "dashboard#maternity",
+          "dashboard#general-admission",
+          "dashboard#theatre"
         ],
         "configure": {
-          "dashboard#inpatient": {
+          "dashboard#maternity": {
+            "Display conditions": {
+              "privileges": ["O3 View Meternity Patient Chart Section Details"]
+            },
+            "title": "maternity",
+            "path": "maternity",
+            "slot": "maternity-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "maternity": "Maternity"
+              }
+            }
+          },
+          "dashboard#general-admission": {
             "Display conditions": {
               "privileges": ["O3 View Inpatient Patient Chart Section Details"]
             },
-            "title": "inpatient",
-            "path": "inpatient",
+            "title": "generalAdmission",
+            "path": "general-admission",
             "slot": "inpatient-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "inpatient": "Admission"
+                "generalAdmission": "General admission"
+              }
+            }
+          },
+          "dashboard#theatre": {
+            "Display conditions": {
+              "privileges": ["O3 View Theatre Patient Chart Section Details"]
+            },
+            "title": "theatre",
+            "path": "theatre",
+            "slot": "theatre-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "theatre": "Theatre"
               }
             }
           }
@@ -257,16 +287,14 @@
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#immunisation",
-          "dashboard#family-planning",
-          "dashboard#maternity"
+          "dashboard#family-planning"
         ],
         "order": [
           "dashboard#nutrition",
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#immunisation",
-          "dashboard#family-planning",
-          "dashboard#maternity"
+          "dashboard#family-planning"
         ],
         "configure": {
           "dashboard#nutrition": {
@@ -331,19 +359,6 @@
             "Translation overrides": {
               "en": {
                 "familyPlanning": "Family Planning"
-              }
-            }
-          },
-          "dashboard#maternity": {
-            "Display conditions": {
-              "privileges": ["O3 View Meternity Patient Chart Section Details"]
-            },
-            "title": "maternity",
-            "path": "maternity",
-            "slot": "maternity-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "maternity": "Maternity"
               }
             }
           }
