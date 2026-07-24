@@ -1,0 +1,75 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "theatre-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "theatreNursingNotes",
+                "hasFilter": false,
+                "headerTitle": "theatreNursingNotes",
+                "displayText": "theatreNursingNotes",
+                "encounterType": "98314046-ff7d-4cfc-bbf9-7d9e4e72607d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Theatre Nursing Notes v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Theatre Nursing Notes v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "90094e65-0b31-31c1-8065-649d0cb6c7fe"}]
+              },
+              {
+                "tabName": "postProcedure",
+                "hasFilter": false,
+                "headerTitle": "postProcedure",
+                "displayText": "postProcedure",
+                "encounterType": "d85b0700-89a4-47c2-a80e-84dcff43d07a",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Post Procedure Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Post Procedure Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "51ecd052-ccbc-30a4-af07-e7ab4517d66d"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "theatreNursingNotes": "Theatre Nursing Notes",
+                "postProcedure": "Post Procedure"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
