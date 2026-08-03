@@ -208,11 +208,17 @@
       "special-clinics-group-slot": {
         "add": [
           "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#dental",
+          "dashboard#renal",
+          "dashboard#optical",
+          "dashboard#surgery"
         ],
         "order": [
           "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#dental",
+          "dashboard#renal",
+          "dashboard#optical",
+          "dashboard#surgery"
         ],
         "configure": {
           "dashboard#tb-treatment": {
@@ -238,6 +244,45 @@
             "Translation overrides": {
               "en": {
                 "dental": "Dental"
+              }
+            }
+          },
+          "dashboard#renal": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Renal Section"]
+            },
+            "title": "renal",
+            "path": "renal",
+            "slot": "renal-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "renal": "Renal"
+              }
+            }
+          },
+          "dashboard#optical": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Optical Section"]
+            },
+            "title": "optical",
+            "path": "optical",
+            "slot": "optical-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "optical": "Optical"
+              }
+            }
+          },
+          "dashboard#surgery": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Surgery Section"]
+            },
+            "title": "surgery",
+            "path": "surgery",
+            "slot": "surgery-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "surgery": "Surgery"
               }
             }
           }

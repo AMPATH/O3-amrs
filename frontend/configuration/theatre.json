@@ -7,6 +7,87 @@
           "encounter-list": {
             "tabDefinitions": [
               {
+                "tabName": "preOperativeChecklist",
+                "hasFilter": false,
+                "headerTitle": "preOperativeChecklist",
+                "displayText": "preOperativeChecklist",
+                "encounterType": "874d41be-07e2-4f82-91c5-0e995544bde1",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "PreOperative Checklist Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "PreOperative Checklist Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "68ff571d-e1ab-3689-b973-5fa721df553a"}]
+              },
+              {
+                "tabName": "surgicalSafetySignIn",
+                "hasFilter": false,
+                "headerTitle": "surgicalSafetySignIn",
+                "displayText": "surgicalSafetySignIn",
+                "encounterType": "83d8d046-9130-4c03-87a3-fc6283908c25",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Surgical Safety Checklist (Sign In) Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Surgical Safety Checklist (Sign In) Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "570e576f-b2ba-3099-84c3-6d805430e78a"}]
+              },
+              {
+                "tabName": "surgicalSafetySignOut",
+                "hasFilter": false,
+                "headerTitle": "surgicalSafetySignOut",
+                "displayText": "surgicalSafetySignOut",
+                "encounterType": "8329e1cc-32b5-4c05-ab69-fcc86064af56",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Surgical Safety Checklist (Sign Out)Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Surgical Safety Checklist (Sign Out)Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "19a68271-50c0-3765-a2c9-c85b3e8c8d5c"}]
+              },
+              {
                 "tabName": "theatreNursingNotes",
                 "hasFilter": false,
                 "headerTitle": "theatreNursingNotes",
@@ -34,10 +115,10 @@
                 "formList": [{"uuid": "90094e65-0b31-31c1-8065-649d0cb6c7fe"}]
               },
               {
-                "tabName": "postProcedure",
+                "tabName": "theatreNotes",
                 "hasFilter": false,
-                "headerTitle": "postProcedure",
-                "displayText": "postProcedure",
+                "headerTitle": "theatreNotes",
+                "displayText": "theatreNotes",
                 "encounterType": "d85b0700-89a4-47c2-a80e-84dcff43d07a",
                 "columns": [
                   {
@@ -45,12 +126,12 @@
                     "title": "actionsTitle",
                     "actionOptions": [
                       {
-                        "formName": "POC Post Procedure Form v1.0",
+                        "formName": "POC Theatre Notes Form v1.0",
                         "label": "viewDetails",
                         "mode": "view"
                       },
                       {
-                        "formName": "POC Post Procedure Form v1.0",
+                        "formName": "POC Theatre Notes Form v1.0",
                         "label": "editForm",
                         "mode": "edit"
                       }
@@ -58,7 +139,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "51ecd052-ccbc-30a4-af07-e7ab4517d66d"}]
+                "formList": [{"uuid": "620cee59-c11a-3bc1-b085-ce34ae60afd9"}]
               },
               {
                 "tabName": "maternityDelivery",
@@ -90,8 +171,11 @@
             ],
             "Translation overrides": {
               "en": {
+                "preOperativeChecklist": "PreOperative Checklist",
+                "surgicalSafetySignIn": "Surgical Safety Checklist (Sign In)",
+                "surgicalSafetySignOut": "Surgical Safety Checklist (Sign Out)",
                 "theatreNursingNotes": "Theatre Nursing Notes",
-                "postProcedure": "Post Procedure",
+                "theatreNotes": "Theatre Notes",
                 "maternityDelivery": "Maternity Delivery"
               }
             }
