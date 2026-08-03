@@ -17,16 +17,56 @@
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC Dental Clinical Form v 1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Dental Clinical Form v 1.0", "label": "editForm", "mode": "edit"}
+                      {
+                        "formName": "POC Dental Clinical Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Dental Clinical Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "37eedbc6-8bd4-3592-992a-9d10d185574e"}]
+              },
+              {
+                "tabName": "preAuthorization",
+                "hasFilter": false,
+                "headerTitle": "preAuthorization",
+                "displayText": "preAuthorization",
+                "encounterType": "18b10189-a89f-430d-83e9-14663fef258c",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Pre-authorization Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pre-authorization Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "cce578f6-b3e2-3077-91ab-9016cf0f4fa5"}]
               }
             ],
-            "Translation overrides": {"en": {"dental": "Dental"}}
+            "Translation overrides": {
+              "en": {
+                "dental": "Dental",
+                "preAuthorization": "Pre-authorization"
+              }
+            }
           }
         }
       }
