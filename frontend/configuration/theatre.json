@@ -34,10 +34,37 @@
                 "formList": [{"uuid": "68ff571d-e1ab-3689-b973-5fa721df553a"}]
               },
               {
-                "tabName": "surgicalSafetySignIn",
+                "tabName": "preAnaestheticAssessment",
                 "hasFilter": false,
-                "headerTitle": "surgicalSafetySignIn",
-                "displayText": "surgicalSafetySignIn",
+                "headerTitle": "preAnaestheticAssessment",
+                "displayText": "preAnaestheticAssessment",
+                "encounterType": "ee8233da-c8fb-48f1-8652-76ce3c040090",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "b040ee33-00fc-37a5-b2c0-28ae3975dd5b"}]
+              },
+              {
+                "tabName": "surgicalSignIn",
+                "hasFilter": false,
+                "headerTitle": "surgicalSignIn",
+                "displayText": "surgicalSignIn",
                 "encounterType": "83d8d046-9130-4c03-87a3-fc6283908c25",
                 "columns": [
                   {
@@ -59,33 +86,6 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "570e576f-b2ba-3099-84c3-6d805430e78a"}]
-              },
-              {
-                "tabName": "surgicalSafetySignOut",
-                "hasFilter": false,
-                "headerTitle": "surgicalSafetySignOut",
-                "displayText": "surgicalSafetySignOut",
-                "encounterType": "8329e1cc-32b5-4c05-ab69-fcc86064af56",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {
-                        "formName": "POC Surgical Safety Checklist (Sign Out)Form v1.0",
-                        "label": "viewDetails",
-                        "mode": "view"
-                      },
-                      {
-                        "formName": "POC Surgical Safety Checklist (Sign Out)Form v1.0",
-                        "label": "editForm",
-                        "mode": "edit"
-                      }
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "19a68271-50c0-3765-a2c9-c85b3e8c8d5c"}]
               },
               {
                 "tabName": "theatreNursingNotes",
@@ -142,6 +142,33 @@
                 "formList": [{"uuid": "620cee59-c11a-3bc1-b085-ce34ae60afd9"}]
               },
               {
+                "tabName": "surgicalSignOut",
+                "hasFilter": false,
+                "headerTitle": "surgicalSignOut",
+                "displayText": "surgicalSignOut",
+                "encounterType": "8329e1cc-32b5-4c05-ab69-fcc86064af56",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Surgical Safety Checklist (Sign Out)Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Surgical Safety Checklist (Sign Out)Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "19a68271-50c0-3765-a2c9-c85b3e8c8d5c"}]
+              },
+              {
                 "tabName": "maternityDelivery",
                 "hasFilter": false,
                 "headerTitle": "maternityDelivery",
@@ -171,11 +198,12 @@
             ],
             "Translation overrides": {
               "en": {
-                "preOperativeChecklist": "PreOperative Checklist",
-                "surgicalSafetySignIn": "Surgical Safety Checklist (Sign In)",
-                "surgicalSafetySignOut": "Surgical Safety Checklist (Sign Out)",
+                "preOperativeChecklist": "Pre Operative Checklist",
+                "preAnaestheticAssessment": "Pre-Anaesthetic Assessment",
+                "surgicalSignIn": "Surgical Sign In",
                 "theatreNursingNotes": "Theatre Nursing Notes",
                 "theatreNotes": "Theatre Notes",
+                "surgicalSignOut": "Surgical Sign Out",
                 "maternityDelivery": "Maternity Delivery"
               }
             }
