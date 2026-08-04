@@ -7,6 +7,75 @@
           "encounter-list": {
             "tabDefinitions": [
               {
+                "tabName": "haemodialysis",
+                "hasFilter": false,
+                "headerTitle": "haemodialysis",
+                "displayText": "haemodialysis",
+                "encounterType": "0cf5d9c8-954b-4b72-9284-2eaf6d7a57eb",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Haemodialysis Flow Chart v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Haemodialysis Flow Chart v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "f2354a9f-d491-33cb-9305-31a75626bd18"}]
+              },
+              {
+                "tabName": "clinicalReviewNotes",
+                "hasFilter": false,
+                "headerTitle": "clinicalReviewNotes",
+                "displayText": "clinicalReviewNotes",
+                "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
+                "columns": [
+                  {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Clinical Review Notes v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Clinical Review Notes v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "c16f33ed-b491-3d26-a39d-d2bd6460a693"}]
+              },
+              {
                 "tabName": "preAuthorization",
                 "hasFilter": false,
                 "headerTitle": "preAuthorization",
@@ -36,7 +105,12 @@
             ],
             "Translation overrides": {
               "en": {
-                "preAuthorization": "Pre-authorization"
+                "haemodialysis": "Haemodialysis",
+                "clinicalReviewNotes": "Clinical Review Notes",
+                "preAuthorization": "Pre-authorization",
+                "encounterDateTitle": "Encounter Date",
+                "providerTitle": "Provider",
+                "notesTitle": "Notes"
               }
             }
           }
