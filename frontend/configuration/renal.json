@@ -7,6 +7,33 @@
           "encounter-list": {
             "tabDefinitions": [
               {
+                "tabName": "triage",
+                "hasFilter": false,
+                "headerTitle": "triage",
+                "displayText": "triage",
+                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC OPD Triage Encounter Form v1.1",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC OPD Triage Encounter Form v1.1",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"}]
+              },
+              {
                 "tabName": "haemodialysis",
                 "hasFilter": false,
                 "headerTitle": "haemodialysis",
@@ -105,6 +132,7 @@
             ],
             "Translation overrides": {
               "en": {
+                "triage": "Triage",
                 "haemodialysis": "Haemodialysis",
                 "clinicalReviewNotes": "Clinical Review Notes",
                 "preAuthorization": "Pre-authorization",
