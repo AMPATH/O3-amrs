@@ -209,6 +209,12 @@
         "orderableConceptSets": ["eef060d3-d503-4695-a9ba-47f5af44135b"],
         "label": "Procedure Orders",
         "icon": "omrs-icon-syringe"
+      },
+      {
+        "orderTypeUuid": "0dcf23d4-3008-4d8e-b12c-4ec95d1cfd97",
+        "orderableConceptSets": ["d27a52bf-0d2a-485a-8438-87e8e252a7ef"],
+        "label": "Medical Supplies",
+        "icon": "omrs-icon-flask"
       }
     ],
     "showReferenceNumberField": false
