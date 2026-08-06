@@ -7,6 +7,33 @@
           "encounter-list": {
             "tabDefinitions": [
               {
+                "tabName": "clinicalAddendum",
+                "hasFilter": false,
+                "headerTitle": "clinicalAddendum",
+                "displayText": "clinicalAddendum",
+                "encounterType": "4e346fd8-d326-4399-aa4f-a0c0b489f029",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Clinical Addendum Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Clinical Addendum Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "84121b5e-2241-363a-b0cd-dd050d015556"}]
+              },
+              {
                 "tabName": "admission",
                 "hasFilter": false,
                 "headerTitle": "admission",
@@ -151,15 +178,44 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "b040ee33-00fc-37a5-b2c0-28ae3975dd5b"}]
+              },
+              {
+                "tabName": "treatmentSheet",
+                "hasFilter": false,
+                "headerTitle": "treatmentSheet",
+                "displayText": "treatmentSheet",
+                "encounterType": "ca1e6906-6365-416f-a030-b70bfe960322",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Treatment Sheet Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Treatment Sheet Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "828022dc-3324-3b19-ae70-f878561bb1b6"}]
               }
             ],
             "Translation overrides": {
               "en": {
+                "clinicalAddendum": "Clinical Addendum",
                 "admission": "Ward Admission",
                 "doctorsReviewNotes": "Clinical review notes",
                 "cadex": "Cardex",
                 "vitals": "Vitals",
                 "preAnaesthesiaChecklist": "Pre-Anaesthesia Checklist",
+                "treatmentSheet": "Treatment Sheet",
                 "admissionDateTitle": "Admission Date",
                 "encounterDateTitle": "Encounter Date",
                 "providerTitle": "Provider",
