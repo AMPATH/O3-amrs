@@ -211,14 +211,16 @@
           "dashboard#dental",
           "dashboard#renal",
           "dashboard#optical",
-          "dashboard#surgery"
+          "dashboard#surgery",
+          "dashboard#mental-health"
         ],
         "order": [
           "dashboard#tb-treatment",
           "dashboard#dental",
           "dashboard#renal",
           "dashboard#optical",
-          "dashboard#surgery"
+          "dashboard#surgery",
+          "dashboard#mental-health"
         ],
         "configure": {
           "dashboard#tb-treatment": {
@@ -269,7 +271,7 @@
             "slot": "optical-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "optical": "Optical"
+                "optical": "Eye Clinic"
               }
             }
           },
@@ -283,6 +285,19 @@
             "Translation overrides": {
               "en": {
                 "surgery": "Surgery"
+              }
+            }
+          },
+          "dashboard#mental-health": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Mental Health Section"]
+            },
+            "title": "mentalHealth",
+            "path": "mental-health",
+            "slot": "mental-health-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "mentalHealth": "Mental Wellness"
               }
             }
           }
