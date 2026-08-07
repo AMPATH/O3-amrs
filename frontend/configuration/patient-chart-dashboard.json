@@ -4,6 +4,7 @@
       "patient-chart-dashboard-slot": {
         "add": [
           "nav-group#GeneralMedicine",
+          "nav-group#Inpatient",
           "nav-group#SpecialClinics",
           "nav-group#PreventionServices",
           "nav-group#MNCH",
@@ -11,6 +12,7 @@
         ],
         "order": [
           "nav-group#GeneralMedicine",
+          "nav-group#Inpatient",
           "nav-group#SpecialClinics",
           "nav-group#PreventionServices",
           "nav-group#MNCH",
@@ -27,6 +29,19 @@
             "Translation overrides": {
               "en": {
                 "generalMedicine": "General Medicine"
+              }
+            }
+          },
+          "nav-group#Inpatient": {
+            "Display conditions": {
+              "privileges": ["O3 View Inpatient Tab"]
+            },
+            "title": "inpatient",
+            "slotName": "inpatient-group-slot",
+            "isExpanded": true,
+            "Translation overrides": {
+              "en": {
+                "inpatient": "Inpatient"
               }
             }
           },
@@ -137,14 +152,73 @@
           }
         }
       },
+      "inpatient-group-slot": {
+        "add": [
+          "dashboard#maternity",
+          "dashboard#general-admission",
+          "dashboard#theatre"
+        ],
+        "order": [
+          "dashboard#maternity",
+          "dashboard#general-admission",
+          "dashboard#theatre"
+        ],
+        "configure": {
+          "dashboard#maternity": {
+            "Display conditions": {
+              "privileges": ["O3 View Meternity Patient Chart Section Details"]
+            },
+            "title": "maternity",
+            "path": "maternity",
+            "slot": "maternity-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "maternity": "Maternity"
+              }
+            }
+          },
+          "dashboard#general-admission": {
+            "Display conditions": {
+              "privileges": ["O3 View Inpatient Patient Chart Section Details"]
+            },
+            "title": "generalAdmission",
+            "path": "general-admission",
+            "slot": "inpatient-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "generalAdmission": "General admission"
+              }
+            }
+          },
+          "dashboard#theatre": {
+            "Display conditions": {
+              "privileges": ["O3 View Theatre Patient Chart Section Details"]
+            },
+            "title": "theatre",
+            "path": "theatre",
+            "slot": "theatre-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "theatre": "Theatre"
+              }
+            }
+          }
+        }
+      },
       "special-clinics-group-slot": {
         "add": [
           "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#dental",
+          "dashboard#renal",
+          "dashboard#optical",
+          "dashboard#surgery"
         ],
         "order": [
           "dashboard#tb-treatment",
-          "dashboard#dental"
+          "dashboard#dental",
+          "dashboard#renal",
+          "dashboard#optical",
+          "dashboard#surgery"
         ],
         "configure": {
           "dashboard#tb-treatment": {
@@ -170,6 +244,45 @@
             "Translation overrides": {
               "en": {
                 "dental": "Dental"
+              }
+            }
+          },
+          "dashboard#renal": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Renal Section"]
+            },
+            "title": "renal",
+            "path": "renal",
+            "slot": "renal-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "renal": "Renal"
+              }
+            }
+          },
+          "dashboard#optical": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Optical Section"]
+            },
+            "title": "optical",
+            "path": "optical",
+            "slot": "optical-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "optical": "Optical"
+              }
+            }
+          },
+          "dashboard#surgery": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics Surgery Section"]
+            },
+            "title": "surgery",
+            "path": "surgery",
+            "slot": "surgery-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "surgery": "Surgery"
               }
             }
           }
@@ -219,16 +332,14 @@
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#immunisation",
-          "dashboard#family-planning",
-          "dashboard#maternity"
+          "dashboard#family-planning"
         ],
         "order": [
           "dashboard#nutrition",
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#immunisation",
-          "dashboard#family-planning",
-          "dashboard#maternity"
+          "dashboard#family-planning"
         ],
         "configure": {
           "dashboard#nutrition": {
@@ -293,19 +404,6 @@
             "Translation overrides": {
               "en": {
                 "familyPlanning": "Family Planning"
-              }
-            }
-          },
-          "dashboard#maternity": {
-            "Display conditions": {
-              "privileges": ["O3 View Meternity Patient Chart Section Details"]
-            },
-            "title": "maternity",
-            "path": "maternity",
-            "slot": "maternity-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "maternity": "Maternity"
               }
             }
           }

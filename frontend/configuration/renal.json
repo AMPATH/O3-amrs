@@ -1,0 +1,225 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "renal-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "triage",
+                "hasFilter": false,
+                "headerTitle": "triage",
+                "displayText": "triage",
+                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC OPD Triage Encounter Form v1.1",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC OPD Triage Encounter Form v1.1",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"}]
+              },
+              {
+                "tabName": "clinicalReviewNotes",
+                "hasFilter": false,
+                "headerTitle": "clinicalReviewNotes",
+                "displayText": "clinicalReviewNotes",
+                "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
+                "columns": [
+                  {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Clinical Review Notes v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Clinical Review Notes v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "c16f33ed-b491-3d26-a39d-d2bd6460a693"}]
+              },
+              {
+                "tabName": "preAuthorization",
+                "hasFilter": false,
+                "headerTitle": "preAuthorization",
+                "displayText": "preAuthorization",
+                "encounterType": "18b10189-a89f-430d-83e9-14663fef258c",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Pre-authorization Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pre-authorization Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "cce578f6-b3e2-3077-91ab-9016cf0f4fa5"}]
+              },
+              {
+                "tabName": "haemodialysis",
+                "hasFilter": false,
+                "headerTitle": "haemodialysis",
+                "displayText": "haemodialysis",
+                "encounterType": "0cf5d9c8-954b-4b72-9284-2eaf6d7a57eb",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Haemodialysis Flow Chart v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Haemodialysis Flow Chart v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "f2354a9f-d491-33cb-9305-31a75626bd18"}]
+              },
+              {
+                "tabName": "intraDialyticMonitoring",
+                "hasFilter": false,
+                "headerTitle": "intraDialyticMonitoring",
+                "displayText": "intraDialyticMonitoring",
+                "encounterType": "2b49f2e9-9793-41e9-9221-570477d1d0f8",
+                "columns": [
+                  {
+                    "id": "time",
+                    "title": "timeTitle",
+                    "concept": "a89ece64-1350-11df-a1f1-0026b9348838"
+                  },
+                  {
+                    "id": "systolicBp",
+                    "title": "systolicBpTitle",
+                    "concept": "a8a65d5a-1350-11df-a1f1-0026b9348838"
+                  },
+                  {
+                    "id": "diastolicBp",
+                    "title": "diastolicBpTitle",
+                    "concept": "a8a65e36-1350-11df-a1f1-0026b9348838"
+                  },
+                  {
+                    "id": "pulse",
+                    "title": "pulseTitle",
+                    "concept": "a8a65f12-1350-11df-a1f1-0026b9348838"
+                  },
+                  {
+                    "id": "temperature",
+                    "title": "temperatureTitle",
+                    "concept": "a8a65fee-1350-11df-a1f1-0026b9348838"
+                  },
+                  {
+                    "id": "ufRemoved",
+                    "title": "ufRemovedTitle",
+                    "concept": "ee950b31-7f1f-49fd-914a-b297d89144b9"
+                  },
+                  {
+                    "id": "heparin",
+                    "title": "heparinTitle",
+                    "concept": "c9795629-501f-4c4e-971f-ca4692fe2db0"
+                  },
+                  {
+                    "id": "remarks",
+                    "title": "remarksTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Intra-Dialytic Monitoring Tool v1.1",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Intra-Dialytic Monitoring Tool v1.1",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "5b93e0d3-999d-3f26-9b23-11faa8709c9e"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "triage": "Triage",
+                "clinicalReviewNotes": "Clinical Review Notes",
+                "preAuthorization": "Pre-authorization",
+                "haemodialysis": "Haemodialysis",
+                "intraDialyticMonitoring": "Intra-Dialytic Monitoring",
+                "encounterDateTitle": "Encounter Date",
+                "providerTitle": "Provider",
+                "notesTitle": "Notes",
+                "timeTitle": "Time",
+                "systolicBpTitle": "Systolic BP",
+                "diastolicBpTitle": "Diastolic BP",
+                "pulseTitle": "Pulse",
+                "temperatureTitle": "Temp",
+                "ufRemovedTitle": "UF Removed",
+                "heparinTitle": "Heparin",
+                "remarksTitle": "Remarks"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

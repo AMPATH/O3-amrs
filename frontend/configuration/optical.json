@@ -1,29 +1,29 @@
 {
   "@openmrs/esm-patient-chart-app": {
     "extensionSlots": {
-      "tb-treatment-dashboard-slot": {
+      "optical-dashboard-slot": {
         "add": ["encounter-list"],
         "configure": {
           "encounter-list": {
             "tabDefinitions": [
               {
-                "tabName": "tbTreatment",
+                "tabName": "optical",
                 "hasFilter": false,
-                "headerTitle": "tbTreatment",
-                "displayText": "tbTreatment",
-                "encounterType": "5c6813bd-b1f5-308b-b074-d9fb44626af4",
+                "headerTitle": "optical",
+                "displayText": "optical",
+                "encounterType": "f4a3689f-74f3-4934-8f42-8aee45557b29",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
                       {
-                        "formName": "TB Treatment Form",
+                        "formName": "POC Ophthalmology Clinical Form v1.0",
                         "label": "viewDetails",
                         "mode": "view"
                       },
                       {
-                        "formName": "TB Treatment Form",
+                        "formName": "POC Ophthalmology Clinical Form v1.0",
                         "label": "editForm",
                         "mode": "edit"
                       }
@@ -31,7 +31,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "5c6813bd-b1f5-308b-b074-d9fb44626af4"}]
+                "formList": [{"uuid": "aebba1a3-5b6e-3f46-bffa-4c71e689252d"}]
               },
               {
                 "tabName": "preAuthorization",
@@ -63,7 +63,7 @@
             ],
             "Translation overrides": {
               "en": {
-                "tbTreatment": "TB Treatment",
+                "optical": "Optical",
                 "preAuthorization": "Pre-authorization"
               }
             }

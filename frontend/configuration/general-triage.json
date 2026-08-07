@@ -20,14 +20,12 @@
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "AMPATH POC Vitals Form v1.0",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC OPD Triage Encounter Form v1.1",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "AMPATH POC Vitals Form v1.0",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC OPD Triage Encounter Form v1.1",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -39,7 +37,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"
+                                        "uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"
                                     }
                                 ]
                             },
@@ -66,44 +64,11 @@
                                 ]
                             },
                             {
-                                "tabName": "nutritionAssessment",
+                                "tabName": "ebolaScreening",
                                 "hasFilter": false,
-                                "headerTitle": "nutritionAssessment",
-                                "displayText": "nutritionAssessment",
-                                "encounterType": "3cd9dd0a-a5d1-4482-9f45-a0fea4f5e556",
-                                "columns": [
-                                    {
-                                        "id": "actions",
-                                        "title": "actionsTitle",
-                                        "actionOptions": [
-                                            {
-                                                "formName": "POC Nutrition Assessment Form v1.0",
-                                                "label": "viewDetails",
-                                                "mode": "view"
-                                            },
-                                            {
-                                                "formName": "POC Nutrition Assessment Form v1.0",
-                                                "label": "editForm",
-                                                "mode": "edit"
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "launchOptions": {
-                                    "displayText": "add"
-                                },
-                                "formList": [
-                                    {
-                                        "uuid": "acbbc172-2c87-3594-8fd8-4148a3dd5e62"
-                                    }
-                                ]
-                            },
-                            {
-                                "tabName": "cadex",
-                                "hasFilter": false,
-                                "headerTitle": "cadex",
-                                "displayText": "cadex",
-                                "encounterType": "64e0f9f4-5f25-4098-bbca-ba8db6ce1696",
+                                "headerTitle": "ebolaScreening",
+                                "displayText": "ebolaScreening",
+                                "encounterType": "31a27b46-0cf3-43ff-aa16-01a25f2797f5",
                                 "columns": [
                                     {
                                         "id": "encounterDate",
@@ -114,29 +79,6 @@
                                         "id": "provider",
                                         "title": "providerTitle",
                                         "type": "provider"
-                                    },
-                                    {
-                                        "id": "notes",
-                                        "title": "notesTitle",
-                                        "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
-                                    },
-                                    {
-                                        "id": "actions",
-                                        "title": "actionsTitle",
-                                        "actionOptions": [
-                                            {
-                                                "formName": "AMPATH POC Cardex Form v1.0",
-                                                "package": "hiv-care-treatment",
-                                                "label": "viewDetails",
-                                                "mode": "view"
-                                            },
-                                            {
-                                                "formName": "AMPATH POC Cardex Form v1.0",
-                                                "package": "hiv-care-treatment",
-                                                "label": "editForm",
-                                                "mode": "edit"
-                                            }
-                                        ]
                                     }
                                 ],
                                 "launchOptions": {
@@ -144,7 +86,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"
+                                        "uuid": "799122f0-342e-3da7-9e73-2a78e7a2fec0"
                                     }
                                 ]
                             }
@@ -153,8 +95,7 @@
                             "en": {
                                 "vitals": "Vitals",
                                 "tbScreening": "TB Screening",
-                                "nutritionAssessment": "Nutrition Assessment",
-                                "cadex": "CADEx",
+                                "ebolaScreening": "Ebola Screening",
                                 "encounterDateTitle": "Encounter Date",
                                 "providerTitle": "Provider"
                             }

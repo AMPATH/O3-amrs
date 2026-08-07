@@ -1,30 +1,64 @@
 {
   "@openmrs/esm-patient-chart-app": {
     "extensionSlots": {
-      "maternity-dashboard-slot": {
-        "add": ["encounter-list", "labour-care-widget"],
-        "order": ["encounter-list", "labour-care-widget"],
+      "inpatient-dashboard-slot": {
+        "add": ["encounter-list"],
         "configure": {
           "encounter-list": {
             "tabDefinitions": [
               {
-                "tabName": "maternityAdmission",
+                "tabName": "clinicalAddendum",
                 "hasFilter": false,
-                "headerTitle": "maternityAdmission",
-                "displayText": "maternityAdmission",
-                "encounterType": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3",
+                "headerTitle": "clinicalAddendum",
+                "displayText": "clinicalAddendum",
+                "encounterType": "4e346fd8-d326-4399-aa4f-a0c0b489f029",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC Maternity Admission Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Admission Form v1.0", "label": "editForm", "mode": "edit"}
+                      {
+                        "formName": "POC Clinical Addendum Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Clinical Addendum Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "3a9cbd83-4e6b-3f94-97be-e994680e3522"}]
+                "formList": [{"uuid": "84121b5e-2241-363a-b0cd-dd050d015556"}]
+              },
+              {
+                "tabName": "admission",
+                "hasFilter": false,
+                "headerTitle": "admission",
+                "displayText": "admission",
+                "encounterType": "b062e97b-71fb-4c80-9f7d-72076475884a",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Ward Admission Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Ward Admission Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "5232d2c3-a302-3a3e-a322-52885c1994e3"}]
               },
               {
                 "tabName": "doctorsReviewNotes",
@@ -119,67 +153,75 @@
                 "formList": [{"uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"}]
               },
               {
-                "tabName": "lcg",
+                "tabName": "preAnaesthesiaChecklist",
                 "hasFilter": false,
-                "headerTitle": "lcg",
-                "displayText": "lcg",
-                "encounterType": "26eeda6e-d490-47f3-bacd-058684be6d97",
+                "headerTitle": "preAnaesthesiaChecklist",
+                "displayText": "preAnaesthesiaChecklist",
+                "encounterType": "ee8233da-c8fb-48f1-8652-76ce3c040090",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC WHO Labour Care Guide v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC WHO Labour Care Guide v1.0", "label": "editForm", "mode": "edit"}
+                      {
+                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "8f3f771c-ec8c-3ffa-8ddc-723128c40d26"}]
+                "formList": [{"uuid": "b040ee33-00fc-37a5-b2c0-28ae3975dd5b"}]
               },
               {
-                "tabName": "maternityLabourDelivery",
+                "tabName": "treatmentSheet",
                 "hasFilter": false,
-                "headerTitle": "maternityLabourDelivery",
-                "displayText": "maternityLabourDelivery",
-                "encounterType": "2b928d9b-84ce-4777-9658-3fba6248b3bc",
+                "headerTitle": "treatmentSheet",
+                "displayText": "treatmentSheet",
+                "encounterType": "ca1e6906-6365-416f-a030-b70bfe960322",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "editForm", "mode": "edit"}
+                      {
+                        "formName": "POC Treatment Sheet Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Treatment Sheet Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "45779c69-2ab4-3418-9846-5462c0ee04cf"}]
-              },
-              {
-                "tabName": "maternityDischarge",
-                "hasFilter": false,
-                "headerTitle": "maternityDischarge",
-                "displayText": "maternityDischarge",
-                "encounterType": "e3c2a17f-4d58-4725-b702-a5d75a2231d0",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {"formName": "POC Maternity Discharge Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Discharge Form v1.0", "label": "editForm", "mode": "edit"}
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
+                "formList": [{"uuid": "828022dc-3324-3b19-ae70-f878561bb1b6"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Clinical review notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider", "notesTitle": "Notes"}}
-          },
-          "labour-care-widget": {
-            "title": "Labour Care Guide"
+            "Translation overrides": {
+              "en": {
+                "clinicalAddendum": "Clinical Addendum",
+                "admission": "Ward Admission",
+                "doctorsReviewNotes": "Clinical review notes",
+                "cadex": "Cardex",
+                "vitals": "Vitals",
+                "preAnaesthesiaChecklist": "Pre-Anaesthesia Checklist",
+                "treatmentSheet": "Treatment Sheet",
+                "admissionDateTitle": "Admission Date",
+                "encounterDateTitle": "Encounter Date",
+                "providerTitle": "Provider",
+                "notesTitle": "Notes"
+              }
+            }
           }
         }
       }

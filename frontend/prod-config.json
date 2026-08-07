@@ -1,7 +1,7 @@
 {
   "@openmrs/esm-primary-navigation-app": {
     "logo": {
-      "src": "https://ngx.ampath.or.ke/openmrs/etl/county-logo",
+      "src": "https://kibana.ampath.or.ke/openmrs/etl/county-logo",
       "alt": "AMPATH",
       "link": "${openmrsSpaBase}/home/registry"
     },
@@ -616,15 +616,27 @@
     "hieBaseUrl": "/hie",
     "claimsBaseUrl": "https://ngx.ampath.or.ke/etl-claims/api/hie",
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
-    "registrationBillableServices": ["da3f7edc-5650-4beb-9942-61eb60315a17","ea9e46c5-df4b-4709-9113-a49f53775d74"],
-    "registrationServicequeues": ["d488a8fc-5717-4c8f-b9a9-d23f3b93e3f9","7e24eb77-d04f-4515-bb90-69fcc2d86261","3a2f0d55-f1f7-4f56-82f1-c50b000f46cf"],
+    "registrationBillableServices": [
+      "da3f7edc-5650-4beb-9942-61eb60315a17",
+      "ea9e46c5-df4b-4709-9113-a49f53775d74"
+    ],
+    "registrationServicequeues": [
+      "d488a8fc-5717-4c8f-b9a9-d23f3b93e3f9",
+      "7e24eb77-d04f-4515-bb90-69fcc2d86261",
+      "3a2f0d55-f1f7-4f56-82f1-c50b000f46cf"
+    ],
     "cashConsultationOrderTypeUuid": "2da15461-81db-43bc-a2c0-853741bece90",
     "cashConsulationConceptUuid": "ec73e2d6-7e69-47fb-b0af-a5f9c756c12c",
     "shaConsultationOrderTypeUuid": "a6a1b98c-ceaf-4481-ae61-67251e43a128",
     "shaConsulationConceptUuid": "1764494b-1f0b-491a-8f55-9970be56ce70",
+    "shaInterventionSwitchingUuid": "7d1442cc-4fa2-4407-9100-40f0c1c247c8",
     "outPatientCareSettingUuid": "6f0c9a92-6f24-11e3-af88-005056821db0",
     "orderEncounterTypeUuid": "d8e0f981-62e0-4c2a-b3ca-890c51afc350",
-    "nonSHAPaymentModes": ["0fef5b74-ffb3-44f3-a832-3f958c2c5a9e", "e5205599-bb7b-41ac-87b3-9c8630f4c59a", "682023fe-16c3-44e3-a286-7ea8a611cf9c"]
+    "nonSHAPaymentModes": [
+      "0fef5b74-ffb3-44f3-a832-3f958c2c5a9e",
+      "e5205599-bb7b-41ac-87b3-9c8630f4c59a",
+      "682023fe-16c3-44e3-a286-7ea8a611cf9c"
+    ]
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "/hie",
@@ -646,6 +658,6 @@
     "subDomainUrl": "https://ngx.ampath.or.ke"
   },
   "@ampath/esm-reports-app": {
-      "etlBaseUrl": "/etl"
-   }
+    "etlBaseUrl": "/etl"
+  }
 }
