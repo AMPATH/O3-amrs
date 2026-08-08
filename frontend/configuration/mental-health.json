@@ -1,0 +1,47 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "mental-health-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "mentalHealthTreatment",
+                "hasFilter": false,
+                "headerTitle": "mentalHealthTreatment",
+                "displayText": "mentalHealthTreatment",
+                "encounterType": "0d8dd637-262b-490f-b07e-e221724b2325",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Mental Health Treatment Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Mental Health Treatment Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "0cc509d9-20ef-32c3-8a16-609815f68f9a"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "mentalHealthTreatment": "Mental Health Treatment"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

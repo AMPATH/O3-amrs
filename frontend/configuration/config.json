@@ -4,6 +4,12 @@
     "showUpcomingAppointments": true,
     "showServiceQueueFields": true,
     "extensionSlots": {
+      "patient-info-slot": {
+        "remove": ["patient-vitals-info"]
+      },
+      "patient-chart-summary-dashboard-slot": {
+        "remove": ["vitals-overview-widget", "biometrics-overview-widget"]
+      },
       "action-menu-patient-chart-items-slot": {
         "order": ["order-basket-action-menu"]
       },
@@ -171,11 +177,6 @@
     ]
   },
   "@openmrs/esm-patient-vitals-app": {
-    "Translation overrides": {
-      "en": {
-        "recordVitals": "Retake vitals"
-      }
-    },
     "concepts": {
       "vitalSignsConceptSetUuid": "a899e6d8-1350-11df-a1f1-0026b9348838",
       "diastolicBloodPressureUuid": "a8a65e36-1350-11df-a1f1-0026b9348838",
@@ -209,12 +210,6 @@
         "orderableConceptSets": ["eef060d3-d503-4695-a9ba-47f5af44135b"],
         "label": "Procedure Orders",
         "icon": "omrs-icon-syringe"
-      },
-      {
-        "orderTypeUuid": "0dcf23d4-3008-4d8e-b12c-4ec95d1cfd97",
-        "orderableConceptSets": ["c6f16618-d618-49dc-9a5a-b5aef140d02c"],
-        "label": "Medical Supplies",
-        "icon": "omrs-icon-flask"
       }
     ],
     "showReferenceNumberField": false
@@ -238,6 +233,14 @@
     "laboratoryOrderTypeUuid": "53eb4768-1359-11df-a1f1-0026b9348838",
     "filterByCurrentLocation": true,
     "laboratoryServiceTypedUuid": "5adeb9de-5545-4272-add4-a661005f727e"
+  },
+  "@openmrs/esm-stock-management-app": {
+    "dispensingUnitsUUID": "cde07652-a157-4ee9-bb34-75ca8252cfb3",
+    "packingUnitsUUID": "39ae0d04-48ed-4c03-a2a8-83556065b457",
+    "stockAdjustmentReasonUUID": "455e69e8-20ac-4d74-a3a5-9841953e137d",
+    "stockItemCategoryUUID": "97be81a0-9b2f-4a91-bc0d-7ce49fa2edb9",
+    "stockSourceTypeUUID": "3bad45e5-9a6e-4732-bb77-ec73e89c4299",
+    "packagingUnitsUUID": "39ae0d04-48ed-4c03-a2a8-83556065b457"
   },
   "@openmrs/esm-billing-app": {
     "logo": {
