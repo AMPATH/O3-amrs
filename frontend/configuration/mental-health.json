@@ -7,6 +7,60 @@
           "encounter-list": {
             "tabDefinitions": [
               {
+                "tabName": "triage",
+                "hasFilter": false,
+                "headerTitle": "triage",
+                "displayText": "triage",
+                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC OPD Triage Encounter Form v1.1",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC OPD Triage Encounter Form v1.1",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"}]
+              },
+              {
+                "tabName": "mentalHealthScreening",
+                "hasFilter": false,
+                "headerTitle": "mentalHealthScreening",
+                "displayText": "mentalHealthScreening",
+                "encounterType": "37770eca-8a2f-48d6-b3c8-54af0fa989c2",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Mental Health Screening Form v1.4",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Mental Health Screening Form v1.4",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "b9b5f8f8-df05-395c-b7c6-104ba4a33f10"}]
+              },
+              {
                 "tabName": "mentalHealthTreatment",
                 "hasFilter": false,
                 "headerTitle": "mentalHealthTreatment",
@@ -32,11 +86,41 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "0cc509d9-20ef-32c3-8a16-609815f68f9a"}]
+              },
+              {
+                "tabName": "preAuthorization",
+                "hasFilter": false,
+                "headerTitle": "preAuthorization",
+                "displayText": "preAuthorization",
+                "encounterType": "18b10189-a89f-430d-83e9-14663fef258c",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Pre-authorization Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pre-authorization Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "cce578f6-b3e2-3077-91ab-9016cf0f4fa5"}]
               }
             ],
             "Translation overrides": {
               "en": {
-                "mentalHealthTreatment": "Mental Health Treatment"
+                "triage": "Triage",
+                "mentalHealthScreening": "Mental Health Screening",
+                "mentalHealthTreatment": "Mental Health Treatment",
+                "preAuthorization": "Pre-authorization"
               }
             }
           }
