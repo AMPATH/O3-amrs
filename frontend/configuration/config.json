@@ -4,6 +4,12 @@
     "showUpcomingAppointments": true,
     "showServiceQueueFields": true,
     "extensionSlots": {
+      "patient-info-slot": {
+        "remove": ["patient-vitals-info"]
+      },
+      "patient-chart-summary-dashboard-slot": {
+        "remove": ["vitals-overview-widget", "biometrics-overview-widget"]
+      },
       "action-menu-patient-chart-items-slot": {
         "order": ["order-basket-action-menu"]
       },

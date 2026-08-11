@@ -13,21 +13,19 @@
                                 "hasFilter": false,
                                 "headerTitle": "consultationForm",
                                 "displayText": "consultationForm",
-                                "encounterType": "465a92f2-baf8-42e9-9612-53064be868e8",
+                                "encounterType": "81166f83-1ee6-486e-8f56-aca528fc0fc0",
                                 "columns": [
                                     {
                                         "id": "actions",
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "Forms",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC Clinical Encounter Form v1.2",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "Forms",
-                                                "package": "hiv-care-treatment",
+                                                "formName": "POC Clinical Encounter Form v1.2",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -39,7 +37,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "fb7287ac-ee2a-3015-aecd-414c4028949a"
+                                        "uuid": "b2fc8cbf-d70f-3113-8ed6-d90601ff73fa"
                                     }
                                 ]
                             },
@@ -92,6 +90,39 @@
                                         "uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"
                                     }
                                 ]
+                            },
+                            {
+                                "tabName": "preAuthorization",
+                                "hasFilter": false,
+                                "headerTitle": "preAuthorization",
+                                "displayText": "preAuthorization",
+                                "encounterType": "18b10189-a89f-430d-83e9-14663fef258c",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Pre-authorization Form v1.0",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Pre-authorization Form v1.0",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "cce578f6-b3e2-3077-91ab-9016cf0f4fa5"
+                                    }
+                                ]
                             }
                         ],
                         "Translation overrides": {
@@ -105,6 +136,7 @@
                                 "forms": "Forms",
                                 "programManagement": "Program Management",
                                 "cardex": "Cardex",
+                                "preAuthorization": "Pre-authorization",
                                 "patientRecords": "Patient Records",
                                 "reasonForVisitTitle": "Reason for Visit",
                                 "chiefComplaintTitle": "Chief Complaint",
