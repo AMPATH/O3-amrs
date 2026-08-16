@@ -636,7 +636,8 @@
       "0fef5b74-ffb3-44f3-a832-3f958c2c5a9e",
       "e5205599-bb7b-41ac-87b3-9c8630f4c59a",
       "682023fe-16c3-44e3-a286-7ea8a611cf9c"
-    ]
+    ],
+    "cashPaymentModeUuid": "0fef5b74-ffb3-44f3-a832-3f958c2c5a9e"
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "/hie",
