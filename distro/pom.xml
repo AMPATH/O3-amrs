@@ -53,8 +53,8 @@
     <event.version>4.0.0</event.version>
     <bedmanagement.version>6.2.0-SNAPSHOT</bedmanagement.version>
     <!-- Stock Management and Billing -->
-    <stockmanagement.version>2.0.3</stockmanagement.version>
-    <billing.version>2.3.0</billing.version>
+    <stockmanagement.version>3.0.0</stockmanagement.version>
+    <billing.version>2.4.0</billing.version>
     <!-- Content Packages -->
     <reference-content.version>1.5.0-SNAPSHOT</reference-content.version>
     <amrs-content.version>1.0.0-SNAPSHOT</amrs-content.version>
