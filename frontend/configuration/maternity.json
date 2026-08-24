@@ -8,6 +8,25 @@
           "encounter-list": {
             "tabDefinitions": [
               {
+                "tabName": "preAuthorization",
+                "hasFilter": false,
+                "headerTitle": "preAuthorization",
+                "displayText": "preAuthorization",
+                "encounterType": "18b10189-a89f-430d-83e9-14663fef258c",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Pre-authorization Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Pre-authorization Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "cce578f6-b3e2-3077-91ab-9016cf0f4fa5"}]
+              },
+              {
                 "tabName": "maternityAdmission",
                 "hasFilter": false,
                 "headerTitle": "maternityAdmission",
@@ -176,7 +195,7 @@
                 "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
               }
             ],
-            "Translation overrides": {"en": {"maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Clinical review notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider", "notesTitle": "Notes"}}
+            "Translation overrides": {"en": {"preAuthorization": "Pre-authorization", "maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Clinical review notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider", "notesTitle": "Notes"}}
           },
           "labour-care-widget": {
             "title": "Labour Care Guide"
