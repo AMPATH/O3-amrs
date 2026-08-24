@@ -6,6 +6,15 @@ on:
     tags:
       - '*'
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build and publish (overrides "Use workflow from" when set)'
+        required: true
+        type: choice
+        options:
+          - claims-workflow
+          - main
+        default: claims-workflow
 
 permissions:
   contents: write
@@ -28,22 +37,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve build ref
+        id: build_ref
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            REF="${{ inputs.branch }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            REF="${{ github.ref }}"
+          else
+            REF="${{ github.ref_name }}"
+          fi
+          echo "ref=$REF" >> "$GITHUB_OUTPUT"
+          echo "Resolved build ref: $REF (event=${{ github.event_name }}, github.ref=${{ github.ref }})"
+
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Explicit ref is required for workflow_dispatch; otherwise checkout can
+          # fall back to the default branch (main) instead of the selected one.
+          ref: ${{ steps.build_ref.outputs.ref }}
 
       - name: Extract short SHA
         id: vars
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: |
+          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "Building commit $(git rev-parse HEAD) on ref ${{ steps.build_ref.outputs.ref }}"
+          git log -1 --oneline
 
       - name: Set branch image tag
         run: |
-          if [ "${{ github.ref_type }}" = "tag" ] || [ "${{ github.ref_name }}" = "main" ]; then
-            echo "BRANCH_IMAGE_TAG=latest" >> $GITHUB_ENV
-          elif [ "${{ github.ref_name }}" = "claims-workflow" ]; then
-            echo "BRANCH_IMAGE_TAG=claims-workflow" >> $GITHUB_ENV
+          # latest is only published from main (or release tags).
+          # claims-workflow publishes the claims-workflow tag only.
+          REF_NAME="${{ steps.build_ref.outputs.ref }}"
+          REF_NAME="${REF_NAME#refs/heads/}"
+          REF_NAME="${REF_NAME#refs/tags/}"
+          if [ "$REF_NAME" = "main" ]; then
+            TAG=latest
+          elif [ "$REF_NAME" = "claims-workflow" ]; then
+            TAG=claims-workflow
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            # Release tags continue to refresh latest (built from the tagged commit).
+            TAG=latest
           else
-            echo "BRANCH_IMAGE_TAG=latest" >> $GITHUB_ENV
+            echo "Unsupported build ref: $REF_NAME" >&2
+            exit 1
           fi
+          echo "BRANCH_IMAGE_TAG=$TAG" >> "$GITHUB_ENV"
+          echo "BRANCH_IMAGE_TAG=$TAG for ref $REF_NAME"
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
