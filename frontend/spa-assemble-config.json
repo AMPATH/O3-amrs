@@ -50,7 +50,8 @@
     "@ampath/esm-reports-app": "next",
     "@ampath/esm-poc-features-app": "next",
     "@ampath/mediviya-esm-operation-theater-module": "next",
-    "@ampath/esm-patient-medical-supply-orders-app": "next"
+    "@ampath/esm-patient-medical-supply-orders-app": "next",
+    "@ampath/ampath-esm-medical-supply-app": "next"
   },
   "excludedFrontendModules": []
 }
