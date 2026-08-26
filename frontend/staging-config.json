@@ -656,5 +656,8 @@
   },
   "@ampath/esm-reports-app": {
     "etlBaseUrl": "/etl"
+  },
+  "@openmrs/esm-patient-procedures-app": {
+    "procedureConceptUuid": "47d45603-6f31-4c0c-b2b4-8da4f042388f"
   }
 }
