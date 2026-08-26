@@ -613,7 +613,9 @@
     "registrationBillableServices": [
       "3675fefd-ce4e-4ed1-9de2-7e70bc01170c",
       "d024d785-e6af-44eb-9840-eba412c87ce5",
-      "46526b8a-9bc4-4d9b-94d2-4bd683cbe77e"
+      "46526b8a-9bc4-4d9b-94d2-4bd683cbe77e",
+      "353e7034-fb73-47a9-bd81-fbd0ef84c12c",
+      "9c214d62-daf6-49a0-9acb-10b97bf002b7"
     ],
     "registrationServicequeues": [
       "79dcf9da-f315-462e-8439-e24b3fc871e9",
@@ -654,5 +656,8 @@
   },
   "@ampath/esm-reports-app": {
     "etlBaseUrl": "/etl"
+  },
+  "@openmrs/esm-patient-procedures-app": {
+    "procedureConceptUuid": "47d45603-6f31-4c0c-b2b4-8da4f042388f"
   }
 }

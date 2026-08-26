@@ -292,12 +292,26 @@
     "etlBaseUrl": "/etl"
   },
   "@ampath/esm-poc-features-app": {
-    "etlBaseUrl": "/etl"
+    "etlBaseUrl": "/etl",
+    "tbScreeningConceptUuid": "02ad9357-b996-4530-b1a4-aff91a105383"
   },
   "@ampath/esm-procedures-app": {
     "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
   },
   "@openmrs/esm-patient-notes-app": {
     "stickyNoteConceptUuid": "1af9de80-6755-485e-82ec-e1fdc0cd18da"
+  },
+  "@ampath/esm-patient-medical-supply-orders-app": {
+    "orderTypes": [
+      {
+        "orderTypeUuid": "58ea528c-8f62-45f0-86a2-f7d1327b8c56",
+        "orderableConceptSets": ["c6f16618-d618-49dc-9a5a-b5aef140d02c"]
+      }
+    ],
+    "showReferenceNumberField": false,
+    "quantityUnits": {
+      "conceptUuid": "39ae0d04-48ed-4c03-a2a8-83556065b457",
+      "map": "setMembers"
+    }
   }
 }
