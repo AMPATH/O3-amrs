@@ -313,5 +313,14 @@
       "conceptUuid": "39ae0d04-48ed-4c03-a2a8-83556065b457",
       "map": "setMembers"
     }
+  },
+  "@ampath/esm-admin-app": {
+    "providerNationalIdUuid": "4550df92-c684-4597-8ab8-d6b10eabdcfb",
+    "licenseNumberUuid": "7add36ba-d20f-47e5-a00c-813af047cea0",
+    "licenseExpiryDateUuid": "b6046157-40a0-4b7a-91b0-00d83b51a811",
+    "licenseBodyUuid": "8d73f8d7-dded-44a0-9f72-e23523c96503",
+    "qualificationUuid": "c73daf69-ddd0-4fce-98ec-6f9d875193e3",
+    "phoneNumberUuid": "2a759a8-1359-11df-a1f1-0026b9348838",
+    "personPhonenumberAttributeUuid": "2a759a8-1359-11df-a1f1-0026b9348838"
   }
 }
