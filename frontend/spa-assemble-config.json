@@ -52,7 +52,8 @@
     "@ampath/mediviya-esm-operation-theater-module": "next",
     "@ampath/esm-patient-medical-supply-orders-app": "next",
     "@ampath/ampath-esm-medical-supply-app": "next",
-    "@openmrs/esm-patient-procedures-app": "latest"
+    "@openmrs/esm-patient-procedures-app": "latest",
+    "@ampath/esm-admin-app": "next"
   },
   "excludedFrontendModules": []
 }
