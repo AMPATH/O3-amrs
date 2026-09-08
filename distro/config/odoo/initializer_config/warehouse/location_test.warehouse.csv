@@ -1,0 +1,3 @@
+"id","name","code","company_id/id","partner_id/id","view_location_id/id","lot_stock_id/id","wh_input_stock_loc_id/id","wh_output_stock_loc_id/id","wh_pack_stock_loc_id/id"
+"init.location_test_wh_pharmacy","Location Test Pharmacy","LTP","init.18c343eb-b353-462a-9139-b16606e6b6c2","init.location_test_partner","init.location_test_ph_view","init.location_test_ph_lot","init.location_test_ph_in","init.location_test_ph_out","init.location_test_ph_pack"
+"init.location_test_wh_storage","Location Test Main Warehouse","LTW","init.18c343eb-b353-462a-9139-b16606e6b6c2","init.location_test_partner","init.location_test_st_view","init.location_test_st_lot","init.location_test_st_in","init.location_test_st_out","init.location_test_st_pack"

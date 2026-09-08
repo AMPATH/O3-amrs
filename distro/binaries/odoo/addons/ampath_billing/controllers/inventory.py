@@ -15,11 +15,19 @@ All endpoints require HTTP headers:
 Endpoints
 ---------
 GET /ampath/inventory/stock
-    On-hand stock for a drug at the warehouse for an OpenMRS location UUID.
+    Full on-hand stock payload (qty + lots) for a drug at a warehouse.
     Query params:
-        openmrs_drug_uuid    – product.product.x_openmrs_drug_uuid (required)
+        openmrs_drug_uuid    – OpenMRS drug UUID (init.<uuid> external ID) (required)
         company_external_id  – OpenMRS order location UUID (required)
         lot_name             – optional lot filter
+
+GET /ampath/inventory/batches
+    Lot/batch list for a drug at a warehouse.
+    Same query params as /stock.
+
+GET /ampath/inventory/quantity
+    Quantity available (on-hand + free) for a drug at a warehouse.
+    Same query params as /stock (lot_name ignored).
 
 POST /ampath/inventory/dispense
     Create and validate an outgoing stock.picking for the given quantity.
@@ -91,11 +99,36 @@ class InventoryController(http.Controller):
         total = 0.0
         for move in picking.move_ids:
             if move.product_id == product:
-                qty = move.quantity
-                if hasattr(move, 'quantity_done') and move.quantity_done:
-                    qty = move.quantity_done
-                total += qty
+                total += self._get_move_qty_done(move)
         return total
+
+    def _get_move_qty_done(self, move):
+        """Odoo 17+ uses stock.move.quantity; older builds used quantity_done."""
+        if 'quantity_done' in move._fields and move.quantity_done:
+            return move.quantity_done
+        return move.quantity if 'quantity' in move._fields else 0.0
+
+    def _set_move_line_qty_done(self, move_line, quantity):
+        """Odoo 17+ uses stock.move.line.quantity; older builds used qty_done."""
+        if 'quantity' in move_line._fields:
+            move_line.quantity = quantity
+        elif 'qty_done' in move_line._fields:
+            move_line.qty_done = quantity
+        else:
+            raise AttributeError(
+                f'{move_line._name} has neither quantity nor qty_done'
+            )
+
+    def _set_move_qty_done(self, move, quantity):
+        """Odoo 17+ uses stock.move.quantity; older builds used quantity_done."""
+        if 'quantity' in move._fields:
+            move.quantity = quantity
+        elif 'quantity_done' in move._fields:
+            move.quantity_done = quantity
+        else:
+            raise AttributeError(
+                f'{move._name} has neither quantity nor quantity_done'
+            )
 
     def _validate_picking_wizard(self, env, picking):
         result = picking.button_validate()
@@ -149,10 +182,10 @@ class InventoryController(http.Controller):
         return_picking.action_confirm()
         return_picking.action_assign()
         for move_line in return_picking.move_line_ids:
-            move_line.qty_done = move_line.product_uom_qty
+            self._set_move_line_qty_done(move_line, move_line.product_uom_qty)
         if not return_picking.move_line_ids:
             for move in return_picking.move_ids:
-                move.quantity_done = move.product_uom_qty
+                self._set_move_qty_done(move, move.product_uom_qty)
         self._validate_picking_wizard(env, return_picking)
 
         return {
@@ -180,11 +213,25 @@ class InventoryController(http.Controller):
         return wh if wh else None
 
     def _resolve_product(self, env, openmrs_drug_uuid):
-        Product = env['product.product'].sudo()
-        product = Product.search([
-            ('x_openmrs_drug_uuid', '=', openmrs_drug_uuid),
+        """Map OpenMRS drug UUID → product.product via ir.model.data (init module).
+
+        Initializer product CSVs use id ``init.<openmrs_drug_uuid>`` on
+        ``product.product`` or ``product.template``.
+        """
+        imd = env['ir.model.data'].sudo().search([
+            ('module', '=', 'init'),
+            ('name', '=', openmrs_drug_uuid),
+            ('model', 'in', ['product.product', 'product.template']),
         ], limit=1)
-        return product if product else None
+        if not imd:
+            return None
+        if imd.model == 'product.product':
+            return env['product.product'].sudo().browse(imd.res_id).exists()
+        template = env['product.template'].sudo().browse(imd.res_id).exists()
+        if not template:
+            return None
+        variant = template.product_variant_id
+        return variant if variant else None
 
     def _available_qty(self, product, warehouse):
         prod = product.with_context(warehouse=warehouse.id)
@@ -220,13 +267,49 @@ class InventoryController(http.Controller):
             })
         return lots
 
-    def _stock_payload(self, product, warehouse, company_external_id, lot_name=None):
+    def _resolve_stock_context(self, env, openmrs_drug_uuid, company_external_id):
+        """Resolve company, warehouse, and product for inventory GET endpoints.
+
+        Returns ``(company, warehouse, product, error_response)``. On success
+        ``error_response`` is ``None``.
+        """
+        if not openmrs_drug_uuid:
+            return None, None, None, self._json_response(
+                {'error': 'openmrs_drug_uuid is required.'}, status=400
+            )
+        if not company_external_id:
+            return None, None, None, self._json_response(
+                {'error': 'company_external_id (OpenMRS order location UUID) is required.'},
+                status=400,
+            )
+
+        company = self._resolve_company(env, company_external_id)
+        if not company:
+            return None, None, None, self._json_response({
+                'error': f'No company found for external ID "{company_external_id}".',
+            }, status=404)
+
+        warehouse = self._resolve_warehouse(env, company)
+        if not warehouse:
+            return None, None, None, self._json_response({
+                'error': f'No warehouse found for company "{company.name}".',
+            }, status=400)
+
+        product = self._resolve_product(env, openmrs_drug_uuid)
+        if not product:
+            return None, None, None, self._json_response({
+                'error': f'No product found for external ID "{openmrs_drug_uuid}".',
+            }, status=404)
+
+        return company, warehouse, product, None
+
+    def _stock_payload(self, product, warehouse, company_external_id, openmrs_drug_uuid, lot_name=None):
         env = request.env
         avail = self._available_qty(product, warehouse)
         free = product.with_context(warehouse=warehouse.id)
         free_qty = free.free_qty if 'free_qty' in free._fields else avail
         return {
-            'openmrs_drug_uuid': product.x_openmrs_drug_uuid,
+            'openmrs_drug_uuid': openmrs_drug_uuid,
             'order_location_uuid': company_external_id,
             'product_id': product.id,
             'product_name': product.display_name,
@@ -237,6 +320,39 @@ class InventoryController(http.Controller):
             },
             'qty_available': avail,
             'free_qty': free_qty,
+            'lots': self._serialize_lots(env, product, warehouse, lot_name=lot_name),
+        }
+
+    def _quantity_payload(self, product, warehouse, company_external_id, openmrs_drug_uuid):
+        avail = self._available_qty(product, warehouse)
+        free = product.with_context(warehouse=warehouse.id)
+        free_qty = free.free_qty if 'free_qty' in free._fields else avail
+        return {
+            'openmrs_drug_uuid': openmrs_drug_uuid,
+            'order_location_uuid': company_external_id,
+            'product_id': product.id,
+            'product_name': product.display_name,
+            'warehouse': {'id': warehouse.id, 'name': warehouse.display_name},
+            'uom': {
+                'id': product.uom_id.id,
+                'name': product.uom_id.name,
+            },
+            'qty_available': avail,
+            'free_qty': free_qty,
+        }
+
+    def _batches_payload(self, product, warehouse, company_external_id, openmrs_drug_uuid, lot_name=None):
+        env = request.env
+        return {
+            'openmrs_drug_uuid': openmrs_drug_uuid,
+            'order_location_uuid': company_external_id,
+            'product_id': product.id,
+            'product_name': product.display_name,
+            'warehouse': {'id': warehouse.id, 'name': warehouse.display_name},
+            'uom': {
+                'id': product.uom_id.id,
+                'name': product.uom_id.name,
+            },
             'lots': self._serialize_lots(env, product, warehouse, lot_name=lot_name),
         }
 
@@ -319,13 +435,13 @@ class InventoryController(http.Controller):
             for move_line in picking.move_line_ids:
                 if move_line.product_id == product:
                     move_line.lot_id = lot.id
-                    move_line.qty_done = quantity
+                    self._set_move_line_qty_done(move_line, quantity)
         else:
             for move_line in picking.move_line_ids:
                 if move_line.product_id == product:
-                    move_line.qty_done = quantity
+                    self._set_move_line_qty_done(move_line, quantity)
             if not picking.move_line_ids:
-                move.quantity_done = quantity
+                self._set_move_qty_done(move, quantity)
 
         self._validate_picking_wizard(env, picking)
         picking.invalidate_recordset()
@@ -350,37 +466,91 @@ class InventoryController(http.Controller):
         company_external_id = (kw.get('company_external_id') or '').strip()
         lot_name = (kw.get('lot_name') or '').strip() or None
 
-        if not openmrs_drug_uuid:
-            return self._json_response(
-                {'error': 'openmrs_drug_uuid is required.'}, status=400
-            )
-        if not company_external_id:
-            return self._json_response(
-                {'error': 'company_external_id (OpenMRS order location UUID) is required.'},
-                status=400,
-            )
-
         env = request.env
-        company = self._resolve_company(env, company_external_id)
-        if not company:
-            return self._json_response({
-                'error': f'No company found for external ID "{company_external_id}".',
-            }, status=404)
-
-        warehouse = self._resolve_warehouse(env, company)
-        if not warehouse:
-            return self._json_response({
-                'error': f'No warehouse found for company "{company.name}".',
-            }, status=400)
-
-        product = self._resolve_product(env, openmrs_drug_uuid)
-        if not product:
-            return self._json_response({
-                'error': f'No product found for openmrs_drug_uuid "{openmrs_drug_uuid}".',
-            }, status=404)
+        _company, warehouse, product, error = self._resolve_stock_context(
+            env, openmrs_drug_uuid, company_external_id
+        )
+        if error:
+            return error
 
         return self._json_response(
-            self._stock_payload(product, warehouse, company_external_id, lot_name=lot_name)
+            self._stock_payload(
+                product,
+                warehouse,
+                company_external_id,
+                openmrs_drug_uuid,
+                lot_name=lot_name,
+            )
+        )
+
+    @http.route(
+        '/ampath/inventory/batches',
+        type='http',
+        auth='none',
+        methods=['GET'],
+        csrf=False,
+    )
+    def get_batches(self, **kw):
+        uid = self._authenticate()
+        if not uid:
+            return self._json_response(
+                {'error': 'Authentication failed. Provide login and password headers.'},
+                status=401,
+            )
+
+        openmrs_drug_uuid = (kw.get('openmrs_drug_uuid') or '').strip()
+        company_external_id = (kw.get('company_external_id') or '').strip()
+        lot_name = (kw.get('lot_name') or '').strip() or None
+
+        env = request.env
+        _company, warehouse, product, error = self._resolve_stock_context(
+            env, openmrs_drug_uuid, company_external_id
+        )
+        if error:
+            return error
+
+        return self._json_response(
+            self._batches_payload(
+                product,
+                warehouse,
+                company_external_id,
+                openmrs_drug_uuid,
+                lot_name=lot_name,
+            )
+        )
+
+    @http.route(
+        '/ampath/inventory/quantity',
+        type='http',
+        auth='none',
+        methods=['GET'],
+        csrf=False,
+    )
+    def get_quantity(self, **kw):
+        uid = self._authenticate()
+        if not uid:
+            return self._json_response(
+                {'error': 'Authentication failed. Provide login and password headers.'},
+                status=401,
+            )
+
+        openmrs_drug_uuid = (kw.get('openmrs_drug_uuid') or '').strip()
+        company_external_id = (kw.get('company_external_id') or '').strip()
+
+        env = request.env
+        _company, warehouse, product, error = self._resolve_stock_context(
+            env, openmrs_drug_uuid, company_external_id
+        )
+        if error:
+            return error
+
+        return self._json_response(
+            self._quantity_payload(
+                product,
+                warehouse,
+                company_external_id,
+                openmrs_drug_uuid,
+            )
         )
 
     @http.route(
@@ -446,7 +616,7 @@ class InventoryController(http.Controller):
         product = self._resolve_product(env, openmrs_drug_uuid)
         if not product:
             return self._json_response({
-                'error': f'No product found for openmrs_drug_uuid "{openmrs_drug_uuid}".',
+                'error': f'No product found for external ID "{openmrs_drug_uuid}".',
             }, status=404)
 
         prec = product.uom_id.rounding
