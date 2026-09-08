@@ -1,0 +1,15 @@
+# Local OpenMRS DB with ROW binlog for EIP Debezium.
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose-db.yml -f docker-compose-db-binlog.yml up -d
+
+services:
+  db:
+    command:
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --log-bin=mysqld-bin
+      - --binlog-format=ROW
+      - --server-id=1
+      - --sync-binlog=1
+      - --binlog-annotate-row-events=0
