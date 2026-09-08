@@ -48,26 +48,33 @@ public class MedicationDispenseRouting extends RouteBuilder {
                         .setBody(simple("${exchangeProperty.event.identifier}"))
                         .to("direct:medication-dispense-to-stock-processor")
                     .otherwise()
-                        .toD("sql:SELECT voided FROM medication_dispense WHERE uuid = '${exchangeProperty.event.identifier}'?dataSource=#openmrsDataSource")
-                        .choice()
-                            .when(simple("${body.size()} == 0 || ${body[0]['voided']} == 1"))
-                                .setHeader(HEADER_FHIR_EVENT_TYPE, constant("d"))
-                                .setBody(simple("${exchangeProperty.event.identifier}"))
-                                .to("direct:medication-dispense-to-stock-processor")
-                            .otherwise()
-                                .toD("fhir:read/resourceById?resourceClass=MedicationDispense&stringId=${exchangeProperty.event.identifier}")
-                                .filter(body().isNotNull())
-                                .filter(exchange -> exchange.getMessage().getBody() instanceof MedicationDispense)
-                                .setHeader(HEADER_FHIR_EVENT_TYPE, simple("${exchangeProperty." + PROP_EVENT_OPERATION + "}"))
-                                .to("direct:medication-dispense-to-stock-processor")
-                        .endChoice()
+                        .to("direct:medication-dispense-load-active")
                 .end();
+
+        from("direct:medication-dispense-load-active")
+                .routeId("medication-dispense-load-active")
+                .toD("sql:SELECT voided FROM medication_dispense WHERE uuid = '${exchangeProperty.event.identifier}'?dataSource=#openmrsDataSource")
+                .choice()
+                    .when(simple("${body.size()} == 0 || ${body[0]['voided']} == 1"))
+                        .setHeader(HEADER_FHIR_EVENT_TYPE, constant("d"))
+                        .setBody(simple("${exchangeProperty.event.identifier}"))
+                        .to("direct:medication-dispense-to-stock-processor")
+                    .otherwise()
+                        .to("direct:medication-dispense-fhir-read")
+                .end();
+
+        from("direct:medication-dispense-fhir-read")
+                .routeId("medication-dispense-fhir-read")
+                .toD("fhir:read/resourceById?resourceClass=MedicationDispense&stringId=${exchangeProperty.event.identifier}")
+                .filter(body().isNotNull())
+                .filter(exchange -> exchange.getMessage().getBody() instanceof MedicationDispense)
+                .setHeader(HEADER_FHIR_EVENT_TYPE, simple("${exchangeProperty." + PROP_EVENT_OPERATION + "}"))
+                .to("direct:medication-dispense-to-stock-processor");
 
         from("direct:medication-dispense-to-stock-processor")
                 .routeId("medication-dispense-to-stock-processor")
                 .log(LoggingLevel.INFO, "Syncing MedicationDispense to Odoo stock")
-                .process(medicationDispenseProcessor)
-                .end();
+                .process(medicationDispenseProcessor);
         // spotless:on
     }
 }
