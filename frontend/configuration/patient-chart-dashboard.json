@@ -98,7 +98,11 @@
             }
           }
         }
-      },
+      }
+    }
+  },
+  "@openmrs/esm-primary-navigation-app": {
+    "extensionSlots": {
       "general-medicine-group-slot": {
         "add": [
           "dashboard#general-opd-triage",
