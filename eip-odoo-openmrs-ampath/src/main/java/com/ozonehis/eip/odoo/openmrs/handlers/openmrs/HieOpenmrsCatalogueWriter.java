@@ -48,26 +48,43 @@ public class HieOpenmrsCatalogueWriter {
     private final Map<String, String> conceptSourceUuidCache = new HashMap<>();
 
     public String ensureFormConcept(String formCode, String formDescription) throws Exception {
-        return ensureMappedConcept(HieUuid.forForm(formCode), formCode, formDescription, "Misc");
+        return ensureMappedConcept(
+                HieUuid.forForm(formCode), formCode, disambiguateConceptName(formCode, formDescription), "Misc");
     }
 
     public String ensureUnitConcept(String unitCode, String unitDescription) throws Exception {
-        // OpenMRS rejects duplicate concept names (e.g. CIEL already has "tablet").
-        String label = unitDescription != null && !unitDescription.isBlank() ? unitDescription.trim() : unitCode;
-        if (unitCode != null
-                && !unitCode.isBlank()
-                && label != null
-                && !label.equalsIgnoreCase(unitCode)
-                && !label.contains(unitCode)) {
-            label = label + " (" + unitCode + ")";
-        }
+        // OpenMRS rejects duplicate concept names (e.g. CIEL already has "tablet" / "Bottle").
+        String label = disambiguateConceptName(unitCode, unitDescription);
         String uuid = ensureMappedConcept(HieUuid.forUnit(unitCode), unitCode, label, "Units of Measure");
         addSetMember(dispensingUnitsConceptSetUuid, uuid);
         return uuid;
     }
 
     public String ensureRouteConcept(String routeCode, String routeDescription) throws Exception {
-        return ensureMappedConcept(HieUuid.forRoute(routeCode), routeCode, routeDescription, "Misc");
+        return ensureMappedConcept(
+                HieUuid.forRoute(routeCode),
+                routeCode,
+                disambiguateConceptName(routeCode, routeDescription),
+                "Misc");
+    }
+
+    /**
+     * Prefer human description; always append {@code (code)} when the code is distinct so we do not
+     * collide with CIEL/AMPATH Fully Specified Names (e.g. {@code Bottle} → {@code Bottle (DF10001)}).
+     */
+    static String disambiguateConceptName(String code, String description) {
+        String label = description != null && !description.isBlank() ? description.trim() : null;
+        if (label == null || label.isBlank()) {
+            label = code != null ? code.trim() : "HIE concept";
+        }
+        if (code == null || code.isBlank()) {
+            return label;
+        }
+        String trimmedCode = code.trim();
+        if (label.equalsIgnoreCase(trimmedCode) || label.contains(trimmedCode)) {
+            return label;
+        }
+        return label + " (" + trimmedCode + ")";
     }
 
     public String upsertGeDrug(
@@ -78,12 +95,14 @@ public class HieOpenmrsCatalogueWriter {
             String formDescription,
             boolean combination)
             throws Exception {
-        String conceptUuid = ensureMappedConcept(HieUuid.forGe(geCode), geCode, displayName, "Drug");
+        String conceptName = disambiguateConceptName(geCode, displayName);
+        String conceptUuid = ensureMappedConcept(HieUuid.forGe(geCode), geCode, conceptName, "Drug");
         String dosageFormUuid = null;
         if (formCode != null && !formCode.isBlank()) {
             dosageFormUuid = ensureFormConcept(formCode, formDescription != null ? formDescription : formCode);
         }
-        upsertDrug(conceptUuid, displayName, strength, dosageFormUuid, combination);
+        // Drug.name is free-text; keep clinician-facing display without forcing the GE code suffix.
+        upsertDrug(conceptUuid, displayName != null && !displayName.isBlank() ? displayName : geCode, strength, dosageFormUuid, combination);
         addSetMember(drugConceptSetUuid, conceptUuid);
         return conceptUuid;
     }
@@ -107,11 +126,43 @@ public class HieOpenmrsCatalogueWriter {
         String sourceUuid = resolveConceptSourceUuid();
         String termUuid = createReferenceTerm(sourceUuid, code, name);
 
+        String preferredName = name != null && !name.isBlank() ? name : code;
+        try {
+            createConcept(uuid, preferredName, conceptClass, termUuid);
+            log.info("Created OpenMRS concept {} ({}) code={}", preferredName, uuid, code);
+            return uuid;
+        } catch (Exception e) {
+            if (!isDuplicateConceptName(e)) {
+                throw e;
+            }
+            // Retry with stronger disambiguation if the preferred name still collides (e.g. code
+            // already embedded, or another HIE concept used the same label).
+            String fallback = preferredName;
+            if (code != null && !code.isBlank() && !preferredName.contains(code.trim())) {
+                fallback = preferredName + " (" + code.trim() + ")";
+            } else {
+                fallback = preferredName + " [" + uuid.substring(0, 8) + "]";
+            }
+            if (fallback.equals(preferredName)) {
+                fallback = preferredName + " [" + uuid.substring(0, 8) + "]";
+            }
+            log.warn(
+                    "Duplicate concept name '{}'; retrying as '{}' for code {}",
+                    preferredName,
+                    fallback,
+                    code);
+            createConcept(uuid, fallback, conceptClass, termUuid);
+            log.info("Created OpenMRS concept {} ({}) code={}", fallback, uuid, code);
+            return uuid;
+        }
+    }
+
+    private void createConcept(String uuid, String name, String conceptClass, String termUuid) throws Exception {
         ObjectNode body = mapper.createObjectNode();
         body.put("uuid", uuid);
         ArrayNode names = body.putArray("names");
         ObjectNode fsn = names.addObject();
-        fsn.put("name", name != null && !name.isBlank() ? name : code);
+        fsn.put("name", name);
         fsn.put("locale", "en");
         fsn.put("localePreferred", true);
         fsn.put("conceptNameType", "FULLY_SPECIFIED");
@@ -124,8 +175,18 @@ public class HieOpenmrsCatalogueWriter {
         map.put("conceptMapType", SAME_AS);
 
         openmrsRestClient.createOrUpdate("concept", null, mapper.writeValueAsString(body));
-        log.info("Created OpenMRS concept {} ({}) code={}", name, uuid, code);
-        return uuid;
+    }
+
+    static boolean isDuplicateConceptName(Throwable error) {
+        for (Throwable t = error; t != null; t = t.getCause()) {
+            String message = t.getMessage();
+            if (message != null
+                    && (message.contains("DuplicateConceptNameException")
+                            || message.toLowerCase().contains("is a duplicate name"))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void upsertDrug(
