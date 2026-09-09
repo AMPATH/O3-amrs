@@ -631,7 +631,8 @@
       "eb6173cb-9678-4614-bbe1-0ccf7ed9d1d4",
       "6abe1031-f43b-4437-b48a-decc93cff0af"
     ],
-    "cashPaymentModeUuid": "63eff7a4-6f82-43c4-a333-dbcc58fe9f74"
+    "cashPaymentModeUuid": "63eff7a4-6f82-43c4-a333-dbcc58fe9f74",
+    "emergencyConceptUuid": "f99eedd1-b709-4cd6-8e22-462a59fdf399"
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "/hie",
