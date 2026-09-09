@@ -294,6 +294,32 @@
           </execution>
         </executions>
       </plugin>
+      <!-- After SDK unpacks content.amrs, overlay HIE Product Catalogue Initializer seeds. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>overlay-hie-openmrs-initializer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/sdk-distro/web/openmrs_config</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/config/openmrs/initializer_config</directory>
+                  <excludes>
+                    <exclude>README.md</exclude>
+                  </excludes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>

@@ -57,6 +57,8 @@ class MedicationDispenseProcessorTest {
         assertEquals(10.0, payload.quantity());
         assertEquals("18c343eb-b353-462a-9139-b16606e6b6c2", payload.companyExternalId());
         assertEquals("260bb53f-a0c2-49c7-af79-2721c15699e0", payload.patientExternalId());
+        assertEquals(null, payload.lotId());
+        assertEquals(null, payload.quantityUnitUuid());
     }
 
     @Test

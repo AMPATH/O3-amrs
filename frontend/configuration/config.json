@@ -197,6 +197,12 @@
     "orderEncounterType": "d8e0f981-62e0-4c2a-b3ca-890c51afc350",
     "orderTypes": [
       {
+        "orderTypeUuid": "53eb466e-1359-11df-a1f1-0026b9348838",
+        "orderableConceptSets": ["2b52fc85-b59f-5e7f-a47d-d83863ac791f"],
+        "label": "Medications",
+        "icon": "omrs-icon-pill"
+      },
+      {
         "orderTypeUuid": "ff4485a4-f071-4423-aeb2-db6efce52b83",
         "orderableConceptSets": [
           "e83f4f97-91eb-4858-89d8-371535c5c131",

@@ -28,7 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class EIPAppConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "eip.product.sync.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "eip.product.sync.enabled", havingValue = "true", matchIfMissing = false)
     public ProductSynchronizer productCatalogSynchronizer(
             OdooFhirClient odooFhirClient, IGenericClient openmrsFhirClient, OpenmrsRestClient openmrsRestClient) {
         return new ProductSynchronizer(odooFhirClient, openmrsFhirClient, openmrsRestClient);
