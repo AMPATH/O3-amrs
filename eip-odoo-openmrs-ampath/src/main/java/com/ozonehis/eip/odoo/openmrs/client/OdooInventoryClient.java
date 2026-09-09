@@ -46,6 +46,17 @@ public class OdooInventoryClient {
             String companyExternalId,
             String openmrsOrderId,
             String patientExternalId) {
+        return dispense(openmrsDrugUuid, quantity, companyExternalId, openmrsOrderId, patientExternalId, null, null);
+    }
+
+    public JsonNode dispense(
+            String openmrsDrugUuid,
+            double quantity,
+            String companyExternalId,
+            String openmrsOrderId,
+            String patientExternalId,
+            Integer lotId,
+            String quantityUnitUuid) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("openmrs_drug_uuid", openmrsDrugUuid);
         body.put("quantity", quantity);
@@ -55,6 +66,12 @@ public class OdooInventoryClient {
         }
         if (patientExternalId != null && !patientExternalId.isBlank()) {
             body.put("patient_external_id", patientExternalId);
+        }
+        if (lotId != null) {
+            body.put("lot_id", lotId);
+        }
+        if (quantityUnitUuid != null && !quantityUnitUuid.isBlank()) {
+            body.put("quantity_unit_uuid", quantityUnitUuid);
         }
         return post(DISPENSE_PATH, body);
     }

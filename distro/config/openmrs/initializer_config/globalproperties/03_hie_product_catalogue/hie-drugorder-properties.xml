@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config>
+  <globalProperties>
+    <globalProperty>
+      <property>order.drugDispensingUnitsConceptUuid</property>
+      <value>0c9a8c3e-3220-553d-8111-9cbe021aafc7</value>
+      <description>HIE Product Catalogue Dispensing Units (catalogue-only)</description>
+    </globalProperty>
+  </globalProperties>
+</config>

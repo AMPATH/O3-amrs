@@ -1,0 +1,3 @@
+Uuid,Void/Retire,Fully specified name:en,Short name:en,Description:en,Data class,Data type,Members,_version:1,_order:1
+2b52fc85-b59f-5e7f-a47d-d83863ac791f,,HIE Product Catalogue Drugs,HIE Drugs,Orderable drugs from Kenya HIE product catalogue,ConvSet,N/A,,
+0c9a8c3e-3220-553d-8111-9cbe021aafc7,,HIE Product Catalogue Dispensing Units,HIE Disp Units,Catalogue-only dispensing units from Kenya HIE,ConvSet,N/A,,

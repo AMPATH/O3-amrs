@@ -13,9 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.MedicationDispense;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Type;
 import org.openmrs.eip.fhir.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,9 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 public class MedicationDispenseProcessor implements Processor {
+
+    /** OpenMRS / AMPATH extension commonly used for selected stock lot id. */
+    public static final String EXT_LOT_ID = "https://ampath.or.ke/fhir/StructureDefinition/medication-dispense-lot-id";
 
     @Autowired
     private OdooInventoryClient odooInventoryClient;
@@ -82,7 +87,9 @@ public class MedicationDispenseProcessor implements Processor {
                     payload.quantity(),
                     payload.companyExternalId(),
                     dispenseId,
-                    payload.patientExternalId());
+                    payload.patientExternalId(),
+                    payload.lotId(),
+                    payload.quantityUnitUuid());
         } catch (Exception e) {
             throw new CamelExecutionException("Error processing MedicationDispense", exchange, e);
         }
@@ -103,7 +110,9 @@ public class MedicationDispenseProcessor implements Processor {
         String locationUuid = resolveReferenceId(dispense.getLocation(), "location");
         String patientUuid = resolveReferenceId(dispense.getSubject(), "subject/patient");
         double quantity = resolveQuantity(dispense);
-        return new DispensePayload(drugUuid, quantity, locationUuid, patientUuid);
+        Integer lotId = resolveLotId(dispense);
+        String quantityUnitUuid = resolveQuantityUnitUuid(dispense);
+        return new DispensePayload(drugUuid, quantity, locationUuid, patientUuid, lotId, quantityUnitUuid);
     }
 
     static double resolveQuantity(MedicationDispense dispense) {
@@ -121,6 +130,62 @@ public class MedicationDispenseProcessor implements Processor {
                             + " quantity must be greater than zero");
         }
         return quantity.getValue().doubleValue();
+    }
+
+    static String resolveQuantityUnitUuid(MedicationDispense dispense) {
+        if (!dispense.hasQuantity()) {
+            return null;
+        }
+        Quantity quantity = dispense.getQuantity();
+        if (quantity.hasCode() && looksLikeUuid(quantity.getCode())) {
+            return quantity.getCode();
+        }
+        // OpenMRS often puts concept uuid in system URL path or as code
+        if (quantity.hasSystem()) {
+            String system = quantity.getSystem();
+            if (system.contains("/")) {
+                String maybe = system.substring(system.lastIndexOf('/') + 1);
+                if (looksLikeUuid(maybe)) {
+                    return maybe;
+                }
+            }
+        }
+        return null;
+    }
+
+    static Integer resolveLotId(MedicationDispense dispense) {
+        Extension ext = dispense.getExtensionByUrl(EXT_LOT_ID);
+        if (ext == null || !ext.hasValue()) {
+            // also try trailing-path match
+            for (Extension e : dispense.getExtension()) {
+                if (e.getUrl() != null && e.getUrl().endsWith("medication-dispense-lot-id") && e.hasValue()) {
+                    ext = e;
+                    break;
+                }
+            }
+        }
+        if (ext == null || !ext.hasValue()) {
+            return null;
+        }
+        Type value = ext.getValue();
+        if (value instanceof org.hl7.fhir.r4.model.IntegerType intType) {
+            return intType.getValue();
+        }
+        if (value instanceof org.hl7.fhir.r4.model.StringType stringType) {
+            try {
+                return Integer.parseInt(stringType.getValue());
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        if (value instanceof org.hl7.fhir.r4.model.DecimalType decimalType) {
+            return decimalType.getValue().intValue();
+        }
+        return null;
+    }
+
+    static boolean looksLikeUuid(String value) {
+        return value != null && value.matches("(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
     }
 
     static String resolveReferenceId(Reference reference, String fieldName) {
@@ -146,5 +211,10 @@ public class MedicationDispenseProcessor implements Processor {
     }
 
     record DispensePayload(
-            String openmrsDrugUuid, double quantity, String companyExternalId, String patientExternalId) {}
+            String openmrsDrugUuid,
+            double quantity,
+            String companyExternalId,
+            String patientExternalId,
+            Integer lotId,
+            String quantityUnitUuid) {}
 }
