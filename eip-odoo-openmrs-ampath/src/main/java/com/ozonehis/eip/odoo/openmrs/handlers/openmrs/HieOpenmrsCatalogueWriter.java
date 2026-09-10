@@ -102,7 +102,12 @@ public class HieOpenmrsCatalogueWriter {
             dosageFormUuid = ensureFormConcept(formCode, formDescription != null ? formDescription : formCode);
         }
         // Drug.name is free-text; keep clinician-facing display without forcing the GE code suffix.
-        upsertDrug(conceptUuid, displayName != null && !displayName.isBlank() ? displayName : geCode, strength, dosageFormUuid, combination);
+        upsertDrug(
+                conceptUuid,
+                displayName != null && !displayName.isBlank() ? displayName : geCode,
+                strength,
+                dosageFormUuid,
+                combination);
         addSetMember(drugConceptSetUuid, conceptUuid);
         return conceptUuid;
     }
