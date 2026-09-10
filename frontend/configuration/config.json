@@ -197,6 +197,12 @@
     "orderEncounterType": "d8e0f981-62e0-4c2a-b3ca-890c51afc350",
     "orderTypes": [
       {
+        "orderTypeUuid": "53eb466e-1359-11df-a1f1-0026b9348838",
+        "orderableConceptSets": ["2b52fc85-b59f-5e7f-a47d-d83863ac791f"],
+        "label": "Medications",
+        "icon": "omrs-icon-pill"
+      },
+      {
         "orderTypeUuid": "ff4485a4-f071-4423-aeb2-db6efce52b83",
         "orderableConceptSets": [
           "e83f4f97-91eb-4858-89d8-371535c5c131",
@@ -292,7 +298,8 @@
     "etlBaseUrl": "/etl"
   },
   "@ampath/esm-poc-features-app": {
-    "etlBaseUrl": "/etl"
+    "etlBaseUrl": "/etl",
+    "tbScreeningConceptUuid": "02ad9357-b996-4530-b1a4-aff91a105383"
   },
   "@ampath/esm-procedures-app": {
     "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
@@ -312,5 +319,14 @@
       "conceptUuid": "39ae0d04-48ed-4c03-a2a8-83556065b457",
       "map": "setMembers"
     }
+  },
+  "@ampath/esm-admin-app": {
+    "providerNationalIdUuid": "4550df92-c684-4597-8ab8-d6b10eabdcfb",
+    "licenseNumberUuid": "7add36ba-d20f-47e5-a00c-813af047cea0",
+    "licenseExpiryDateUuid": "b6046157-40a0-4b7a-91b0-00d83b51a811",
+    "licenseBodyUuid": "8d73f8d7-dded-44a0-9f72-e23523c96503",
+    "qualificationUuid": "c73daf69-ddd0-4fce-98ec-6f9d875193e3",
+    "phoneNumberUuid": "2a759a8-1359-11df-a1f1-0026b9348838",
+    "personPhonenumberAttributeUuid": "2a759a8-1359-11df-a1f1-0026b9348838"
   }
 }

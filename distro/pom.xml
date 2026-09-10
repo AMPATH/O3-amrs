@@ -286,10 +286,40 @@
             <goals>
               <goal>build-distro</goal>
             </goals>
-            <phase>package</phase>
+            <!-- prepare-package so HIE overlay (package) runs after SDK unpacks sdk-distro.
+                 resources-plugin is declared earlier in this POM, so a package-phase overlay
+                 would otherwise run before build-distro and trigger an interactive prompt. -->
+            <phase>prepare-package</phase>
             <configuration>
               <distro>${project.build.directory}/distro.properties</distro>
               <dir>${project.build.directory}/sdk-distro</dir>
+              <reset>true</reset>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- After SDK unpacks content.amrs (prepare-package), overlay HIE Product Catalogue Initializer seeds. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>overlay-hie-openmrs-initializer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/sdk-distro/web/openmrs_config</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/config/openmrs/initializer_config</directory>
+                  <excludes>
+                    <exclude>README.md</exclude>
+                  </excludes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
