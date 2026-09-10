@@ -46,10 +46,16 @@ public class HieOpenmrsCatalogueWriter {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final Map<String, String> conceptSourceUuidCache = new HashMap<>();
+    private final Map<String, String> orderEntrySetUuidCache = new HashMap<>();
 
     public String ensureFormConcept(String formCode, String formDescription) throws Exception {
-        return ensureMappedConcept(
-                HieUuid.forForm(formCode), formCode, disambiguateConceptName(formCode, formDescription), "Misc");
+        // Prefer human description; append (code) so FSN does not collide with CIEL "Tablet".
+        String label = disambiguateConceptName(formCode, formDescription);
+        String uuid = ensureMappedConcept(HieUuid.forForm(formCode), formCode, label, "Misc");
+        // O3 defaults doseUnits + quantityUnits from Drug.dosageForm — form must be allowed.
+        addSetMember(resolveOrderEntrySetUuid("order.drugDosingUnitsConceptUuid"), uuid);
+        addSetMember(dispensingUnitsConceptSetUuid, uuid);
+        return uuid;
     }
 
     public String ensureUnitConcept(String unitCode, String unitDescription) throws Exception {
@@ -57,15 +63,16 @@ public class HieOpenmrsCatalogueWriter {
         String label = disambiguateConceptName(unitCode, unitDescription);
         String uuid = ensureMappedConcept(HieUuid.forUnit(unitCode), unitCode, label, "Units of Measure");
         addSetMember(dispensingUnitsConceptSetUuid, uuid);
+        // Dose unit may equal dispense unit; include in dosing set as well.
+        addSetMember(resolveOrderEntrySetUuid("order.drugDosingUnitsConceptUuid"), uuid);
         return uuid;
     }
 
     public String ensureRouteConcept(String routeCode, String routeDescription) throws Exception {
-        return ensureMappedConcept(
-                HieUuid.forRoute(routeCode),
-                routeCode,
-                disambiguateConceptName(routeCode, routeDescription),
-                "Misc");
+        String label = disambiguateConceptName(routeCode, routeDescription);
+        String uuid = ensureMappedConcept(HieUuid.forRoute(routeCode), routeCode, label, "Misc");
+        addSetMember(resolveOrderEntrySetUuid("order.drugRoutesConceptUuid"), uuid);
+        return uuid;
     }
 
     /**
@@ -140,8 +147,6 @@ public class HieOpenmrsCatalogueWriter {
             if (!isDuplicateConceptName(e)) {
                 throw e;
             }
-            // Retry with stronger disambiguation if the preferred name still collides (e.g. code
-            // already embedded, or another HIE concept used the same label).
             String fallback = preferredName;
             if (code != null && !code.isBlank() && !preferredName.contains(code.trim())) {
                 fallback = preferredName + " (" + code.trim() + ")";
@@ -298,6 +303,34 @@ public class HieOpenmrsCatalogueWriter {
         members.add(memberUuid);
         openmrsRestClient.createOrUpdate("concept", setUuid, mapper.writeValueAsString(body));
         log.info("Added concept {} to set {}", memberUuid, setUuid);
+    }
+
+    private synchronized String resolveOrderEntrySetUuid(String property) throws Exception {
+        if (orderEntrySetUuidCache.containsKey(property)) {
+            return orderEntrySetUuidCache.get(property);
+        }
+        String q = java.net.URLEncoder.encode(property, UTF_8);
+        byte[] bytes = openmrsRestClient.get(
+                "systemsetting?q=" + q + "&v=custom:(property,value)", null);
+        if (bytes == null) {
+            throw new EIPException("System setting not found: " + property);
+        }
+        JsonNode root = mapper.readTree(bytes);
+        JsonNode results = root.has("results") ? root.get("results") : root;
+        if (!results.isArray() || results.isEmpty()) {
+            throw new EIPException("System setting '" + property + "' missing — configure order-entry GPs");
+        }
+        for (JsonNode node : results) {
+            if (property.equals(node.path("property").asText())) {
+                String value = node.path("value").asText(null);
+                if (value == null || value.isBlank()) {
+                    throw new EIPException("System setting '" + property + "' has empty value");
+                }
+                orderEntrySetUuidCache.put(property, value);
+                return value;
+            }
+        }
+        throw new EIPException("System setting '" + property + "' not found in results");
     }
 
     private synchronized String resolveConceptSourceUuid() throws Exception {
