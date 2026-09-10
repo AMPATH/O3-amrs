@@ -1,6 +1,13 @@
 # OpenMRS Initializer — HIE Product Catalogue
 
 Seed files for ConceptSource, empty concept sets, and dispensing-units GP override.
+Place files **directly** under the domain folders (same layout as AMRS content):
+
+| Path |
+|---|
+| `concepts/hie_product_catalogue_sets.csv` |
+| `conceptsources/hie_product_catalogue.csv` |
+| `globalproperties/hie-drugorder-properties.xml` |
 
 Fixed UUIDs (UUID5 DNS namespace):
 
