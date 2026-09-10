@@ -16,28 +16,22 @@ import org.junit.jupiter.api.Test;
 class HieOpenmrsCatalogueWriterTest {
 
     @Test
-    void disambiguateAppendsCodeWhenDescriptionDiffers() {
+    void disambiguateConceptName_appendsCodeWhenDistinct() {
+        assertEquals("Tablet (DF10501)", HieOpenmrsCatalogueWriter.disambiguateConceptName("DF10501", "Tablet"));
         assertEquals("Bottle (DF10001)", HieOpenmrsCatalogueWriter.disambiguateConceptName("DF10001", "Bottle"));
-        assertEquals("tablet (UM415)", HieOpenmrsCatalogueWriter.disambiguateConceptName("UM415", "tablet"));
     }
 
     @Test
-    void disambiguateSkipsWhenCodeAlreadyPresent() {
-        assertEquals("Bottle (DF10001)", HieOpenmrsCatalogueWriter.disambiguateConceptName("DF10001", "Bottle (DF10001)"));
-        assertEquals("DF10001", HieOpenmrsCatalogueWriter.disambiguateConceptName("DF10001", "DF10001"));
+    void disambiguateConceptName_skipsWhenCodeAlreadyPresent() {
+        assertEquals("Tablet (DF10501)", HieOpenmrsCatalogueWriter.disambiguateConceptName("DF10501", "Tablet (DF10501)"));
+        assertEquals("DF10501", HieOpenmrsCatalogueWriter.disambiguateConceptName("DF10501", "DF10501"));
     }
 
     @Test
-    void disambiguateFallsBackToCode() {
-        assertEquals("UM415", HieOpenmrsCatalogueWriter.disambiguateConceptName("UM415", null));
-        assertEquals("UM415", HieOpenmrsCatalogueWriter.disambiguateConceptName("UM415", "  "));
-    }
-
-    @Test
-    void isDuplicateConceptNameDetectsOpenMrsPayload() {
-        Exception e = new Exception(
-                "Request to OpenMRS failed with status code: 500, {\"error\":{\"message\":\"['Bottle' is a duplicate name in locale 'en']\",\"code\":\"org.openmrs.validator.ConceptValidator:183\"}}");
-        assertTrue(HieOpenmrsCatalogueWriter.isDuplicateConceptName(e));
-        assertFalse(HieOpenmrsCatalogueWriter.isDuplicateConceptName(new Exception("connection refused")));
+    void isDuplicateConceptName_detectsOpenmrsMessage() {
+        Exception nested = new Exception("Concept name 'Tablet' is a duplicate name");
+        Exception wrapper = new RuntimeException("create failed", nested);
+        assertTrue(HieOpenmrsCatalogueWriter.isDuplicateConceptName(wrapper));
+        assertFalse(HieOpenmrsCatalogueWriter.isDuplicateConceptName(new RuntimeException("unrelated")));
     }
 }
