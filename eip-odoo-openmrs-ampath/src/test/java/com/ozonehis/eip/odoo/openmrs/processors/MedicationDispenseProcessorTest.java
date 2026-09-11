@@ -9,12 +9,14 @@ package com.ozonehis.eip.odoo.openmrs.processors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.hl7.fhir.r4.model.MedicationDispense;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.Test;
 
 class MedicationDispenseProcessorTest {
@@ -57,8 +59,26 @@ class MedicationDispenseProcessorTest {
         assertEquals(10.0, payload.quantity());
         assertEquals("18c343eb-b353-462a-9139-b16606e6b6c2", payload.companyExternalId());
         assertEquals("260bb53f-a0c2-49c7-af79-2721c15699e0", payload.patientExternalId());
-        assertEquals(null, payload.lotId());
-        assertEquals(null, payload.quantityUnitUuid());
+        assertNull(payload.lotName());
+        assertNull(payload.quantityUnitUuid());
+    }
+
+    @Test
+    void buildPayloadReadsBatchNumberExtension() {
+        MedicationDispense dispense = sampleDispense();
+        dispense.addExtension(
+                MedicationDispenseProcessor.EXT_BATCH_NUMBER, new StringType("BATCH-2026-01"));
+        var payload = MedicationDispenseProcessor.buildDispensePayload(dispense);
+        assertEquals("BATCH-2026-01", payload.lotName());
+    }
+
+    @Test
+    void resolveBatchNumberAcceptsTrailingUrlMatch() {
+        MedicationDispense dispense = sampleDispense();
+        dispense.addExtension(
+                "http://example.org/fhir/StructureDefinition/medicationdispense-batch-number",
+                new StringType(" LOT-9 "));
+        assertEquals("LOT-9", MedicationDispenseProcessor.resolveBatchNumber(dispense));
     }
 
     @Test

@@ -16,7 +16,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ozonehis.eip.odoo.openmrs.client.OpenmrsRestClient;
 import com.ozonehis.eip.odoo.openmrs.util.HieUuid;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.openmrs.eip.EIPException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +49,16 @@ public class HieOpenmrsCatalogueWriter {
     private final ObjectMapper mapper = new ObjectMapper();
     private final Map<String, String> conceptSourceUuidCache = new HashMap<>();
     private final Map<String, String> orderEntrySetUuidCache = new HashMap<>();
+    /** Avoid re-GET of huge setMembers payloads when the same set is updated thousands of times. */
+    private final Map<String, Set<String>> setMembersCache = new HashMap<>();
 
     public String ensureFormConcept(String formCode, String formDescription) throws Exception {
         // Prefer human description; append (code) so FSN does not collide with CIEL "Tablet".
         String label = disambiguateConceptName(formCode, formDescription);
         String uuid = ensureMappedConcept(HieUuid.forForm(formCode), formCode, label, "Misc");
         // O3 defaults doseUnits + quantityUnits from Drug.dosageForm — form must be allowed.
-        addSetMember(resolveOrderEntrySetUuid("order.drugDosingUnitsConceptUuid"), uuid);
+        // Order-entry GPs may be unset locally; do not abort catalogue sync for that.
+        tryAddOrderEntrySetMember("order.drugDosingUnitsConceptUuid", uuid);
         addSetMember(dispensingUnitsConceptSetUuid, uuid);
         return uuid;
     }
@@ -64,14 +69,14 @@ public class HieOpenmrsCatalogueWriter {
         String uuid = ensureMappedConcept(HieUuid.forUnit(unitCode), unitCode, label, "Units of Measure");
         addSetMember(dispensingUnitsConceptSetUuid, uuid);
         // Dose unit may equal dispense unit; include in dosing set as well.
-        addSetMember(resolveOrderEntrySetUuid("order.drugDosingUnitsConceptUuid"), uuid);
+        tryAddOrderEntrySetMember("order.drugDosingUnitsConceptUuid", uuid);
         return uuid;
     }
 
     public String ensureRouteConcept(String routeCode, String routeDescription) throws Exception {
         String label = disambiguateConceptName(routeCode, routeDescription);
         String uuid = ensureMappedConcept(HieUuid.forRoute(routeCode), routeCode, label, "Misc");
-        addSetMember(resolveOrderEntrySetUuid("order.drugRoutesConceptUuid"), uuid);
+        tryAddOrderEntrySetMember("order.drugRoutesConceptUuid", uuid);
         return uuid;
     }
 
@@ -280,29 +285,62 @@ public class HieOpenmrsCatalogueWriter {
         if (setUuid == null || setUuid.isBlank() || memberUuid == null || memberUuid.isBlank()) {
             return;
         }
+        Set<String> known = setMembersCache.get(setUuid);
+        if (known != null && known.contains(memberUuid)) {
+            return;
+        }
+        if (known == null) {
+            known = loadSetMembers(setUuid);
+            setMembersCache.put(setUuid, known);
+        }
+        if (known.contains(memberUuid)) {
+            return;
+        }
+        // OpenMRS REST: POST /concept/{setUuid} with setMembers including existing + new
+        ObjectNode body = mapper.createObjectNode();
+        ArrayNode members = body.putArray("setMembers");
+        for (String existing : known) {
+            members.add(existing);
+        }
+        members.add(memberUuid);
+        openmrsRestClient.createOrUpdate("concept", setUuid, mapper.writeValueAsString(body));
+        known.add(memberUuid);
+        log.info("Added concept {} to set {}", memberUuid, setUuid);
+    }
+
+    private Set<String> loadSetMembers(String setUuid) throws Exception {
         byte[] setBytes = openmrsRestClient.get("concept", setUuid + "?v=custom:(uuid,setMembers:(uuid))");
         if (setBytes == null) {
             throw new EIPException("Concept set not found: " + setUuid);
         }
         JsonNode set = mapper.readTree(setBytes);
+        Set<String> members = new HashSet<>();
         if (set.has("setMembers")) {
             for (JsonNode member : set.get("setMembers")) {
-                if (memberUuid.equals(member.path("uuid").asText())) {
-                    return;
+                String uuid = member.path("uuid").asText(null);
+                if (uuid != null && !uuid.isBlank()) {
+                    members.add(uuid);
                 }
             }
         }
-        // OpenMRS REST: POST /concept/{setUuid} with setMembers including existing + new
-        ObjectNode body = mapper.createObjectNode();
-        ArrayNode members = body.putArray("setMembers");
-        if (set.has("setMembers")) {
-            for (JsonNode member : set.get("setMembers")) {
-                members.add(member.path("uuid").asText());
+        return members;
+    }
+
+    /**
+     * Best-effort membership in OpenMRS order-entry concept sets. Missing/empty GPs are common
+     * until Initializer seeds them; catalogue sync should still create concepts and HIE sets.
+     */
+    private void tryAddOrderEntrySetMember(String property, String memberUuid) {
+        try {
+            String setUuid = resolveOrderEntrySetUuid(property);
+            if (setUuid == null || setUuid.isBlank()) {
+                log.debug("Skipping {} membership; GP unset", property);
+                return;
             }
+            addSetMember(setUuid, memberUuid);
+        } catch (Exception e) {
+            log.warn("Skipping {} membership for {}: {}", property, memberUuid, e.toString());
         }
-        members.add(memberUuid);
-        openmrsRestClient.createOrUpdate("concept", setUuid, mapper.writeValueAsString(body));
-        log.info("Added concept {} to set {}", memberUuid, setUuid);
     }
 
     private synchronized String resolveOrderEntrySetUuid(String property) throws Exception {
@@ -313,24 +351,32 @@ public class HieOpenmrsCatalogueWriter {
         byte[] bytes = openmrsRestClient.get(
                 "systemsetting?q=" + q + "&v=custom:(property,value)", null);
         if (bytes == null) {
-            throw new EIPException("System setting not found: " + property);
+            log.warn("System setting not found: {}", property);
+            orderEntrySetUuidCache.put(property, "");
+            return null;
         }
         JsonNode root = mapper.readTree(bytes);
         JsonNode results = root.has("results") ? root.get("results") : root;
         if (!results.isArray() || results.isEmpty()) {
-            throw new EIPException("System setting '" + property + "' missing — configure order-entry GPs");
+            log.warn("System setting '{}' missing — configure order-entry GPs", property);
+            orderEntrySetUuidCache.put(property, "");
+            return null;
         }
         for (JsonNode node : results) {
             if (property.equals(node.path("property").asText())) {
                 String value = node.path("value").asText(null);
-                if (value == null || value.isBlank()) {
-                    throw new EIPException("System setting '" + property + "' has empty value");
+                if (value == null || value.isBlank() || "null".equalsIgnoreCase(value)) {
+                    log.warn("System setting '{}' has empty value — skipping order-entry set membership", property);
+                    orderEntrySetUuidCache.put(property, "");
+                    return null;
                 }
                 orderEntrySetUuidCache.put(property, value);
                 return value;
             }
         }
-        throw new EIPException("System setting '" + property + "' not found in results");
+        log.warn("System setting '{}' not found in results", property);
+        orderEntrySetUuidCache.put(property, "");
+        return null;
     }
 
     private synchronized String resolveConceptSourceUuid() throws Exception {

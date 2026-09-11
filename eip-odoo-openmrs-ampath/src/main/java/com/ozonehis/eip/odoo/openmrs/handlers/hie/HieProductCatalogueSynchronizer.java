@@ -66,9 +66,9 @@ public class HieProductCatalogueSynchronizer {
             formNames = Map.of();
             unitNames = Map.of();
         } else {
-            formNames = syncForms(itemFailures);
-            unitNames = syncUnits(itemFailures);
-            syncRoutes(itemFailures);
+            formNames = safePrefetchForms(itemFailures);
+            unitNames = safePrefetchUnits(itemFailures);
+            safePrefetchRoutes(itemFailures);
         }
 
         List<JsonNode> catalog = terminologyClient.listAll("/catalog");
@@ -170,6 +170,41 @@ public class HieProductCatalogueSynchronizer {
             log.warn(
                     "HIE product catalogue sync finished with {} item failure(s); see warnings above",
                     failures);
+        }
+    }
+
+    private Map<String, String> safePrefetchForms(AtomicInteger itemFailures) {
+        try {
+            return syncForms(itemFailures);
+        } catch (Exception e) {
+            itemFailures.incrementAndGet();
+            log.warn(
+                    "HIE /form prefetch failed; continuing with on-demand form upsert from catalog: {}",
+                    e.toString());
+            return Map.of();
+        }
+    }
+
+    private Map<String, String> safePrefetchUnits(AtomicInteger itemFailures) {
+        try {
+            return syncUnits(itemFailures);
+        } catch (Exception e) {
+            itemFailures.incrementAndGet();
+            log.warn(
+                    "HIE /unit prefetch failed; continuing with on-demand unit upsert from catalog: {}",
+                    e.toString());
+            return Map.of();
+        }
+    }
+
+    private void safePrefetchRoutes(AtomicInteger itemFailures) {
+        try {
+            syncRoutes(itemFailures);
+        } catch (Exception e) {
+            itemFailures.incrementAndGet();
+            log.warn(
+                    "HIE /route prefetch failed; continuing without full route seed: {}",
+                    e.toString());
         }
     }
 

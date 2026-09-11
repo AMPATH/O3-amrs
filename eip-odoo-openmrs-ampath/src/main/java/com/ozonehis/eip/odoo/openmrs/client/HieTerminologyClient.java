@@ -14,6 +14,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +56,9 @@ public class HieTerminologyClient {
     @Autowired
     private HieAuthClient hieAuthClient;
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(30))
+            .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public List<JsonNode> listAll(String relativePath) {
@@ -83,10 +86,12 @@ public class HieTerminologyClient {
                 break;
             }
             all.addAll(pageItems);
-            if (pageItems.size() < limit) {
+            if (reportedPages != null && page >= reportedPages) {
                 break;
             }
-            if (reportedPages != null && page >= reportedPages) {
+            // Only treat a short page as EOF when HIE did not report total pages
+            // (some pages return < limit even mid-catalogue, e.g. 99 of 100).
+            if (reportedPages == null && pageItems.size() < limit) {
                 break;
             }
             page++;
@@ -107,29 +112,74 @@ public class HieTerminologyClient {
     }
 
     private JsonNode getUrl(String url) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Authorization", hieAuthClient.authorizationHeader())
-                    .header("Accept", "application/json")
-                    .GET()
-                    .build();
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            if (response.statusCode() >= 400) {
-                throw new EIPException(
-                        "HIE terminology GET failed (" + response.statusCode() + ") for " + redact(url)
-                                + ": " + truncate(response.body()));
+        Exception last = null;
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                // Refresh token each attempt in case a long prior phase let it expire.
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .timeout(Duration.ofSeconds(120))
+                        .header("Authorization", hieAuthClient.authorizationHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+                HttpResponse<String> response =
+                        httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                if (response.statusCode() == 401 || response.statusCode() == 403) {
+                    hieAuthClient.invalidateToken();
+                    throw new EIPException(
+                            "HIE terminology GET failed (" + response.statusCode() + ") for " + redact(url)
+                                    + ": " + truncate(response.body()));
+                }
+                if (response.statusCode() >= 400) {
+                    throw new EIPException(
+                            "HIE terminology GET failed (" + response.statusCode() + ") for " + redact(url)
+                                    + ": " + truncate(response.body()));
+                }
+                if (response.body() == null || response.body().isBlank()) {
+                    return objectMapper.createObjectNode();
+                }
+                return objectMapper.readTree(response.body());
+            } catch (EIPException e) {
+                last = e;
+                if (attempt == 3 || !isRetryableStatus(e)) {
+                    throw e;
+                }
+                log.warn("HIE terminology GET attempt {}/3 failed for {}: {}", attempt, redact(url), e.getMessage());
+            } catch (Exception e) {
+                last = e;
+                log.warn(
+                        "HIE terminology GET attempt {}/3 failed for {}: {}",
+                        attempt,
+                        redact(url),
+                        e.toString());
+                if (attempt == 3) {
+                    break;
+                }
             }
-            if (response.body() == null || response.body().isBlank()) {
-                return objectMapper.createObjectNode();
+            try {
+                Thread.sleep(2000L * attempt);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                throw new EIPException("HIE terminology request interrupted for " + redact(url), ie);
             }
-            return objectMapper.readTree(response.body());
-        } catch (EIPException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EIPException("HIE terminology request failed for " + redact(url), e);
         }
+        throw new EIPException("HIE terminology request failed for " + redact(url), last);
+    }
+
+    private static boolean isRetryableStatus(EIPException e) {
+        String msg = e.getMessage();
+        if (msg == null) {
+            return false;
+        }
+        return msg.contains("(401)")
+                || msg.contains("(403)")
+                || msg.contains("(408)")
+                || msg.contains("(429)")
+                || msg.contains("(500)")
+                || msg.contains("(502)")
+                || msg.contains("(503)")
+                || msg.contains("(504)");
     }
 
     static List<JsonNode> extractItems(JsonNode response) {
