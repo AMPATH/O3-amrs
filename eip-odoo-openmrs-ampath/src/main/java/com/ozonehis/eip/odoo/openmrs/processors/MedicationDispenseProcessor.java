@@ -17,6 +17,7 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.MedicationDispense;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Type;
 import org.openmrs.eip.fhir.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MedicationDispenseProcessor implements Processor {
 
-    /** OpenMRS / AMPATH extension commonly used for selected stock lot id. */
-    public static final String EXT_LOT_ID = "https://ampath.or.ke/fhir/StructureDefinition/medication-dispense-lot-id";
+    /** AMPATH FHIR extension for Odoo lot / batch name ({@code valueString}). */
+    public static final String EXT_BATCH_NUMBER =
+            "https://ampath.or.ke/fhir/StructureDefinition/medicationdispense-batch-number";
 
     @Autowired
     private OdooInventoryClient odooInventoryClient;
@@ -88,7 +90,7 @@ public class MedicationDispenseProcessor implements Processor {
                     payload.companyExternalId(),
                     dispenseId,
                     payload.patientExternalId(),
-                    payload.lotId(),
+                    payload.lotName(),
                     payload.quantityUnitUuid());
         } catch (Exception e) {
             throw new CamelExecutionException("Error processing MedicationDispense", exchange, e);
@@ -110,9 +112,9 @@ public class MedicationDispenseProcessor implements Processor {
         String locationUuid = resolveReferenceId(dispense.getLocation(), "location");
         String patientUuid = resolveReferenceId(dispense.getSubject(), "subject/patient");
         double quantity = resolveQuantity(dispense);
-        Integer lotId = resolveLotId(dispense);
+        String lotName = resolveBatchNumber(dispense);
         String quantityUnitUuid = resolveQuantityUnitUuid(dispense);
-        return new DispensePayload(drugUuid, quantity, locationUuid, patientUuid, lotId, quantityUnitUuid);
+        return new DispensePayload(drugUuid, quantity, locationUuid, patientUuid, lotName, quantityUnitUuid);
     }
 
     static double resolveQuantity(MedicationDispense dispense) {
@@ -153,12 +155,13 @@ public class MedicationDispenseProcessor implements Processor {
         return null;
     }
 
-    static Integer resolveLotId(MedicationDispense dispense) {
-        Extension ext = dispense.getExtensionByUrl(EXT_LOT_ID);
+    static String resolveBatchNumber(MedicationDispense dispense) {
+        Extension ext = dispense.getExtensionByUrl(EXT_BATCH_NUMBER);
         if (ext == null || !ext.hasValue()) {
-            // also try trailing-path match
             for (Extension e : dispense.getExtension()) {
-                if (e.getUrl() != null && e.getUrl().endsWith("medication-dispense-lot-id") && e.hasValue()) {
+                if (e.getUrl() != null
+                        && e.getUrl().endsWith("medicationdispense-batch-number")
+                        && e.hasValue()) {
                     ext = e;
                     break;
                 }
@@ -168,20 +171,12 @@ public class MedicationDispenseProcessor implements Processor {
             return null;
         }
         Type value = ext.getValue();
-        if (value instanceof org.hl7.fhir.r4.model.IntegerType intType) {
-            return intType.getValue();
+        if (value instanceof StringType stringType) {
+            String batch = stringType.getValue();
+            return batch != null && !batch.isBlank() ? batch.trim() : null;
         }
-        if (value instanceof org.hl7.fhir.r4.model.StringType stringType) {
-            try {
-                return Integer.parseInt(stringType.getValue());
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
-        if (value instanceof org.hl7.fhir.r4.model.DecimalType decimalType) {
-            return decimalType.getValue().intValue();
-        }
-        return null;
+        String primitive = value.primitiveValue();
+        return primitive != null && !primitive.isBlank() ? primitive.trim() : null;
     }
 
     static boolean looksLikeUuid(String value) {
@@ -215,6 +210,6 @@ public class MedicationDispenseProcessor implements Processor {
             double quantity,
             String companyExternalId,
             String patientExternalId,
-            Integer lotId,
+            String lotName,
             String quantityUnitUuid) {}
 }

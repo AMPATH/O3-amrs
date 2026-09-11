@@ -35,7 +35,8 @@ POST /ampath/inventory/dispense
     existing picking; a different quantity reverses the old picking first.
     JSON body:
         openmrs_drug_uuid, quantity, company_external_id (required)
-        openmrs_order_id, patient_external_id, lot_id, uom_name (optional)
+        openmrs_order_id, patient_external_id, lot_name, lot_id, uom_name (optional)
+        Prefer lot_name (Odoo stock.lot name). lot_id remains for legacy callers.
 
 POST /ampath/inventory/reverse
     Cancel or return stock for a prior dispense keyed by openmrs_order_id.
@@ -488,6 +489,40 @@ class InventoryController(http.Controller):
         picking.invalidate_recordset()
         return picking, None
 
+    def _resolve_lot(self, env, products, lot_id=None, lot_name=None):
+        """Resolve stock.lot from lot_id (legacy) or lot_name (preferred).
+
+        Returns ``(lot, product, error_response)``. On success ``error_response`` is None.
+        Prefer lot_id when both are supplied.
+        """
+        Lot = env['stock.lot'].sudo()
+        if lot_id not in (None, '', False):
+            lot = Lot.browse(int(lot_id)).exists()
+            if not lot:
+                return None, None, self._json_response(
+                    {'error': f'Lot id {lot_id} not found.'}, status=404
+                )
+            if lot.product_id not in products:
+                return None, None, self._json_response({
+                    'error': (
+                        f'Lot {lot_id} product does not match openmrs_drug_uuid.'
+                    ),
+                }, status=400)
+            return lot, lot.product_id, None
+
+        if lot_name:
+            lot = Lot.search([
+                ('name', '=', lot_name),
+                ('product_id', 'in', products.ids),
+            ], limit=1)
+            if not lot:
+                return None, None, self._json_response({
+                    'error': f'No lot found for lot_name "{lot_name}".',
+                }, status=404)
+            return lot, lot.product_id, None
+
+        return None, None, None
+
     @http.route(
         '/ampath/inventory/stock',
         type='http',
@@ -619,6 +654,7 @@ class InventoryController(http.Controller):
         openmrs_order_id = (body.get('openmrs_order_id') or '').strip() or None
         patient_external_id = (body.get('patient_external_id') or '').strip() or None
         lot_id = body.get('lot_id')
+        lot_name = (body.get('lot_name') or '').strip() or None
         quantity = body.get('quantity')
 
         if not openmrs_drug_uuid:
@@ -660,25 +696,17 @@ class InventoryController(http.Controller):
                 'error': f'No product found for external ID "{openmrs_drug_uuid}".',
             }, status=404)
 
-        product = products[0]
-        if lot_id:
-            lot = env['stock.lot'].sudo().browse(int(lot_id)).exists()
-            if not lot:
-                return self._json_response(
-                    {'error': f'Lot id {lot_id} not found.'}, status=400
-                )
-            if lot.product_id not in products:
-                return self._json_response({
-                    'error': (
-                        f'Lot {lot_id} product does not match openmrs_drug_uuid '
-                        f'"{openmrs_drug_uuid}".'
-                    ),
-                }, status=400)
-            product = lot.product_id
-        elif len(products) > 1:
+        lot, lot_product, lot_error = self._resolve_lot(
+            env, products, lot_id=lot_id, lot_name=lot_name
+        )
+        if lot_error:
+            return lot_error
+
+        product = lot_product or products[0]
+        if not lot and len(products) > 1:
             return self._json_response({
                 'error': (
-                    'lot_id is required when multiple SKUs exist for this drug. '
+                    'lot_name (or lot_id) is required when multiple SKUs exist for this drug. '
                     'Use GET /ampath/inventory/batches to choose a batch.'
                 ),
             }, status=400)
@@ -734,7 +762,7 @@ class InventoryController(http.Controller):
             quantity,
             origin,
             patient_external_id=patient_external_id,
-            lot_id=lot_id,
+            lot_id=lot.id if lot else None,
         )
         if error_response:
             return error_response

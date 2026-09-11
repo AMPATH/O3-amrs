@@ -55,7 +55,7 @@ public class OdooInventoryClient {
             String companyExternalId,
             String openmrsOrderId,
             String patientExternalId,
-            Integer lotId,
+            String lotName,
             String quantityUnitUuid) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("openmrs_drug_uuid", openmrsDrugUuid);
@@ -67,8 +67,8 @@ public class OdooInventoryClient {
         if (patientExternalId != null && !patientExternalId.isBlank()) {
             body.put("patient_external_id", patientExternalId);
         }
-        if (lotId != null) {
-            body.put("lot_id", lotId);
+        if (lotName != null && !lotName.isBlank()) {
+            body.put("lot_name", lotName);
         }
         if (quantityUnitUuid != null && !quantityUnitUuid.isBlank()) {
             body.put("quantity_unit_uuid", quantityUnitUuid);

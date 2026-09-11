@@ -70,6 +70,12 @@ public class HieAuthClient {
         return "Bearer " + getAccessToken();
     }
 
+    /** Drop cached token so the next call re-fetches (e.g. after HIE 401). */
+    public synchronized void invalidateToken() {
+        cachedToken = null;
+        expiresAt = Instant.EPOCH;
+    }
+
     private String fetchAndCacheToken() {
         if (authUrl == null || authUrl.isBlank()) {
             throw new EIPException("hie.auth.url / HIE_AUTH_URL is not configured");
