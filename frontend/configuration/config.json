@@ -115,7 +115,13 @@
       "uuid": "52e8a934-d57c-4ef0-9fb7-7c15d816b723"
     },
     "requireIndication": false,
-    "drugCategoryConceptSets": ["2b52fc85-b59f-5e7f-a47d-d83863ac791f"]
+    "drugCategoryConceptSets": ["2b52fc85-b59f-5e7f-a47d-d83863ac791f"],
+    "durationUnitsDaysMap": {
+      "a899b9c4-1350-11df-a1f1-0026b9348838": 1,
+      "a899baaa-1350-11df-a1f1-0026b9348838": 7,
+      "a899bb90-1350-11df-a1f1-0026b9348838": 30,
+      "ac6a274b-a494-486d-83c1-4abab7e4442c": 365
+    }
   },
   "@openmrs/esm-patient-tests-app": {
     "resultsViewerConcepts": [
