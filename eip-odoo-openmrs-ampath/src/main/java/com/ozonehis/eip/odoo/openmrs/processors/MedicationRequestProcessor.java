@@ -7,109 +7,29 @@
  */
 package com.ozonehis.eip.odoo.openmrs.processors;
 
-import com.ozonehis.eip.odoo.openmrs.handlers.odoo.PartnerHandler;
-import com.ozonehis.eip.odoo.openmrs.handlers.odoo.SaleOrderHandler;
-import com.ozonehis.eip.odoo.openmrs.model.Partner;
-import com.ozonehis.eip.odoo.openmrs.model.SaleOrder;
-import java.util.List;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.ProducerTemplate;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.Medication;
 import org.hl7.fhir.r4.model.MedicationRequest;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
-import org.openmrs.eip.fhir.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * MedicationRequest events no longer update Odoo stock. Pharmacy stock is adjusted only when a
+ * {@code MedicationDispense} is completed (see {@link MedicationDispenseProcessor}).
+ *
+ * <p>This processor is retained so {@code direct:fhir-medicationrequest} remains a safe no-op if
+ * MedicationRequest is re-enabled in {@code eip.fhir.resources}.
+ */
 @Slf4j
-@Setter
 @Component
 public class MedicationRequestProcessor implements Processor {
 
-    @Autowired
-    private SaleOrderHandler saleOrderHandler;
-
-    @Autowired
-    private PartnerHandler partnerHandler;
-
     @Override
     public void process(Exchange exchange) {
-        try (ProducerTemplate producerTemplate = exchange.getContext().createProducerTemplate()) {
-            Bundle bundle = exchange.getMessage().getBody(Bundle.class);
-            List<Bundle.BundleEntryComponent> entries = bundle.getEntry();
-
-            Patient patient = null;
-            Encounter encounter = null;
-            MedicationRequest medicationRequest = null;
-            Medication medication = null;
-
-            for (Bundle.BundleEntryComponent entry : entries) {
-                Resource resource = entry.getResource();
-                if (resource instanceof Patient) {
-                    patient = (Patient) resource;
-                } else if (resource instanceof Encounter) {
-                    encounter = (Encounter) resource;
-                } else if (resource instanceof MedicationRequest) {
-                    medicationRequest = (MedicationRequest) resource;
-                } else if (resource instanceof Medication) {
-                    medication = (Medication) resource;
-                }
-            }
-
-            if (patient == null || encounter == null || medicationRequest == null || medication == null) {
-                throw new CamelExecutionException(
-                        "Invalid Bundle. Bundle must contain Patient, Encounter, MedicationRequest and Medication",
-                        exchange);
-            } else {
-                log.debug("Processing MedicationRequest for Patient with UUID {}", patient.getIdPart());
-                String eventType = exchange.getMessage().getHeader(Constants.HEADER_FHIR_EVENT_TYPE, String.class);
-                if (eventType == null) {
-                    throw new IllegalArgumentException("Event type not found in the exchange headers.");
-                }
-                String encounterVisitUuid = encounter.getPartOf().getReference().split("/")[1];
-                Partner partner = partnerHandler.createOrUpdatePartner(producerTemplate, patient);
-                if ("c".equals(eventType) || "u".equals(eventType)) {
-                    if (!medicationRequest.getStatus().equals(MedicationRequest.MedicationRequestStatus.CANCELLED)) {
-                        SaleOrder saleOrder = saleOrderHandler.getDraftSaleOrderIfExistsByVisitId(encounterVisitUuid);
-                        if (saleOrder != null) {
-                            saleOrderHandler.updateSaleOrderIfExistsWithSaleOrderLine(
-                                    medicationRequest,
-                                    saleOrder,
-                                    encounterVisitUuid,
-                                    partner.getPartnerId(),
-                                    patient.getIdPart(),
-                                    producerTemplate);
-                        } else {
-                            saleOrderHandler.createSaleOrderWithSaleOrderLine(
-                                    medicationRequest,
-                                    encounter,
-                                    partner,
-                                    encounterVisitUuid,
-                                    patient.getIdPart(),
-                                    producerTemplate);
-                        }
-                    } else {
-                        // Executed when MODIFY option is selected in OpenMRS
-                        saleOrderHandler.deleteSaleOrderLine(medicationRequest, encounterVisitUuid, producerTemplate);
-                    }
-                } else if ("d".equals(eventType)) {
-                    // Executed when DISCONTINUE option is selected in OpenMRS
-                    saleOrderHandler.deleteSaleOrderLine(medicationRequest, encounterVisitUuid, producerTemplate);
-                    saleOrderHandler.cancelSaleOrderWhenNoSaleOrderLine(
-                            partner.getPartnerId(), encounterVisitUuid, producerTemplate);
-                } else {
-                    throw new IllegalArgumentException("Unsupported event type: " + eventType);
-                }
-            }
-        } catch (Exception e) {
-            throw new CamelExecutionException("Error processing MedicationRequest", exchange, e);
-        }
+        MedicationRequest request = exchange.getMessage().getBody(MedicationRequest.class);
+        String id = request != null ? request.getIdElement().getIdPart() : "unknown";
+        log.info(
+                "Ignoring MedicationRequest {} for stock sync; Odoo inventory updates on MedicationDispense only",
+                id);
     }
 }

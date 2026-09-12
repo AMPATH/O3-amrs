@@ -4,7 +4,7 @@ ARG BUILD_TYPE="distro"
 
 ### Shared Base
 # This layer is the base development layer for both the base distro and the sites
-FROM openmrs/openmrs-core:2.7.x-dev-amazoncorretto-17 AS base
+FROM openmrs/openmrs-core:2.8.x-dev-amazoncorretto-17 AS base
 WORKDIR /openmrs_distro
 
 ### Base Distro Dev Layer
@@ -50,7 +50,7 @@ RUN cp -R ./sites/$MVN_PROJECT/target/sdk-distro/web/openmrs_config /openmrs/dis
 FROM ${BUILD_TYPE}_dev AS dev
 
 ### Run Stage
-FROM openmrs/openmrs-core:2.7.x-amazoncorretto-17
+FROM openmrs/openmrs-core:2.8.x-amazoncorretto-17
 ENV TZ=Africa/Nairobi
 
 COPY --from=dev /openmrs/distribution/openmrs_core/openmrs.war /openmrs/distribution/openmrs_core/

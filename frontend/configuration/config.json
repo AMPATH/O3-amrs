@@ -114,7 +114,14 @@
       "display": "",
       "uuid": "52e8a934-d57c-4ef0-9fb7-7c15d816b723"
     },
-    "requireIndication": false
+    "requireIndication": false,
+    "drugCategoryConceptSets": ["2b52fc85-b59f-5e7f-a47d-d83863ac791f"],
+    "durationUnitsDaysMap": {
+      "a899b9c4-1350-11df-a1f1-0026b9348838": 1,
+      "a899baaa-1350-11df-a1f1-0026b9348838": 7,
+      "a899bb90-1350-11df-a1f1-0026b9348838": 30,
+      "ac6a274b-a494-486d-83c1-4abab7e4442c": 365
+    }
   },
   "@openmrs/esm-patient-tests-app": {
     "resultsViewerConcepts": [
@@ -292,12 +299,35 @@
     "etlBaseUrl": "/etl"
   },
   "@ampath/esm-poc-features-app": {
-    "etlBaseUrl": "/etl"
+    "etlBaseUrl": "/etl",
+    "tbScreeningConceptUuid": "02ad9357-b996-4530-b1a4-aff91a105383"
   },
   "@ampath/esm-procedures-app": {
     "proceduresServiceTypedUuid": "e8ec4f6b-ed6c-4d5f-8228-7e52b109ca12"
   },
   "@openmrs/esm-patient-notes-app": {
     "stickyNoteConceptUuid": "1af9de80-6755-485e-82ec-e1fdc0cd18da"
+  },
+  "@ampath/esm-patient-medical-supply-orders-app": {
+    "orderTypes": [
+      {
+        "orderTypeUuid": "58ea528c-8f62-45f0-86a2-f7d1327b8c56",
+        "orderableConceptSets": ["c6f16618-d618-49dc-9a5a-b5aef140d02c"]
+      }
+    ],
+    "showReferenceNumberField": false,
+    "quantityUnits": {
+      "conceptUuid": "39ae0d04-48ed-4c03-a2a8-83556065b457",
+      "map": "setMembers"
+    }
+  },
+  "@ampath/esm-admin-app": {
+    "providerNationalIdUuid": "4550df92-c684-4597-8ab8-d6b10eabdcfb",
+    "licenseNumberUuid": "7add36ba-d20f-47e5-a00c-813af047cea0",
+    "licenseExpiryDateUuid": "b6046157-40a0-4b7a-91b0-00d83b51a811",
+    "licenseBodyUuid": "8d73f8d7-dded-44a0-9f72-e23523c96503",
+    "qualificationUuid": "c73daf69-ddd0-4fce-98ec-6f9d875193e3",
+    "phoneNumberUuid": "2a759a8-1359-11df-a1f1-0026b9348838",
+    "personPhonenumberAttributeUuid": "2a759a8-1359-11df-a1f1-0026b9348838"
   }
 }
