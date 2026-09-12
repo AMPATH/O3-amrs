@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,8 @@ public class HieProductCatalogueSynchronizer {
         Set<String> activeGeCodes = new HashSet<>();
         Set<String> activePackageCodes = new HashSet<>();
         Map<String, Integer> activePackageCountByGe = new HashMap<>();
+        // Cache HIE /product lookups for the run (key = GE|etcdProductId).
+        Map<String, Optional<JsonNode>> productByGeAndEtcd = new HashMap<>();
         int skippedRows = 0;
         int archivedRows = 0;
 
@@ -105,9 +108,7 @@ public class HieProductCatalogueSynchronizer {
                 if (displayName == null || displayName.isBlank()) {
                     displayName = geCode;
                 }
-                String brandName = text(row, "brand_full_display_name", "brand_name", "product_name");
                 String packageName = text(row, "package_name", "pack_name");
-                String skuName = buildSkuName(brandName, displayName, packageName, packageCode);
                 String strength = text(row, "strength_display_name", "strength", "strength_name");
                 String formCode = text(row, "form_code", "dosage_form_code", "df_code");
                 String formDescription = formCode != null
@@ -124,6 +125,18 @@ public class HieProductCatalogueSynchronizer {
                                         "admin_unit_name",
                                         "uom_name"))
                         : null;
+
+                JsonNode product = resolveProduct(geCode, packageCode, productByGeAndEtcd);
+                String manufacturer = text(product, "manufacture_name", "manufacturer_name", "manufacturer");
+                String brandName = text(product, "brand_name");
+                if (brandName == null || brandName.isBlank()) {
+                    brandName = text(row, "brand_name", "brand_full_display_name", "product_name");
+                }
+                String productStrength = text(product, "strength_display_name", "strength", "strength_name");
+                if (productStrength != null && !productStrength.isBlank()) {
+                    strength = productStrength;
+                }
+                String skuName = buildSkuName(brandName, displayName, packageName, packageCode, manufacturer);
 
                 if (!active) {
                     odooWriter.archiveSku(packageCode);
@@ -146,7 +159,8 @@ public class HieProductCatalogueSynchronizer {
                             unitUuid, unitCode, unitDescription != null ? unitDescription : unitCode);
                 }
 
-                odooWriter.upsertSku(packageCode, skuName, drugUuid, geCode, uomId, true);
+                odooWriter.upsertSku(
+                        packageCode, skuName, drugUuid, geCode, uomId, true, manufacturer, strength);
             } catch (Exception e) {
                 itemFailures.incrementAndGet();
                 log.warn(
@@ -271,11 +285,39 @@ public class HieProductCatalogueSynchronizer {
         log.info("Synced {} HIE routes", count);
     }
 
-    private static String buildSkuName(String brand, String generic, String packageName, String packageCode) {
+    private JsonNode resolveProduct(
+            String geCode, String packageCode, Map<String, Optional<JsonNode>> cache) {
+        String etcdId = HieTerminologyClient.etcdProductIdFromPackageCode(packageCode);
+        if (etcdId == null || etcdId.isBlank()) {
+            return null;
+        }
+        String cacheKey = geCode + "|" + etcdId;
+        Optional<JsonNode> cached = cache.get(cacheKey);
+        if (cached == null) {
+            try {
+                cached = Optional.ofNullable(terminologyClient.getProduct(geCode, etcdId));
+            } catch (Exception e) {
+                log.warn(
+                        "HIE /product lookup failed for ge={} etcd={}: {}",
+                        geCode,
+                        etcdId,
+                        e.toString());
+                cached = Optional.empty();
+            }
+            cache.put(cacheKey, cached);
+        }
+        return cached.orElse(null);
+    }
+
+    /**
+     * {@code brand (package) [package_code] — manufacturer}. Manufacturer suffix omitted when null/blank.
+     */
+    static String buildSkuName(
+            String brand, String generic, String packageName, String packageCode, String manufacturer) {
         StringBuilder sb = new StringBuilder();
         if (brand != null && !brand.isBlank()) {
             sb.append(brand.trim());
-        } else if (generic != null) {
+        } else if (generic != null && !generic.isBlank()) {
             sb.append(generic.trim());
         }
         if (packageName != null && !packageName.isBlank()) {
@@ -284,7 +326,19 @@ public class HieProductCatalogueSynchronizer {
             }
             sb.append('(').append(packageName.trim()).append(')');
         }
-        if (sb.length() == 0) {
+        if (packageCode != null && !packageCode.isBlank()) {
+            if (sb.length() > 0) {
+                sb.append(' ');
+            }
+            sb.append('[').append(packageCode.trim()).append(']');
+        }
+        if (manufacturer != null && !manufacturer.isBlank()) {
+            if (sb.length() > 0) {
+                sb.append(" — ");
+            }
+            sb.append(manufacturer.trim());
+        }
+        if (sb.length() == 0 && packageCode != null) {
             sb.append(packageCode);
         }
         return sb.toString();
