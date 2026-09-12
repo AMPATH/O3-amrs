@@ -134,12 +134,25 @@ public class HieOdooCatalogueWriter {
             String geCode,
             Integer uomId,
             boolean active) {
-        Integer existing = findResId(Constants.PRODUCT_MODEL, packageCode);
+        return upsertSku(packageCode, displayName, openmrsDrugUuid, geCode, uomId, active, null, null);
+    }
+
+    public Integer upsertSku(
+            String packageCode,
+            String displayName,
+            String openmrsDrugUuid,
+            String geCode,
+            Integer uomId,
+            boolean active,
+            String manufacturer,
+            String strength) {
+        Integer existing = findExistingSkuId(packageCode);
         Map<String, Object> vals = new HashMap<>();
         vals.put("name", displayName);
         vals.put("default_code", packageCode);
         vals.put("type", "product");
         vals.put("tracking", "lot");
+        vals.put("use_expiration_date", true);
         vals.put("sale_ok", true);
         vals.put("purchase_ok", true);
         vals.put("active", active);
@@ -155,6 +168,14 @@ public class HieOdooCatalogueWriter {
         if (geCode != null) {
             vals.put("x_concept_code", geCode);
         }
+        if (manufacturer != null && !manufacturer.isBlank()) {
+            vals.put("x_hie_manufacturer", manufacturer.trim());
+        } else {
+            vals.put("x_hie_manufacturer", false); // clear in Odoo
+        }
+        if (strength != null && !strength.isBlank()) {
+            vals.put("x_drug_strength", strength.trim());
+        }
 
         if (existing == null) {
             Integer productId = odooClient.create(Constants.PRODUCT_MODEL, List.of(vals));
@@ -169,12 +190,36 @@ public class HieOdooCatalogueWriter {
     }
 
     public void archiveSku(String packageCode) {
-        Integer existing = findResId(Constants.PRODUCT_MODEL, packageCode);
+        Integer existing = findExistingSkuId(packageCode);
         if (existing == null) {
             return;
         }
         odooClient.write(Constants.PRODUCT_MODEL, List.of(List.of(existing), Map.of("active", false)));
         log.info("Archived Odoo SKU {}", packageCode);
+    }
+
+    /**
+     * Prefer unique {@code default_code} (= package code). External ids are not authoritative.
+     */
+    private Integer findExistingSkuId(String packageCode) {
+        if (packageCode == null || packageCode.isBlank()) {
+            return null;
+        }
+        Object[] byCode = odooClient.searchAndRead(
+                Constants.PRODUCT_MODEL,
+                asList(asList("default_code", "=", packageCode.trim())),
+                asList("id", "default_code", "active"));
+        if (byCode != null && byCode.length > 0) {
+            if (byCode.length > 1) {
+                log.warn(
+                        "Multiple Odoo products with default_code={}; updating id={}",
+                        packageCode,
+                        ((Map<?, ?>) byCode[0]).get("id"));
+            }
+            Object id = ((Map<?, ?>) byCode[0]).get("id");
+            return id instanceof Number n ? n.intValue() : null;
+        }
+        return findResId(Constants.PRODUCT_MODEL, packageCode);
     }
 
     private Integer findResId(String model, String externalName) {

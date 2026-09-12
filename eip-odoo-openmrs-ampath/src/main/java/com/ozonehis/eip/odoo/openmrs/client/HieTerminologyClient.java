@@ -111,6 +111,44 @@ public class HieTerminologyClient {
         return getUrl(url);
     }
 
+    /**
+     * Single product lookup, e.g. {@code /product?generic_concept_code=GE10913&etcd_product_id=PH3885}.
+     *
+     * @return first product in {@code Data.products}, or null if none
+     */
+    public JsonNode getProduct(String genericConceptCode, String etcdProductId) {
+        if (genericConceptCode == null
+                || genericConceptCode.isBlank()
+                || etcdProductId == null
+                || etcdProductId.isBlank()) {
+            return null;
+        }
+        String query = "generic_concept_code="
+                + java.net.URLEncoder.encode(genericConceptCode.trim(), StandardCharsets.UTF_8)
+                + "&etcd_product_id="
+                + java.net.URLEncoder.encode(etcdProductId.trim(), StandardCharsets.UTF_8);
+        String url = normalizeBase() + TERMINOLOGY_PATH + "/product?" + query;
+        JsonNode response = getUrl(url);
+        List<JsonNode> products = extractItems(response, "products");
+        return products.isEmpty() ? null : products.get(0);
+    }
+
+    /** Strip pack suffix from package code: {@code PH3885-1} → {@code PH3885}. */
+    public static String etcdProductIdFromPackageCode(String packageCode) {
+        if (packageCode == null || packageCode.isBlank()) {
+            return null;
+        }
+        String code = packageCode.trim();
+        int dash = code.lastIndexOf('-');
+        if (dash > 0 && dash < code.length() - 1) {
+            String suffix = code.substring(dash + 1);
+            if (suffix.chars().allMatch(Character::isDigit)) {
+                return code.substring(0, dash);
+            }
+        }
+        return code;
+    }
+
     private JsonNode getUrl(String url) {
         Exception last = null;
         for (int attempt = 1; attempt <= 3; attempt++) {

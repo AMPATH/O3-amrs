@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.68',
+    'version': '1.0.69',
     'summary': 'Billing and inventory APIs for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
