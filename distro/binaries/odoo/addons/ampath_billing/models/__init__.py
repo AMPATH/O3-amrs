@@ -6,3 +6,4 @@ from . import ampath_payload_preview_wizard
 from . import ampath_claim_submit_result_wizard
 from . import product_product
 from . import product_template
+from . import stock_picking

@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.69',
+    'version': '1.0.71',
     'summary': 'Billing and inventory APIs for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
@@ -15,6 +15,7 @@
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
         'views/product_template_views.xml',
+        'views/stock_picking_views.xml',
     ],
     # Login / public pages use web.assets_frontend, which pulls primary_variables via
     # web._assets_helpers → web._assets_primary_variables — not web.assets_backend.
