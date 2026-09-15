@@ -16,15 +16,14 @@ import org.hl7.fhir.r4.model.MedicationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Retained for compatibility with camel-openmrs-fhir MedicationRequest routing. Stock sync is
- * handled by {@link MedicationDispenseRouting}.
- */
 @Setter
 @Component
 public class MedicationRequestRouting extends RouteBuilder {
 
     private static final String MEDICATION_REQUEST_ID = "medication.request.id";
+
+    private static final String MEDICATION_REQUEST_INCLUDE_PARAMS =
+            "MedicationRequest:encounter,MedicationRequest:medication,MedicationRequest:patient";
 
     @Autowired
     private MedicationRequestProcessor medicationRequestProcessor;
@@ -33,7 +32,7 @@ public class MedicationRequestRouting extends RouteBuilder {
     public void configure() {
         // spotless:off
         from("direct:fhir-medicationrequest")
-                .routeId("medication-request-ignored-for-stock")
+                .routeId("medication-request-to-sale-order-router")
                 .filter(body().isNotNull())
                 .filter(exchange -> exchange.getMessage().getBody() instanceof MedicationRequest)
                 .process(exchange -> {
@@ -42,8 +41,16 @@ public class MedicationRequestRouting extends RouteBuilder {
                     exchange.setProperty(
                             MEDICATION_REQUEST_ID,
                             medicationRequest.getIdElement().getIdPart());
+                    exchange.getMessage().setBody(medicationRequest);
                 })
-                .log(LoggingLevel.INFO, "MedicationRequest received; stock sync uses MedicationDispense only")
+                .toD("openmrs-fhir://?id=${exchangeProperty." + MEDICATION_REQUEST_ID + "}&resource=${exchangeProperty."
+                        + Constants.FHIR_RESOURCE_TYPE + "}&include=" + MEDICATION_REQUEST_INCLUDE_PARAMS)
+                .to("direct:medication-request-to-sale-order-processor")
+                .end();
+
+        from("direct:medication-request-to-sale-order-processor")
+                .routeId("medication-request-to-sale-order-processor")
+                .log(LoggingLevel.INFO, "Processing MedicationRequest")
                 .process(medicationRequestProcessor)
                 .end();
         // spotless:on
