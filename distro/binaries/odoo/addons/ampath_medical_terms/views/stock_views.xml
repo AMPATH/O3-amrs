@@ -7,9 +7,11 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
-            <field name="partner_id" position="attributes">
+            <!-- Patient on dispense/outgoing; Vendor lives in Goods Receipt Note on incoming -->
+            <xpath expr="//field[@name='partner_id'][1]" position="attributes">
                 <attribute name="string">Patient</attribute>
-            </field>
+                <attribute name="invisible">picking_type_code == 'incoming'</attribute>
+            </xpath>
         </field>
     </record>
 

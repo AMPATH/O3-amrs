@@ -20,6 +20,11 @@ class ProductProduct(models.Model):
         copy=False,
         help='Medication strength representation.',
     )
+    x_hie_manufacturer = fields.Char(
+        string='HIE Manufacturer',
+        copy=False,
+        help='Manufacturer name from Kenya HIE product catalogue (manufacture_name).',
+    )
     x_openmrs_drug_uuid = fields.Char(
         string='OpenMRS drug UUID',
         copy=False,

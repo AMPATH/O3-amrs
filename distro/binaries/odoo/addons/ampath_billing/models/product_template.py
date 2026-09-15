@@ -23,6 +23,12 @@ class ProductTemplate(models.Model):
         inverse='_set_x_drug_strength',
         help='Stored on the product variant; shown here when the template has a single variant.',
     )
+    x_hie_manufacturer = fields.Char(
+        string='HIE Manufacturer',
+        compute='_compute_x_hie_manufacturer',
+        inverse='_set_x_hie_manufacturer',
+        help='Stored on the product variant; Kenya HIE manufacture_name.',
+    )
     x_openmrs_drug_uuid = fields.Char(
         string='OpenMRS drug UUID',
         compute='_compute_x_openmrs_drug_uuid',
@@ -56,6 +62,13 @@ class ProductTemplate(models.Model):
 
     def _set_x_drug_strength(self):
         self._set_product_variant_field('x_drug_strength')
+
+    @api.depends('product_variant_ids.x_hie_manufacturer')
+    def _compute_x_hie_manufacturer(self):
+        self._compute_template_field_from_variant_field('x_hie_manufacturer')
+
+    def _set_x_hie_manufacturer(self):
+        self._set_product_variant_field('x_hie_manufacturer')
 
     @api.depends('product_variant_ids.x_openmrs_drug_uuid')
     def _compute_x_openmrs_drug_uuid(self):

@@ -1,0 +1,2 @@
+"id","name","currency_id/id","email","website","logo","parent_id/id","partner_id/id","sequence","primary_color","secondary_color","email_primary_color","email_secondary_color"
+"init.18c343eb-b353-462a-9139-b16606e6b6c2","Location Test","base.KES","","","","base.main_company","init.location_test_partner","30","135C33","135C33","135C33","135C33"
