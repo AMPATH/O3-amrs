@@ -8,13 +8,18 @@
 package com.ozonehis.eip.odoo.openmrs.processors;
 
 import com.ozonehis.eip.odoo.openmrs.client.OdooInventoryClient;
+import com.ozonehis.eip.odoo.openmrs.handlers.odoo.PartnerHandler;
+import com.ozonehis.eip.odoo.openmrs.handlers.openmrs.PatientHandler;
+import com.ozonehis.eip.odoo.openmrs.model.Partner;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.MedicationDispense;
+import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
@@ -27,7 +32,9 @@ import org.springframework.stereotype.Component;
  * Syncs OpenMRS pharmacy dispenses to Odoo stock via the inventory HTTP API.
  *
  * <p>Inventory is updated only when a {@link MedicationDispense} is recorded (status
- * {@code completed}), not when a MedicationRequest / drug order is created.
+ * {@code completed}), not when a MedicationRequest / drug order is created. Before
+ * writing stock, the patient is upserted as {@code res.partner} so the picking shows
+ * name and identifiers (same pattern as ServiceRequest billing).
  */
 @Slf4j
 @Setter
@@ -41,9 +48,15 @@ public class MedicationDispenseProcessor implements Processor {
     @Autowired
     private OdooInventoryClient odooInventoryClient;
 
+    @Autowired
+    private PatientHandler patientHandler;
+
+    @Autowired
+    private PartnerHandler partnerHandler;
+
     @Override
     public void process(Exchange exchange) {
-        try {
+        try (ProducerTemplate producerTemplate = exchange.getContext().createProducerTemplate()) {
             String eventType = exchange.getMessage().getHeader(Constants.HEADER_FHIR_EVENT_TYPE, String.class);
             if (eventType == null) {
                 throw new IllegalArgumentException("Event type not found in the exchange headers.");
@@ -84,6 +97,7 @@ public class MedicationDispenseProcessor implements Processor {
             }
 
             DispensePayload payload = buildDispensePayload(dispense);
+            ensurePartnerForPatient(producerTemplate, payload.patientExternalId());
             odooInventoryClient.dispense(
                     payload.openmrsDrugUuid(),
                     payload.quantity(),
@@ -95,6 +109,27 @@ public class MedicationDispenseProcessor implements Processor {
         } catch (Exception e) {
             throw new CamelExecutionException("Error processing MedicationDispense", exchange, e);
         }
+    }
+
+    /**
+     * Loads the FHIR Patient and creates/updates the Odoo partner so dispense pickings
+     * resolve {@code partner_id} with name + preferred identifier.
+     */
+    void ensurePartnerForPatient(ProducerTemplate producerTemplate, String patientUuid) {
+        Patient patient = patientHandler.getPatientByPatientID(patientUuid);
+        if (patient == null) {
+            throw new IllegalStateException("OpenMRS patient not found for uuid " + patientUuid);
+        }
+        Partner partner = partnerHandler.createOrUpdatePartner(producerTemplate, patient);
+        if (partner == null || partner.getPartnerId() <= 0) {
+            throw new IllegalStateException("Failed to upsert Odoo partner for patient " + patientUuid);
+        }
+        log.info(
+                "Ensured Odoo partner id={} ref={} name={} for dispense patient {}",
+                partner.getPartnerId(),
+                partner.getPartnerRef(),
+                partner.getPartnerName(),
+                patientUuid);
     }
 
     static boolean isCompleted(MedicationDispense dispense) {
