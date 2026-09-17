@@ -10,6 +10,7 @@
                 <field name="x_concept_code"/>
                 <field name="x_openmrs_drug_uuid"/>
                 <field name="x_drug_strength"/>
+                <field name="x_hie_manufacturer"/>
                 <field name="x_intervention_code"/>
             </xpath>
         </field>
@@ -24,6 +25,7 @@
                 <field name="x_concept_code"/>
                 <field name="x_openmrs_drug_uuid"/>
                 <field name="x_drug_strength"/>
+                <field name="x_hie_manufacturer"/>
                 <field name="x_intervention_code"/>
             </xpath>
         </field>

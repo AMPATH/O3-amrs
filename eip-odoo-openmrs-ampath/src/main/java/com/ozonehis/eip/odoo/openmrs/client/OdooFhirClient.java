@@ -57,13 +57,28 @@ public class OdooFhirClient {
                     fhirContext.getRestfulClientFactory().setConnectTimeout(30000);
                     fhirContext.getRestfulClientFactory().setConnectionRequestTimeout(120000);
                     fhirContext.getRestfulClientFactory().setSocketTimeout(120000);
-                    fhirClient = fhirContext.newRestfulGenericClient(serverUrl + "/odoo/fhir/R4");
+                    fhirClient = fhirContext.newRestfulGenericClient(resolveFhirBaseUrl());
                     fhirClient.registerInterceptor(new BasicAuthInterceptor(username, new String(password)));
                 }
             }
         }
 
         return fhirClient;
+    }
+
+    /**
+     * Accepts either {@code http://host:port} or a full {@code .../odoo/fhir/R4} base URL.
+     * Older compose defaults omit the path; {@code .env} / docs often include it.
+     */
+    String resolveFhirBaseUrl() {
+        String url = serverUrl == null ? "" : serverUrl.trim();
+        while (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        if (url.endsWith("/odoo/fhir/R4")) {
+            return url;
+        }
+        return url + "/odoo/fhir/R4";
     }
 
     /**

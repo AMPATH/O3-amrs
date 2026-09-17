@@ -7,12 +7,6 @@ class StockWarehouse(models.Model):
     name = fields.Char(string='Medical Store Name')
 
 
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
-
-    partner_id = fields.Many2one(string='Patient')
-
-
 class StockScrap(models.Model):
     _inherit = 'stock.scrap'
 

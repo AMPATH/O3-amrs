@@ -1,0 +1,3 @@
+"id","name","code","company_id/id","partner_id/id","view_location_id/id","lot_stock_id/id","wh_input_stock_loc_id/id","wh_output_stock_loc_id/id","wh_pack_stock_loc_id/id"
+"init.uasin_gishu_wh_pharmacy","Uasin Gishu Pharmacy","UGP","init.0900559c-1352-11df-a1f1-0026b9348838","init.uasin_gishu_partner","init.uasin_gishu_ph_view","init.uasin_gishu_ph_lot","init.uasin_gishu_ph_in","init.uasin_gishu_ph_out","init.uasin_gishu_ph_pack"
+"init.uasin_gishu_wh_storage","Uasin Gishu Main Warehouse","UGW","init.0900559c-1352-11df-a1f1-0026b9348838","init.uasin_gishu_partner","init.uasin_gishu_st_view","init.uasin_gishu_st_lot","init.uasin_gishu_st_in","init.uasin_gishu_st_out","init.uasin_gishu_st_pack"
