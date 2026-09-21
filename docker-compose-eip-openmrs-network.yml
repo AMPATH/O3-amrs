@@ -1,0 +1,14 @@
+# Attach EIP to the OpenMRS compose network so hostnames `backend` and `db` resolve.
+# Usage (after OpenMRS is up):
+#   docker compose -f docker-compose-odoo.yml -f docker-compose-odoo.local.yml -f docker-compose-eip-openmrs-network.yml --env-file .env up -d
+
+services:
+  eip-odoo-openmrs:
+    networks:
+      - default
+      - openmrs
+
+networks:
+  openmrs:
+    external: true
+    name: o3-amrs_default

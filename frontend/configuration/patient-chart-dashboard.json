@@ -98,7 +98,11 @@
             }
           }
         }
-      },
+      }
+    }
+  },
+  "@openmrs/esm-primary-navigation-app": {
+    "extensionSlots": {
       "general-medicine-group-slot": {
         "add": [
           "dashboard#general-opd-triage",
@@ -212,7 +216,8 @@
           "dashboard#renal",
           "dashboard#optical",
           "dashboard#surgery",
-          "dashboard#mental-health"
+          "dashboard#mental-health",
+          "dashboard#ccu"
         ],
         "order": [
           "dashboard#tb-treatment",
@@ -220,7 +225,8 @@
           "dashboard#renal",
           "dashboard#optical",
           "dashboard#surgery",
-          "dashboard#mental-health"
+          "dashboard#mental-health",
+          "dashboard#ccu"
         ],
         "configure": {
           "dashboard#tb-treatment": {
@@ -298,6 +304,19 @@
             "Translation overrides": {
               "en": {
                 "mentalHealth": "Mental Wellness"
+              }
+            }
+          },
+          "dashboard#ccu": {
+            "Display conditions": {
+              "privileges": ["O3 View Special Clinics CCU Section"]
+            },
+            "title": "ccu",
+            "path": "ccu",
+            "slot": "ccu-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "ccu": "CCU"
               }
             }
           }
