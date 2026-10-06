@@ -1,0 +1,45 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "cwc-nutrition-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "pediatricNutrition",
+                "hasFilter": false,
+                "headerTitle": "pediatricNutrition",
+                "displayText": "pediatricNutrition",
+                "encounterType": "9ab77035-e1ac-4251-b55d-fdb5fa391272",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Pediatric Nutrition Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Pediatric Nutrition Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "ee73e0e8-9f91-3efd-aa2b-73189c2bf75a"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {"pediatricNutrition": "Pediatric Nutrition"}
+            }
+          }
+        }
+      }
+    }
+  }
+}
