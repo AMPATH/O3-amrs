@@ -1,0 +1,3 @@
+"id","name","code","company_id/id","partner_id/id","view_location_id/id","lot_stock_id/id","wh_input_stock_loc_id/id","wh_output_stock_loc_id/id","wh_pack_stock_loc_id/id"
+"init.em_mobile_wh_pharmacy","Elgeyo Marakwet Mobile Clinic Pharmacy","EMMP","init.d37e30f2-3aa7-4639-b794-c32894574fa1","init.elgeyo_marakwet_mobile_clinic_partner","init.em_mobile_ph_view","init.em_mobile_ph_lot","init.em_mobile_ph_in","init.em_mobile_ph_out","init.em_mobile_ph_pack"
+"init.em_mobile_wh_storage","Elgeyo Marakwet Mobile Clinic Main Warehouse","EMMW","init.d37e30f2-3aa7-4639-b794-c32894574fa1","init.elgeyo_marakwet_mobile_clinic_partner","init.em_mobile_st_view","init.em_mobile_st_lot","init.em_mobile_st_in","init.em_mobile_st_out","init.em_mobile_st_pack"
