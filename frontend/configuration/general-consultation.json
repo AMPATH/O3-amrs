@@ -20,12 +20,12 @@
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "POC Clinical Encounter Form v1.2",
+                                                "formName": "POC Clinical Encounter Form v1.3",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "POC Clinical Encounter Form v1.2",
+                                                "formName": "POC Clinical Encounter Form v1.3",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -37,7 +37,106 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "b2fc8cbf-d70f-3113-8ed6-d90601ff73fa"
+                                        "uuid": "771b3bdf-16da-387e-8684-fd5a30b65b6c"
+                                    }
+                                ]
+                            },
+                            {
+                                "tabName": "prep",
+                                "hasFilter": false,
+                                "headerTitle": "prep",
+                                "displayText": "prep",
+                                "encounterType": "ddd96f1c-524f-4caa-81a6-1a6f9789a4bc",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Pre Exposure Encounter Form v1.0",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Pre Exposure Encounter Form v1.0",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "e7124b50-78a0-3857-8ee5-b7aeb34da678"
+                                    }
+                                ]
+                            },
+                            {
+                                "tabName": "pep",
+                                "hasFilter": false,
+                                "headerTitle": "pep",
+                                "displayText": "pep",
+                                "encounterType": "f091b833-9e1a-4eef-8364-fc289095a832",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Post Exposure Prophylaxis Encounter Form v1.0",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Post Exposure Prophylaxis Encounter Form v1.0",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "b81b03d4-88d5-35d4-97b0-08d1526d4ced"
+                                    }
+                                ]
+                            },
+                            {
+                                "tabName": "mhScreening",
+                                "hasFilter": false,
+                                "headerTitle": "mhScreening",
+                                "displayText": "mhScreening",
+                                "encounterType": "37770eca-8a2f-48d6-b3c8-54af0fa989c2",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Mental Health Screening Form v1.4",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Mental Health Screening Form v1.4",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "b9b5f8f8-df05-395c-b7c6-104ba4a33f10"
                                     }
                                 ]
                             },
@@ -135,6 +234,9 @@
                                 "managementPlan": "Management Plan",
                                 "forms": "Forms",
                                 "programManagement": "Program Management",
+                                "prep": "PrEP",
+                                "pep": "PEP",
+                                "mhScreening": "MH Screening",
                                 "cardex": "Cardex",
                                 "preAuthorization": "Pre-authorization",
                                 "patientRecords": "Patient Records",

@@ -2,7 +2,7 @@ name: Build and Publish Docker Images
 
 on:
   push:
-    branches: [main, claims-workflow]
+    branches: [main, claims-workflow, hiv-forms-staging]
     tags:
       - '*'
   workflow_dispatch:
@@ -13,6 +13,7 @@ on:
         type: choice
         options:
           - claims-workflow
+          - hiv-forms-staging
           - main
         default: claims-workflow
 
@@ -67,7 +68,7 @@ jobs:
       - name: Set branch image tag
         run: |
           # latest is only published from main (or release tags).
-          # claims-workflow publishes the claims-workflow tag only.
+          # claims-workflow and hiv-forms-staging publish their branch tag only.
           REF_NAME="${{ steps.build_ref.outputs.ref }}"
           REF_NAME="${REF_NAME#refs/heads/}"
           REF_NAME="${REF_NAME#refs/tags/}"
@@ -75,6 +76,8 @@ jobs:
             TAG=latest
           elif [ "$REF_NAME" = "claims-workflow" ]; then
             TAG=claims-workflow
+          elif [ "$REF_NAME" = "hiv-forms-staging" ]; then
+            TAG=hiv-forms-staging
           elif [ "${{ github.ref_type }}" = "tag" ]; then
             # Release tags continue to refresh latest (built from the tagged commit).
             TAG=latest
@@ -102,6 +105,10 @@ jobs:
         id: extract_version
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          # Keep staging builds from overwriting the shared snapshot tag built from main.
+          if [ "${{ steps.build_ref.outputs.ref }}" = "hiv-forms-staging" ]; then
+            VERSION="${VERSION}-hiv-forms-staging"
+          fi
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
