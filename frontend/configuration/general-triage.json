@@ -20,12 +20,12 @@
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "POC OPD Triage Encounter Form v1.1",
+                                                "formName": "POC OPD Triage Encounter Form v1.2",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "POC OPD Triage Encounter Form v1.1",
+                                                "formName": "POC OPD Triage Encounter Form v1.2",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -37,7 +37,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "fd898137-085a-320c-b0f1-3f92b1816b84"
+                                        "uuid": "c2fd00e7-c11f-34ce-9771-a4210118a467"
                                     }
                                 ]
                             },

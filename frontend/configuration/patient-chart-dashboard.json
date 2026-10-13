@@ -426,7 +426,7 @@
             "slot": "immunisation-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "cwcImmunization": "CWC Immunization"
+                "cwcImmunization": "CWC"
               }
             }
           },

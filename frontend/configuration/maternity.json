@@ -31,19 +31,19 @@
                 "hasFilter": false,
                 "headerTitle": "maternityAdmission",
                 "displayText": "maternityAdmission",
-                "encounterType": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3",
+                "encounterType": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1ac",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC Maternity Admission Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Admission Form v1.0", "label": "editForm", "mode": "edit"}
+                      {"formName": "POC Maternity Admission Form v1.1", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Admission Form v1.1", "label": "editForm", "mode": "edit"}
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "3a9cbd83-4e6b-3f94-97be-e994680e3522"}]
+                "formList": [{"uuid": "e1bcf52f-c322-3c9b-b2cc-58061a114b65"}]
               },
               {
                 "tabName": "doctorsReviewNotes",
@@ -167,13 +167,13 @@
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Maternity Labour And Delivery Form v1.0", "label": "editForm", "mode": "edit"}
+                      {"formName": "POC Maternity Labour And Delivery Form v1.1", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternity Labour And Delivery Form v1.1", "label": "editForm", "mode": "edit"}
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "45779c69-2ab4-3418-9846-5462c0ee04cf"}]
+                "formList": [{"uuid": "35931188-f2d7-30bb-9c64-17d9f5932d8d"}]
               },
               {
                 "tabName": "maternityDischarge",
@@ -193,9 +193,28 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "a6f7d96d-7d6e-3c51-9786-7b817515ff5b"}]
+              },
+              {
+                "tabName": "deathAudit",
+                "hasFilter": false,
+                "headerTitle": "deathAudit",
+                "displayText": "deathAudit",
+                "encounterType": "9be049bc-0e74-41c9-830d-9930c06ab35d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Maternal and Perinatal Death Notification Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Maternal and Perinatal Death Notification Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "c1f64da6-7664-47ea-9981-131aea856f92"}]
               }
             ],
-            "Translation overrides": {"en": {"preAuthorization": "Pre-authorization", "maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Clinical review notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider", "notesTitle": "Notes"}}
+            "Translation overrides": {"en": {"preAuthorization": "Pre-authorization", "maternityAdmission": "Maternity Admission", "doctorsReviewNotes": "Clinical review notes", "cadex": "Cardex", "vitals": "Vitals", "lcg": "LCG", "maternityLabourDelivery": "Labour and delivery form", "maternityDischarge": "Discharge", "deathAudit": "Death Audit", "admissionDateTitle": "Admission Date", "encounterDateTitle": "Encounter Date", "providerTitle": "Provider", "notesTitle": "Notes"}}
           },
           "labour-care-widget": {
             "title": "Labour Care Guide"

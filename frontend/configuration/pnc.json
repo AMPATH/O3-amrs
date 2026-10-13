@@ -11,41 +11,66 @@
                 "hasFilter": false,
                 "headerTitle": "pncInitial",
                 "displayText": "pncInitial",
-                "encounterType": "ded4ecf7-8129-4a9e-8aa3-a21a7adb7759",
+                "encounterType": "9899f3e5-f893-4478-a90f-e6924ef150f6",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC PNC Initial Visit Form v 1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC PNC Initial Visit Form v 1.0", "label": "editForm", "mode": "edit"}
+                      {"formName": "POC MNCH Clinical Encounter Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC MNCH Clinical Encounter Form v1.0", "label": "editForm", "mode": "edit"}
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "7f6f8c71-84b4-3730-8daf-28e887970519"}]
+                "formList": [{"uuid": "88011c94-8e27-4ec8-84c3-02073c396d6e"}]
               },
               {
                 "tabName": "pncReturn",
                 "hasFilter": false,
                 "headerTitle": "pncReturn",
                 "displayText": "pncReturn",
-                "encounterType": "db215741-de99-424a-a109-1f23eb3b680b",
+                "encounterType": "9899f3e5-f893-4478-a90f-e6924ef150f6",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
-                      {"formName": "POC PNC Return Visit Form v 1.1", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC PNC Return Visit Form v 1.1", "label": "editForm", "mode": "edit"}
+                      {"formName": "POC MNCH Clinical Encounter Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC MNCH Clinical Encounter Form v1.0", "label": "editForm", "mode": "edit"}
                     ]
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "d4439939-5642-3d65-8c15-df9a590f2e4f"}]
+                "formList": [{"uuid": "88011c94-8e27-4ec8-84c3-02073c396d6e"}]
+              },
+              {
+                "tabName": "breastCervicalCancerScreening",
+                "hasFilter": false,
+                "headerTitle": "breastCervicalCancerScreening",
+                "displayText": "breastCervicalCancerScreening",
+                "encounterType": "238625fc-8a25-44b2-aa5a-8bf48fa0e18d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Breast and Cervical Cancer Screening Form v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Breast and Cervical Cancer Screening Form v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "d54f14f9-f523-3941-8326-e85f438a31a5"}]
               }
             ],
-            "Translation overrides": {"en": {"pncInitial": "PNC Initial", "pncReturn": "PNC Return"}}
+            "Translation overrides": {
+              "en": {
+                "pncInitial": "PNC Initial",
+                "pncReturn": "PNC Return",
+                "breastCervicalCancerScreening": "Breast and Cervical Cancer Screening"
+              }
+            }
           }
         }
       }
