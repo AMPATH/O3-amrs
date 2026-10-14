@@ -618,7 +618,9 @@
     "claimsKey": "clMxYxTU0sESniGbLamapRnIITFxTIOX",
     "registrationBillableServices": [
       "da3f7edc-5650-4beb-9942-61eb60315a17",
-      "ea9e46c5-df4b-4709-9113-a49f53775d74"
+      "ea9e46c5-df4b-4709-9113-a49f53775d74",
+      "076c2263-c9d8-4f10-8fa5-1fb4c15cb506",
+      "a5281e2c-e343-4018-a2e8-63e99f8463bd"
     ],
     "registrationServicequeues": [
       "d488a8fc-5717-4c8f-b9a9-d23f3b93e3f9",

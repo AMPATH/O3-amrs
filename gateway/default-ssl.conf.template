@@ -14,6 +14,24 @@ map $http_x_real_ip $forwarded_ip {
   default $remote_addr;
 }
 
+# Order-basket drug search (esm-patient-medications-app) -> amrsextensions ampathOrderableDrugs
+# search handler, which limits results to the orderable drug concept sets. Only SPA requests using
+# the order basket's representation are rewritten; other /drug callers are untouched.
+map $request_uri $order_basket_drug_search {
+  default 0;
+  "~^/openmrs/ws/rest/v1/drug\?(?!(?:.*&)?s=)(?=(?:.*&)?q=)(?=.*&v=custom:\(uuid,display,name,strength,dosageForm:\(display,uuid\),concept:\(display,uuid\)\))" 1;
+}
+
+map $http_referer $spa_referer {
+  default 0;
+  "~^https?://[^/]+/openmrs/spa/" 1;
+}
+
+map "$order_basket_drug_search:$spa_referer" $orderable_drug_search {
+  default 0;
+  "1:1" 1;
+}
+
 upstream frontend {
   # always assume the frontend will be available
   server frontend max_fails=0;
@@ -123,6 +141,14 @@ server {
     # Handle redirects with any host/port combination
     proxy_redirect ~^https?://[^/]+/openmrs(/.*)?$ /amrs$1;
     proxy_redirect default;
+  }
+
+  location = /openmrs/ws/rest/v1/drug {
+    if ($orderable_drug_search) {
+      rewrite ^ /openmrs/ws/rest/v1/drug?s=ampathOrderableDrugs&$args? break;
+    }
+    proxy_read_timeout 300s;
+    proxy_pass http://backend;
   }
 
   location /openmrs {

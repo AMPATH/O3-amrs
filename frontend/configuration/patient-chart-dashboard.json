@@ -366,6 +366,7 @@
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#immunisation",
+          "dashboard#cwc-nutrition",
           "dashboard#family-planning"
         ],
         "order": [
@@ -373,6 +374,7 @@
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#immunisation",
+          "dashboard#cwc-nutrition",
           "dashboard#family-planning"
         ],
         "configure": {
@@ -425,6 +427,19 @@
             "Translation overrides": {
               "en": {
                 "cwcImmunization": "CWC Immunization"
+              }
+            }
+          },
+          "dashboard#cwc-nutrition": {
+            "Display conditions": {
+              "privileges": ["O3 View CWC Nutrition Patient Chart Section Details"]
+            },
+            "title": "cwcNutrition",
+            "path": "cwc-nutrition",
+            "slot": "cwc-nutrition-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "cwcNutrition": "CWC Nutrition"
               }
             }
           },
