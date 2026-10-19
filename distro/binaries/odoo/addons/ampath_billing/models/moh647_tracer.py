@@ -30,8 +30,9 @@ class AmpathMoh647Tracer(models.Model):
     )
     product_ids = fields.Many2many(
         'product.product',
-        string='Products',
+        string='Mapped products',
         compute='_compute_product_ids',
+        inverse='_inverse_product_ids',
         store=False,
     )
     is_mapped = fields.Boolean(compute='_compute_is_mapped', store=True)
@@ -48,6 +49,24 @@ class AmpathMoh647Tracer(models.Model):
     def _compute_product_ids(self):
         for tracer in self:
             tracer.product_ids = tracer.product_line_ids.mapped('product_id')
+
+    def _inverse_product_ids(self):
+        Mapping = self.env['ampath.moh647.tracer.product']
+        for tracer in self:
+            current = tracer.product_line_ids.mapped('product_id')
+            to_add = tracer.product_ids - current
+            to_remove = current - tracer.product_ids
+            if to_remove:
+                tracer.product_line_ids.filtered(
+                    lambda line: line.product_id in to_remove
+                ).unlink()
+            for product in to_add:
+                Mapping.create(
+                    {
+                        'tracer_id': tracer.id,
+                        'product_id': product.id,
+                    }
+                )
 
     @api.depends('product_line_ids', 'product_line_ids.product_id')
     def _compute_is_mapped(self):
