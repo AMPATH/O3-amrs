@@ -4,6 +4,12 @@ import os
 
 from odoo import SUPERUSER_ID, api
 
+from .moh647_defaults import (
+    MOH647_CODES_BY_SEQUENCE,
+    MOH647_NAMES_BY_SEQUENCE,
+    MOH647_UNMAPPED_SEQUENCES,
+)
+
 _logger = logging.getLogger(__name__)
 
 _BRAND_COLOR = "#135C33"
@@ -47,7 +53,68 @@ def _apply_base_company_branding(env):
     )
 
 
+def apply_moh647_default_mappings(env):
+    """Link tracers to products by default_code / exact name when still unmapped."""
+    Tracer = env['ampath.moh647.tracer'].sudo()
+    Product = env['product.product'].sudo()
+    Mapping = env['ampath.moh647.tracer.product'].sudo()
+
+    tracers = Tracer.search([])
+    if not tracers:
+        _logger.info('ampath_billing: no MOH 647 tracers to map yet')
+        return
+
+    linked = 0
+    skipped_unmapped = 0
+    for tracer in tracers:
+        if tracer.sequence in MOH647_UNMAPPED_SEQUENCES:
+            skipped_unmapped += 1
+            continue
+        if tracer.product_line_ids:
+            continue
+
+        products = Product.browse()
+        for code in MOH647_CODES_BY_SEQUENCE.get(tracer.sequence) or []:
+            found = Product.search([('default_code', '=', code)], limit=1)
+            products |= found
+        if not products:
+            for name in MOH647_NAMES_BY_SEQUENCE.get(tracer.sequence) or []:
+                found = Product.search([('name', '=ilike', name)], limit=1)
+                if found:
+                    products |= found
+                    break
+                # Fallback: ilike contains for long HIE SKU names
+                found = Product.search([('name', 'ilike', name)], limit=1)
+                if found:
+                    products |= found
+                    break
+
+        for product in products:
+            exists = Mapping.search(
+                [
+                    ('tracer_id', '=', tracer.id),
+                    ('product_id', '=', product.id),
+                ],
+                limit=1,
+            )
+            if not exists:
+                Mapping.create(
+                    {
+                        'tracer_id': tracer.id,
+                        'product_id': product.id,
+                    }
+                )
+                linked += 1
+
+    _logger.info(
+        'ampath_billing: MOH 647 default mappings linked=%s intentionally_unmapped=%s',
+        linked,
+        skipped_unmapped,
+    )
+
+
 def post_init_hook(env):
     if not isinstance(env, api.Environment):
         env = api.Environment(env, SUPERUSER_ID, {})
     _apply_base_company_branding(env)
+    apply_moh647_default_mappings(env)
