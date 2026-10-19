@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moh647_tracer_tree" model="ir.ui.view">
+        <field name="name">ampath.moh647.tracer.tree</field>
+        <field name="model">ampath.moh647.tracer</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="section"/>
+                <field name="name"/>
+                <field name="unit_of_issue"/>
+                <field name="is_mapped"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_moh647_tracer_form" model="ir.ui.view">
+        <field name="name">ampath.moh647.tracer.form</field>
+        <field name="model">ampath.moh647.tracer</field>
+        <field name="arch" type="xml">
+            <form string="MOH 647 Tracer">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="sequence" class="oe_inline"/> .
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="section"/>
+                            <field name="unit_of_issue"/>
+                            <field name="is_mapped"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Mapped products">
+                        <field name="product_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="uom_id"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="is_mapped">
+                        Unmapped — report columns A–J will show "-" until at least one product is linked.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_moh647_tracer_search" model="ir.ui.view">
+        <field name="name">ampath.moh647.tracer.search</field>
+        <field name="model">ampath.moh647.tracer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="sequence"/>
+                <field name="section"/>
+                <filter name="unmapped" string="Unmapped (−)" domain="[('is_mapped', '=', False)]"/>
+                <filter name="mapped" string="Mapped" domain="[('is_mapped', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_section" string="Section" context="{'group_by': 'section'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_moh647_tracer" model="ir.actions.act_window">
+        <field name="name">MOH 647 Tracer Mapping</field>
+        <field name="res_model">ampath.moh647.tracer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_moh647_tracer_search"/>
+        <field name="context">{'search_default_unmapped': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Map each MOH 647 tracer to one or more Odoo products.
+            </p>
+            <p>
+                Unmapped tracers print "-" in columns A–J on the report until products are linked.
+            </p>
+        </field>
+    </record>
+</odoo>

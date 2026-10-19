@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_ampath_moh647" model="report.paperformat">
+        <field name="name">AMPATH MOH 647</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">6</field>
+        <field name="margin_right">6</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_moh647" model="ir.actions.report">
+        <field name="name">MOH 647</field>
+        <field name="model">ampath.moh647.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ampath_billing.report_moh647_document</field>
+        <field name="report_file">ampath_billing.report_moh647_document</field>
+        <field name="print_report_name">'MOH647-%s-%s' % (object.date_from, object.date_to)</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="ampath_billing.paperformat_ampath_moh647"/>
+    </record>
+
+    <template id="report_moh647_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs_data" t-as="ctx">
+                <t t-set="wizard" t-value="ctx['wizard']"/>
+                <t t-set="company" t-value="ctx['company']"/>
+                <div class="page">
+                    <h4 class="text-center mb-1">
+                        FACILITY TRACER HEALTH PRODUCTS AND TECHNOLOGIES (HPT) DATA REPORT FORM (MOH 647)
+                    </h4>
+                    <table class="table table-sm table-borderless mb-2" style="font-size: 11px;">
+                        <tr>
+                            <td><strong>Name of Health Facility:</strong> <span t-esc="company.name"/></td>
+                            <td><strong>Facility MFL code:</strong> <span t-esc="company.x_mfl_code or ''"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>County:</strong> <span t-esc="company.x_county or ''"/></td>
+                            <td><strong>Sub County:</strong> <span t-esc="company.x_sub_county or ''"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Period Beginning:</strong> <span t-esc="ctx['date_from']"/></td>
+                            <td><strong>Period Ending:</strong> <span t-esc="ctx['date_to']"/></td>
+                        </tr>
+                    </table>
+                    <table class="table table-sm table-bordered" style="font-size: 9px;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>INN</th>
+                                <th>Unit of Issue</th>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th>E</th>
+                                <th>F</th>
+                                <th>G</th>
+                                <th>H</th>
+                                <th>I</th>
+                                <th>J</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="ctx['lines']" t-as="line">
+                                <tr t-if="line.get('is_section')" style="background:#e9ecef;">
+                                    <td colspan="13"><strong t-esc="line.get('section_label')"/></td>
+                                </tr>
+                                <tr t-if="not line.get('is_section')">
+                                    <td t-esc="line['sequence']"/>
+                                    <td t-esc="line['name']"/>
+                                    <td t-esc="line['unit_of_issue']"/>
+                                    <td class="text-end" t-esc="line['A']"/>
+                                    <td class="text-end" t-esc="line['B']"/>
+                                    <td class="text-end" t-esc="line['C']"/>
+                                    <td class="text-end" t-esc="line['D']"/>
+                                    <td class="text-end" t-esc="line['E']"/>
+                                    <td class="text-end" t-esc="line['F']"/>
+                                    <td class="text-end" t-esc="line['G']"/>
+                                    <td class="text-end" t-esc="line['H']"/>
+                                    <td class="text-end" t-esc="line['I']"/>
+                                    <td class="text-end" t-esc="line['J']"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <p class="small text-muted mb-1">
+                        A Beginning Balance · B Quantity Received · C Total Quantity Issued · D Losses ·
+                        E Positive Adjustments · F Negative Adjustments · G Physical Count (A+B-C-D+E-F) ·
+                        H Near-expiry qty (&lt;6 months) · I Earliest expiry · J Days out of Stock.
+                        Unmapped tracers show "-" until products are linked in MOH 647 Tracer Mapping.
+                    </p>
+                    <table class="table table-sm table-borderless mt-3" style="font-size: 10px;">
+                        <tr>
+                            <td width="50%">
+                                <strong>Reporting officer</strong><br/>
+                                Name: <span t-esc="wizard.reporting_officer_name or ''"/><br/>
+                                Designation: <span t-esc="wizard.reporting_officer_designation or ''"/><br/>
+                                Email: <span t-esc="wizard.reporting_officer_email or ''"/><br/>
+                                Tel: <span t-esc="wizard.reporting_officer_phone or ''"/>
+                            </td>
+                            <td width="50%">
+                                <strong>Approving officer</strong><br/>
+                                Name: <span t-esc="wizard.approving_officer_name or ''"/><br/>
+                                Designation: <span t-esc="wizard.approving_officer_designation or ''"/><br/>
+                                Email: <span t-esc="wizard.approving_officer_email or ''"/><br/>
+                                Tel: <span t-esc="wizard.approving_officer_phone or ''"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
