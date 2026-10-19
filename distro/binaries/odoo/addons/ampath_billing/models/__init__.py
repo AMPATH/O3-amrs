@@ -1,4 +1,5 @@
 from . import res_partner
+from . import res_company
 from . import sale_order
 from . import sale_order_line
 from . import account_move_line
@@ -7,3 +8,4 @@ from . import ampath_claim_submit_result_wizard
 from . import product_product
 from . import product_template
 from . import stock_picking
+from . import moh647_tracer

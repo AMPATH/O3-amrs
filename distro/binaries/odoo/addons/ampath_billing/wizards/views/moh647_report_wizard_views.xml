@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moh647_report_wizard_form" model="ir.ui.view">
+        <field name="name">ampath.moh647.report.wizard.form</field>
+        <field name="model">ampath.moh647.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="MOH 647 Report">
+                <group string="Facility &amp; period">
+                    <field name="company_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <group>
+                    <group string="Reporting officer">
+                        <field name="reporting_officer_name"/>
+                        <field name="reporting_officer_designation"/>
+                        <field name="reporting_officer_email"/>
+                        <field name="reporting_officer_phone"/>
+                    </group>
+                    <group string="Approving officer">
+                        <field name="approving_officer_name"/>
+                        <field name="approving_officer_designation"/>
+                        <field name="approving_officer_email"/>
+                        <field name="approving_officer_phone"/>
+                    </group>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    Generates all 85 MOH 647 tracers. Unmapped tracers show "-" for A–J.
+                    Map products under Inventory → MOH 647 → Tracer Mapping.
+                </div>
+                <footer>
+                    <button name="action_print_pdf" type="object" string="Print PDF" class="btn-primary"/>
+                    <button name="action_export_excel" type="object" string="Export Excel" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_moh647_report_wizard" model="ir.actions.act_window">
+        <field name="name">MOH 647 Report</field>
+        <field name="res_model">ampath.moh647.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_moh647_report_wizard_form"/>
+    </record>
+
+    <menuitem id="menu_ampath_moh647_root"
+              name="MOH 647"
+              parent="stock.menu_stock_root"
+              sequence="90"
+              groups="stock.group_stock_user"/>
+
+    <menuitem id="menu_ampath_moh647_report"
+              name="Generate Report"
+              parent="menu_ampath_moh647_root"
+              action="action_moh647_report_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_ampath_moh647_mapping"
+              name="Tracer Mapping"
+              parent="menu_ampath_moh647_root"
+              action="action_moh647_tracer"
+              sequence="20"/>
+</odoo>
