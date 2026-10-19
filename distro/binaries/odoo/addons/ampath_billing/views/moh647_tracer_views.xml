@@ -4,13 +4,19 @@
         <field name="name">ampath.moh647.tracer.tree</field>
         <field name="model">ampath.moh647.tracer</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="sequence"/>
-                <field name="section"/>
-                <field name="name"/>
-                <field name="unit_of_issue"/>
-                <field name="is_mapped"/>
-                <field name="active"/>
+            <tree editable="bottom" multi_edit="1">
+                <field name="sequence" width="60px"/>
+                <field name="section" width="140px"/>
+                <field name="name" width="320px"/>
+                <field name="unit_of_issue" width="100px"/>
+                <field
+                    name="product_ids"
+                    widget="many2many_tags"
+                    options="{'no_create': True, 'no_create_edit': True}"
+                    width="420px"
+                />
+                <field name="is_mapped" width="80px"/>
+                <field name="active" width="60px" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -35,11 +41,22 @@
                             <field name="active"/>
                         </group>
                     </group>
-                    <group string="Mapped products">
-                        <field name="product_line_ids" nolabel="1">
+                    <group string="Mapped products" col="1">
+                        <field
+                            name="product_ids"
+                            widget="many2many_tags"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                            nolabel="1"
+                            class="w-100"
+                        />
+                        <field name="product_line_ids" nolabel="1" colspan="2">
                             <tree editable="bottom">
-                                <field name="product_id"/>
-                                <field name="uom_id"/>
+                                <field
+                                    name="product_id"
+                                    options="{'no_create': True, 'no_create_edit': True}"
+                                    width="500px"
+                                />
+                                <field name="uom_id" width="140px"/>
                             </tree>
                         </field>
                     </group>
@@ -59,6 +76,7 @@
                 <field name="name"/>
                 <field name="sequence"/>
                 <field name="section"/>
+                <field name="product_ids"/>
                 <filter name="unmapped" string="Unmapped (−)" domain="[('is_mapped', '=', False)]"/>
                 <filter name="mapped" string="Mapped" domain="[('is_mapped', '=', True)]"/>
                 <group expand="0" string="Group By">

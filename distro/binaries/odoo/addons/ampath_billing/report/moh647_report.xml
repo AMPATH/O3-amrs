@@ -7,13 +7,13 @@
         <field name="page_height">0</field>
         <field name="page_width">0</field>
         <field name="orientation">Landscape</field>
-        <field name="margin_top">8</field>
-        <field name="margin_bottom">10</field>
-        <field name="margin_left">6</field>
-        <field name="margin_right">6</field>
+        <field name="margin_top">6</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
-        <field name="dpi">90</field>
+        <field name="dpi">96</field>
     </record>
 
     <record id="action_report_moh647" model="ir.actions.report">
@@ -32,86 +32,209 @@
             <t t-foreach="docs_data" t-as="ctx">
                 <t t-set="wizard" t-value="ctx['wizard']"/>
                 <t t-set="company" t-value="ctx['company']"/>
-                <div class="page">
-                    <h4 class="text-center mb-1">
+                <div class="page" style="font-family: DejaVu Sans, Arial, sans-serif; color: #000; font-size: 8px;">
+                    <style type="text/css">
+                        .moh647-title {
+                            text-align: center;
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin: 0 0 6px 0;
+                            text-transform: uppercase;
+                        }
+                        .moh647-header {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 6px;
+                            font-size: 9px;
+                        }
+                        .moh647-header td {
+                            padding: 2px 4px 4px 0;
+                            vertical-align: bottom;
+                        }
+                        .moh647-header .label { font-weight: bold; white-space: nowrap; }
+                        .moh647-header .value {
+                            border-bottom: 1px solid #000;
+                            min-width: 120px;
+                            padding-left: 4px;
+                        }
+                        .moh647-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            table-layout: fixed;
+                            font-size: 7.5px;
+                        }
+                        .moh647-table th,
+                        .moh647-table td {
+                            border: 1px solid #000;
+                            padding: 2px 3px;
+                            vertical-align: middle;
+                        }
+                        .moh647-table thead th {
+                            background-color: #d9d9d9;
+                            font-weight: bold;
+                            text-align: center;
+                            vertical-align: bottom;
+                        }
+                        .moh647-table .section-row td {
+                            background-color: #c0c0c0;
+                            font-weight: bold;
+                            font-size: 8px;
+                            text-align: left;
+                            padding: 3px 4px;
+                        }
+                        .moh647-table .col-inn { text-align: left; word-wrap: break-word; }
+                        .moh647-table .col-uom { text-align: center; }
+                        .moh647-table .col-num { text-align: center; }
+                        .moh647-table .row-no { text-align: left; padding-right: 2px; }
+                        .moh647-notes {
+                            margin-top: 8px;
+                            font-size: 8px;
+                        }
+                        .moh647-notes .box {
+                            border: 1px solid #000;
+                            min-height: 28px;
+                            margin-top: 2px;
+                            padding: 3px;
+                        }
+                        .moh647-officers {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 8px;
+                            font-size: 8px;
+                        }
+                        .moh647-officers td {
+                            width: 50%;
+                            vertical-align: top;
+                            padding-right: 12px;
+                        }
+                        .moh647-officers .line {
+                            border-bottom: 1px solid #000;
+                            min-height: 14px;
+                            margin: 2px 0 6px 0;
+                            padding-left: 2px;
+                        }
+                    </style>
+
+                    <div class="moh647-title">
                         FACILITY TRACER HEALTH PRODUCTS AND TECHNOLOGIES (HPT) DATA REPORT FORM (MOH 647)
-                    </h4>
-                    <table class="table table-sm table-borderless mb-2" style="font-size: 11px;">
+                    </div>
+
+                    <table class="moh647-header">
                         <tr>
-                            <td><strong>Name of Health Facility:</strong> <span t-esc="company.name"/></td>
-                            <td><strong>Facility MFL code:</strong> <span t-esc="company.x_mfl_code or ''"/></td>
+                            <td style="width: 55%;">
+                                <span class="label">Name of Health Facility: </span>
+                                <span class="value" t-esc="company.name or ''"/>
+                            </td>
+                            <td style="width: 45%;">
+                                <span class="label">Facility's MFL code: </span>
+                                <span class="value" t-esc="company.x_mfl_code or ''"/>
+                            </td>
                         </tr>
                         <tr>
-                            <td><strong>County:</strong> <span t-esc="company.x_county or ''"/></td>
-                            <td><strong>Sub County:</strong> <span t-esc="company.x_sub_county or ''"/></td>
+                            <td>
+                                <span class="label">County: </span>
+                                <span class="value" t-esc="company.x_county or ''"/>
+                            </td>
+                            <td>
+                                <span class="label">Sub County: </span>
+                                <span class="value" t-esc="company.x_sub_county or ''"/>
+                            </td>
                         </tr>
                         <tr>
-                            <td><strong>Period Beginning:</strong> <span t-esc="ctx['date_from']"/></td>
-                            <td><strong>Period Ending:</strong> <span t-esc="ctx['date_to']"/></td>
+                            <td colspan="2">
+                                <span class="label">Period of Reporting: Beginning: </span>
+                                <span class="value" t-esc="ctx['date_from']"/>
+                                <span class="label"> &#160;&#160; Ending: </span>
+                                <span class="value" t-esc="ctx['date_to']"/>
+                            </td>
                         </tr>
                     </table>
-                    <table class="table table-sm table-bordered" style="font-size: 9px;">
+
+                    <table class="moh647-table">
+                        <colgroup>
+                            <col style="width: 26%;"/>
+                            <col style="width: 7%;"/>
+                            <col style="width: 6%;"/>
+                            <col style="width: 6.5%;"/>
+                            <col style="width: 6.5%;"/>
+                            <col style="width: 6.5%;"/>
+                            <col style="width: 6.5%;"/>
+                            <col style="width: 6.5%;"/>
+                            <col style="width: 7%;"/>
+                            <col style="width: 5.5%;"/>
+                            <col style="width: 7%;"/>
+                            <col style="width: 9%;"/>
+                        </colgroup>
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>INN</th>
-                                <th>Unit of Issue</th>
-                                <th>A</th>
-                                <th>B</th>
-                                <th>C</th>
-                                <th>D</th>
-                                <th>E</th>
-                                <th>F</th>
-                                <th>G</th>
-                                <th>H</th>
-                                <th>I</th>
-                                <th>J</th>
+                                <th rowspan="2">Item Description / International Nonproprietary Name (INN) Description</th>
+                                <th rowspan="2">Unit of Issue</th>
+                                <th rowspan="2">Beginning Balance<br/>(A)</th>
+                                <th rowspan="2">Quantity Received this Month<br/>(B)</th>
+                                <th rowspan="2">Total Quantity Issued this month<br/>(C)</th>
+                                <th rowspan="2">Losses (damages, expiries, missing)<br/>(D)</th>
+                                <th rowspan="2">Positive Adjustments (Obtained from other facilities)<br/>(E)</th>
+                                <th rowspan="2">Negative Adjustments (Issued out to other facilities)<br/>(F)</th>
+                                <th rowspan="2">Physical count<br/>G (A+B-C-D+E-F)</th>
+                                <th colspan="2">Commodities with less than 6 months to expiry</th>
+                                <th rowspan="2">Days out of Stock this month<br/>(J)</th>
+                            </tr>
+                            <tr>
+                                <th>Quantity<br/>(H)</th>
+                                <th>Expiry Date<br/>(I)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="ctx['lines']" t-as="line">
-                                <tr t-if="line.get('is_section')" style="background:#e9ecef;">
-                                    <td colspan="13"><strong t-esc="line.get('section_label')"/></td>
+                                <tr t-if="line.get('is_section')" class="section-row">
+                                    <td colspan="12" t-esc="line.get('section_label')"/>
                                 </tr>
                                 <tr t-if="not line.get('is_section')">
-                                    <td t-esc="line['sequence']"/>
-                                    <td t-esc="line['name']"/>
-                                    <td t-esc="line['unit_of_issue']"/>
-                                    <td class="text-end" t-esc="line['A']"/>
-                                    <td class="text-end" t-esc="line['B']"/>
-                                    <td class="text-end" t-esc="line['C']"/>
-                                    <td class="text-end" t-esc="line['D']"/>
-                                    <td class="text-end" t-esc="line['E']"/>
-                                    <td class="text-end" t-esc="line['F']"/>
-                                    <td class="text-end" t-esc="line['G']"/>
-                                    <td class="text-end" t-esc="line['H']"/>
-                                    <td class="text-end" t-esc="line['I']"/>
-                                    <td class="text-end" t-esc="line['J']"/>
+                                    <td class="col-inn">
+                                        <span class="row-no" t-esc="line['sequence']"/>.&#160;<span t-esc="line['name']"/>
+                                    </td>
+                                    <td class="col-uom" t-esc="line['unit_of_issue']"/>
+                                    <td class="col-num" t-esc="line['A']"/>
+                                    <td class="col-num" t-esc="line['B']"/>
+                                    <td class="col-num" t-esc="line['C']"/>
+                                    <td class="col-num" t-esc="line['D']"/>
+                                    <td class="col-num" t-esc="line['E']"/>
+                                    <td class="col-num" t-esc="line['F']"/>
+                                    <td class="col-num" t-esc="line['G']"/>
+                                    <td class="col-num" t-esc="line['H']"/>
+                                    <td class="col-num" t-esc="line['I']"/>
+                                    <td class="col-num" t-esc="line['J']"/>
                                 </tr>
                             </t>
                         </tbody>
                     </table>
-                    <p class="small text-muted mb-1">
-                        A Beginning Balance · B Quantity Received · C Total Quantity Issued · D Losses ·
-                        E Positive Adjustments · F Negative Adjustments · G Physical Count (A+B-C-D+E-F) ·
-                        H Near-expiry qty (&lt;6 months) · I Earliest expiry · J Days out of Stock.
-                        Unmapped tracers show "-" until products are linked in MOH 647 Tracer Mapping.
-                    </p>
-                    <table class="table table-sm table-borderless mt-3" style="font-size: 10px;">
+
+                    <div class="moh647-notes">
+                        <strong>Notes</strong>
+                        <div class="box"/>
+                    </div>
+
+                    <table class="moh647-officers">
                         <tr>
-                            <td width="50%">
-                                <strong>Reporting officer</strong><br/>
-                                Name: <span t-esc="wizard.reporting_officer_name or ''"/><br/>
-                                Designation: <span t-esc="wizard.reporting_officer_designation or ''"/><br/>
-                                Email: <span t-esc="wizard.reporting_officer_email or ''"/><br/>
-                                Tel: <span t-esc="wizard.reporting_officer_phone or ''"/>
+                            <td>
+                                <div><strong>Name of Reporting officer:</strong></div>
+                                <div class="line" t-esc="wizard.reporting_officer_name or ''"/>
+                                <div><strong>Designation:</strong></div>
+                                <div class="line" t-esc="wizard.reporting_officer_designation or ''"/>
+                                <div><strong>E-mail address:</strong></div>
+                                <div class="line" t-esc="wizard.reporting_officer_email or ''"/>
+                                <div><strong>Contact Tel. No:</strong></div>
+                                <div class="line" t-esc="wizard.reporting_officer_phone or ''"/>
                             </td>
-                            <td width="50%">
-                                <strong>Approving officer</strong><br/>
-                                Name: <span t-esc="wizard.approving_officer_name or ''"/><br/>
-                                Designation: <span t-esc="wizard.approving_officer_designation or ''"/><br/>
-                                Email: <span t-esc="wizard.approving_officer_email or ''"/><br/>
-                                Tel: <span t-esc="wizard.approving_officer_phone or ''"/>
+                            <td>
+                                <div><strong>Name of Approving officer:</strong></div>
+                                <div class="line" t-esc="wizard.approving_officer_name or ''"/>
+                                <div><strong>Designation:</strong></div>
+                                <div class="line" t-esc="wizard.approving_officer_designation or ''"/>
+                                <div><strong>E-mail address:</strong></div>
+                                <div class="line" t-esc="wizard.approving_officer_email or ''"/>
+                                <div><strong>Contact Tel. No:</strong></div>
+                                <div class="line" t-esc="wizard.approving_officer_phone or ''"/>
                             </td>
                         </tr>
                     </table>
