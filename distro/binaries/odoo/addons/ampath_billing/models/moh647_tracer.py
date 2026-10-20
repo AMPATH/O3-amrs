@@ -1,6 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+
+
+def _ge_code_variants(code):
+    """Return catalogue variants for one GE / concept code."""
+    if not code:
+        return set()
+    code = str(code).strip()
+    variants = {code}
+    upper = code.upper()
+    if upper.startswith('GE') and upper[2:].isdigit():
+        variants.add(upper)
+        variants.add(upper[2:])
+    elif code.isdigit():
+        variants.add(code)
+        variants.add('GE' + code)
+    else:
+        variants.add(upper)
+    return variants
 
 
 class AmpathMoh647Tracer(models.Model):
@@ -26,13 +45,25 @@ class AmpathMoh647Tracer(models.Model):
     product_line_ids = fields.One2many(
         'ampath.moh647.tracer.product',
         'tracer_id',
-        string='Mapped products',
+        string='Product mapping lines',
     )
     product_ids = fields.Many2many(
         'product.product',
         string='Mapped products',
         compute='_compute_product_ids',
         inverse='_inverse_product_ids',
+        store=False,
+    )
+    related_product_ids = fields.Many2many(
+        'product.product',
+        string='Related drugs',
+        compute='_compute_related_product_ids',
+        store=False,
+        help='Other catalogue products that share the same HIE GE code as a mapped product. '
+             'Updates when new SKUs are synced for that GE.',
+    )
+    has_related_products = fields.Boolean(
+        compute='_compute_related_product_ids',
         store=False,
     )
     is_mapped = fields.Boolean(compute='_compute_is_mapped', store=True)
@@ -68,10 +99,66 @@ class AmpathMoh647Tracer(models.Model):
                     }
                 )
 
+    @api.depends(
+        'product_line_ids',
+        'product_line_ids.product_id',
+        'product_line_ids.product_id.x_concept_code',
+    )
+    def _compute_related_product_ids(self):
+        Product = self.env['product.product']
+        for tracer in self:
+            mapped = tracer.product_line_ids.mapped('product_id')
+            codes = set()
+            for product in mapped:
+                codes |= _ge_code_variants(product.x_concept_code)
+            if not codes:
+                tracer.related_product_ids = Product.browse()
+                tracer.has_related_products = False
+                continue
+            related = Product.search(
+                [
+                    ('x_concept_code', 'in', list(codes)),
+                    ('id', 'not in', mapped.ids or [0]),
+                ]
+            )
+            tracer.related_product_ids = related
+            tracer.has_related_products = bool(related)
+
     @api.depends('product_line_ids', 'product_line_ids.product_id')
     def _compute_is_mapped(self):
         for tracer in self:
             tracer.is_mapped = bool(tracer.product_line_ids.filtered('product_id'))
+
+    def action_apply_related_products(self):
+        """Map all related GE sibling products onto this tracer (or selection)."""
+        Mapping = self.env['ampath.moh647.tracer.product']
+        added = 0
+        for tracer in self:
+            # Recompute to pick up newly synced catalogue SKUs
+            tracer._compute_related_product_ids()
+            related = tracer.related_product_ids
+            if not related:
+                continue
+            existing = set(tracer.product_line_ids.mapped('product_id').ids)
+            for product in related:
+                if product.id in existing:
+                    continue
+                Mapping.create(
+                    {
+                        'tracer_id': tracer.id,
+                        'product_id': product.id,
+                    }
+                )
+                existing.add(product.id)
+                added += 1
+        if not added:
+            raise UserError(
+                _(
+                    'No related drugs to apply. Map at least one product that has a '
+                    'GE / concept code (x_concept_code), then try again.'
+                )
+            )
+        return True
 
     def name_get(self):
         result = []

@@ -5,34 +5,54 @@
         <field name="model">ampath.moh647.report.wizard</field>
         <field name="arch" type="xml">
             <form string="MOH 647 Report">
-                <group string="Facility &amp; period">
-                    <field name="company_id"/>
-                    <field name="date_from"/>
-                    <field name="date_to"/>
-                </group>
-                <group>
-                    <group string="Reporting officer">
-                        <field name="reporting_officer_name"/>
-                        <field name="reporting_officer_designation"/>
-                        <field name="reporting_officer_email"/>
-                        <field name="reporting_officer_phone"/>
+                <header>
+                    <button name="action_preview" type="object" string="Generate report"
+                            class="btn-primary" invisible="state == 'preview'"/>
+                    <button name="action_print_pdf" type="object" string="Download PDF"
+                            class="btn-primary" invisible="state != 'preview'"/>
+                    <button name="action_export_excel" type="object" string="Export Excel"
+                            class="btn-secondary" invisible="state != 'preview'"/>
+                    <button name="action_back_to_criteria" type="object" string="Back"
+                            class="btn-secondary" invisible="state != 'preview'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="criteria,preview"/>
+                </header>
+                <sheet>
+                    <field name="report_pdf_name" invisible="1"/>
+                    <field name="report_xlsx_name" invisible="1"/>
+
+                    <group string="Facility &amp; period" invisible="state == 'preview'">
+                        <field name="company_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
                     </group>
-                    <group string="Approving officer">
-                        <field name="approving_officer_name"/>
-                        <field name="approving_officer_designation"/>
-                        <field name="approving_officer_email"/>
-                        <field name="approving_officer_phone"/>
+                    <group invisible="state == 'preview'">
+                        <group string="Reporting officer">
+                            <field name="reporting_officer_name"/>
+                            <field name="reporting_officer_designation"/>
+                            <field name="reporting_officer_email"/>
+                            <field name="reporting_officer_phone"/>
+                        </group>
+                        <group string="Approving officer">
+                            <field name="approving_officer_name"/>
+                            <field name="approving_officer_designation"/>
+                            <field name="approving_officer_email"/>
+                            <field name="approving_officer_phone"/>
+                        </group>
                     </group>
-                </group>
-                <div class="alert alert-info" role="alert">
-                    Generates all 85 MOH 647 tracers. Unmapped tracers show "-" for A–J.
-                    Map products under Inventory → MOH 647 → Tracer Mapping.
-                </div>
-                <footer>
-                    <button name="action_print_pdf" type="object" string="Print PDF" class="btn-primary"/>
-                    <button name="action_export_excel" type="object" string="Export Excel" class="btn-secondary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
+                    <div class="alert alert-info" role="alert" invisible="state == 'preview'">
+                        Generates all 85 MOH 647 tracers. Unmapped tracers show "-" for A–J.
+                        Map products under Inventory → MOH 647 → Tracer Mapping.
+                    </div>
+
+                    <div invisible="state != 'preview'">
+                        <div class="alert alert-success mb-2" role="alert">
+                            Report generated. Scroll the table below, or use Download PDF / Export Excel.
+                        </div>
+                        <div style="overflow-x: auto; max-width: 100%; border: 1px solid #dee2e6; background: #fff;">
+                            <field name="preview_html" nolabel="1" readonly="1" colspan="2"/>
+                        </div>
+                    </div>
+                </sheet>
             </form>
         </field>
     </record>
@@ -41,7 +61,7 @@
         <field name="name">MOH 647 Report</field>
         <field name="res_model">ampath.moh647.report.wizard</field>
         <field name="view_mode">form</field>
-        <field name="target">new</field>
+        <field name="target">current</field>
         <field name="view_id" ref="view_moh647_report_wizard_form"/>
     </record>
 
