@@ -5,18 +5,33 @@
         <field name="model">ampath.moh647.tracer</field>
         <field name="arch" type="xml">
             <tree editable="bottom" multi_edit="1">
-                <field name="sequence" width="60px"/>
-                <field name="section" width="140px"/>
-                <field name="name" width="320px"/>
-                <field name="unit_of_issue" width="100px"/>
+                <field name="sequence" width="50px"/>
+                <field name="section" width="120px"/>
+                <field name="name" width="280px"/>
+                <field name="unit_of_issue" width="90px"/>
                 <field
                     name="product_ids"
                     widget="many2many_tags"
                     options="{'no_create': True, 'no_create_edit': True}"
-                    width="420px"
+                    width="320px"
                 />
-                <field name="is_mapped" width="80px"/>
-                <field name="active" width="60px" optional="hide"/>
+                <field
+                    name="related_product_ids"
+                    widget="many2many_tags"
+                    options="{'no_create': True, 'no_create_edit': True}"
+                    readonly="1"
+                    width="320px"
+                />
+                <field name="has_related_products" column_invisible="1"/>
+                <button
+                    name="action_apply_related_products"
+                    type="object"
+                    string="Apply related"
+                    class="btn-link"
+                    invisible="not has_related_products"
+                />
+                <field name="is_mapped" width="70px"/>
+                <field name="active" width="50px" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -26,6 +41,16 @@
         <field name="model">ampath.moh647.tracer</field>
         <field name="arch" type="xml">
             <form string="MOH 647 Tracer">
+                <header>
+                    <button
+                        name="action_apply_related_products"
+                        type="object"
+                        string="Apply related drugs"
+                        class="btn-primary"
+                        invisible="not has_related_products"
+                    />
+                    <field name="has_related_products" invisible="1"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -60,6 +85,20 @@
                             </tree>
                         </field>
                     </group>
+                    <group string="Related drugs (same GE)" col="1">
+                        <div class="text-muted mb-2" colspan="2">
+                            After you map one product with a GE / concept code, siblings appear here.
+                            New catalogue SKUs for that GE show up automatically — use Apply related drugs.
+                        </div>
+                        <field
+                            name="related_product_ids"
+                            widget="many2many_tags"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                            readonly="1"
+                            nolabel="1"
+                            class="w-100"
+                        />
+                    </group>
                     <div class="alert alert-warning" role="alert" invisible="is_mapped">
                         Unmapped — report columns A–J will show "-" until at least one product is linked.
                     </div>
@@ -91,13 +130,14 @@
         <field name="res_model">ampath.moh647.tracer</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_moh647_tracer_search"/>
-        <field name="context">{'search_default_unmapped': 0}</field>
+        <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Map each MOH 647 tracer to one or more Odoo products.
+                Map each of the 85 MOH 647 tracers to one or more Odoo products.
             </p>
             <p>
-                Unmapped tracers print "-" in columns A–J on the report until products are linked.
+                Map one product, then use <strong>Apply related</strong> to add other packages
+                that share the same GE code. Unmapped tracers print "-" on the report.
             </p>
         </field>
     </record>

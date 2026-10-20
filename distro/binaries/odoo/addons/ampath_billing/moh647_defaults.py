@@ -2,7 +2,11 @@
 """Default MOH 647 tracer → product links.
 
 Resolved at install/upgrade by default_code (preferred) or exact product name.
-Sequences with empty lists stay unmapped (A–J = '-') until mapped in the UI:
+All 85 tracers always appear on the mapping screen.
+
+MOH647_UNMAPPED_SEQUENCES only skips *automatic* default seeding (no product found
+or intentionally left for manual map). Users can still map any product, then use
+Apply related drugs for same-GE siblings. Report A–J stays '-' until mapped:
 
   32 Penicillin V 250mg
   67 Dryview DVE
