@@ -47,6 +47,19 @@ class AmpathMoh647ReportWizard(models.TransientModel):
     approving_officer_designation = fields.Char(string='Approving officer designation')
     approving_officer_email = fields.Char(string='Approving officer email')
     approving_officer_phone = fields.Char(string='Approving officer telephone')
+    state = fields.Selection(
+        [
+            ('criteria', 'Criteria'),
+            ('preview', 'Preview'),
+        ],
+        default='criteria',
+        required=True,
+    )
+    preview_html = fields.Html(
+        string='Report preview',
+        sanitize=False,
+        readonly=True,
+    )
     report_pdf = fields.Binary(string='PDF', attachment=False)
     report_pdf_name = fields.Char()
     report_xlsx = fields.Binary(string='Excel', attachment=False)
@@ -384,6 +397,66 @@ class AmpathMoh647ReportWizard(models.TransientModel):
             'date_from': self.date_from,
             'date_to': self.date_to,
         }
+
+    def _reopen_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('MOH 647 Report'),
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'views': [
+                (
+                    self.env.ref(
+                        'ampath_billing.view_moh647_report_wizard_form'
+                    ).id,
+                    'form',
+                )
+            ],
+        }
+
+    def _render_preview_html(self):
+        """Render report body as an Html fragment (not a full document)."""
+        self.ensure_one()
+        values = self.env['report.ampath_billing.report_moh647_document']._get_report_values(
+            self.ids
+        )
+        html_content = self.env['ir.qweb']._render(
+            'ampath_billing.report_moh647_body',
+            values,
+        )
+        if isinstance(html_content, bytes):
+            html_content = html_content.decode('utf-8')
+        return html_content
+
+    def action_preview(self):
+        self.ensure_one()
+        html_content = self._render_preview_html()
+        if not html_content or not str(html_content).strip():
+            raise UserError(_('Could not render the MOH 647 report preview.'))
+        self.write(
+            {
+                'preview_html': html_content,
+                'state': 'preview',
+            }
+        )
+        return self._reopen_wizard()
+
+    def action_back_to_criteria(self):
+        self.ensure_one()
+        self.write(
+            {
+                'state': 'criteria',
+                'preview_html': False,
+                'report_pdf': False,
+                'report_pdf_name': False,
+                'report_xlsx': False,
+                'report_xlsx_name': False,
+            }
+        )
+        return self._reopen_wizard()
 
     def action_print_pdf(self):
         self.ensure_one()
