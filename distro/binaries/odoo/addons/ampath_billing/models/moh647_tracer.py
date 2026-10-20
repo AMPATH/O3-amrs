@@ -26,7 +26,7 @@ class AmpathMoh647Tracer(models.Model):
     product_line_ids = fields.One2many(
         'ampath.moh647.tracer.product',
         'tracer_id',
-        string='Mapped products',
+        string='Product mapping lines',
     )
     product_ids = fields.Many2many(
         'product.product',
