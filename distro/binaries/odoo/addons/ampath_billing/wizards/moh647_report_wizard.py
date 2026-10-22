@@ -84,6 +84,13 @@ class AmpathMoh647ReportWizard(models.TransientModel):
     def _dt_end(self, day):
         return fields.Datetime.to_string(datetime.combine(day, time.max))
 
+    @staticmethod
+    def _as_datetime(value):
+        """Normalize ORM datetime fields (datetime or str) for comparisons."""
+        if value is None or value is False:
+            return False
+        return fields.Datetime.to_datetime(value)
+
     def _company_internal_locations(self):
         self.ensure_one()
         Location = self.env['stock.location']
@@ -259,8 +266,11 @@ class AmpathMoh647ReportWizard(models.TransientModel):
         move_idx = 0
         move_list = list(moves)
         while day <= date_to:
-            day_end = self._dt_end(day)
-            while move_idx < len(move_list) and move_list[move_idx].date <= day_end:
+            day_end = self._as_datetime(self._dt_end(day))
+            while (
+                move_idx < len(move_list)
+                and self._as_datetime(move_list[move_idx].date) <= day_end
+            ):
                 move = move_list[move_idx]
                 bucket, qty = self._classify_move_qty(move, location_ids)
                 # Apply raw location effect for on-hand

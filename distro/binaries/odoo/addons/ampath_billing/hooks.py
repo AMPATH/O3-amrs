@@ -113,8 +113,14 @@ def apply_moh647_default_mappings(env):
     )
 
 
+def configure_internal_transfer_lots(env):
+    env['stock.picking.type']._ampath_configure_internal_transfers()
+    _logger.info('ampath_billing: configured Internal Transfers to use existing lots')
+
+
 def post_init_hook(env):
     if not isinstance(env, api.Environment):
         env = api.Environment(env, SUPERUSER_ID, {})
     _apply_base_company_branding(env)
     apply_moh647_default_mappings(env)
+    configure_internal_transfer_lots(env)
