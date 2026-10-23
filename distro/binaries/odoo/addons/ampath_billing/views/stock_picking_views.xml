@@ -18,6 +18,16 @@
                     </group>
                 </group>
             </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='lot_ids']" position="attributes">
+                <attribute name="optional">show</attribute>
+                <attribute name="column_invisible">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="attributes">
+                <attribute name="domain">[('usage', '=', 'internal')] if picking_type_code == 'internal' else [('usage', '!=', 'view')]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                <attribute name="domain">[('usage', '=', 'internal')] if picking_type_code == 'internal' else [('usage', '!=', 'view')]</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
