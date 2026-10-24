@@ -114,8 +114,12 @@ class AmpathMoh647ReportWizard(models.TransientModel):
             )
         return locations
 
-    def _product_qty_at(self, products, location_ids, at_dt):
-        """On-hand qty in product UoM at datetime by replaying moves after at_dt."""
+    def _product_qty_at(self, products, location_ids, at_dt, include_inventory=True):
+        """On-hand qty in product UoM at datetime by replaying moves after at_dt.
+
+        When ``include_inventory`` is False, physical inventory corrections after
+        ``at_dt`` are left in place so beginning balance uses the corrected count.
+        """
         Quant = self.env['stock.quant']
         Move = self.env['stock.move']
         quants = Quant.search(
@@ -140,6 +144,8 @@ class AmpathMoh647ReportWizard(models.TransientModel):
             ]
         )
         for move in moves_after:
+            if not include_inventory and self._is_physical_inventory_move(move):
+                continue
             qty = self._move_qty_product_uom(move)
             if move.location_dest_id.id in location_ids and move.location_id.id not in location_ids:
                 qty_by_product[move.product_id.id] -= qty
@@ -153,8 +159,39 @@ class AmpathMoh647ReportWizard(models.TransientModel):
             raw, move.product_id.uom_id, rounding_method='HALF-UP'
         )
 
+    def _is_scrap_location(self, location):
+        return bool(location) and bool(getattr(location, 'scrap_location', False))
+
+    def _is_scrap_move(self, move):
+        return self._is_scrap_location(move.location_id) or self._is_scrap_location(
+            move.location_dest_id
+        )
+
+    def _is_physical_inventory_move(self, move):
+        """Inventory count corrections (not scrap write-offs)."""
+        if self._is_scrap_move(move):
+            return False
+        return move.location_id.usage == 'inventory' or move.location_dest_id.usage == 'inventory'
+
+    def _is_other_facility_location(self, location):
+        if not location or location.usage not in ('internal', 'transit'):
+            return False
+        if not location.company_id:
+            return False
+        return location.company_id != self.company_id
+
+    def _picking_type_code(self, move):
+        picking = move.picking_id
+        if not picking or not picking.picking_type_id:
+            return False
+        return picking.picking_type_id.code
+
     def _classify_move_qty(self, move, location_ids):
-        """Return (bucket, signed_qty_in_product_uom) for report columns B–F."""
+        """Return (bucket, qty) for report columns B–F.
+
+        B = incoming Receipts only; E/F = other facilities (location or
+        picking x_moh647_flow); D = scrap. Physical inventory omitted.
+        """
         loc_in = move.location_id
         loc_out = move.location_dest_id
         qty = self._move_qty_product_uom(move)
@@ -163,43 +200,33 @@ class AmpathMoh647ReportWizard(models.TransientModel):
         if not into and not out_of:
             return None, 0.0
 
-        # Scrap / inventory adjustments
-        if into and loc_in.usage == 'inventory':
-            return 'E', qty  # positive inventory adjustment
-        if out_of and loc_out.usage == 'inventory':
-            return 'D', qty  # losses / negative inventory
+        if self._is_physical_inventory_move(move):
+            return None, 0.0
+        if self._is_scrap_move(move):
+            return 'D', qty
 
-        # Inter-company / inter-facility (transit or other company internal)
-        if into and loc_in.usage in ('internal', 'transit') and loc_in.company_id and loc_in.company_id != self.company_id:
+        if into and self._is_other_facility_location(loc_in):
             return 'E', qty
-        if out_of and loc_out.usage in ('internal', 'transit') and loc_out.company_id and loc_out.company_id != self.company_id:
+        if out_of and self._is_other_facility_location(loc_out):
             return 'F', qty
 
-        # Vendor receipts
-        if into and loc_in.usage == 'supplier':
+        moh647_flow = (
+            move.picking_id.x_moh647_flow
+            if move.picking_id and 'x_moh647_flow' in move.picking_id._fields
+            else False
+        )
+        if into and moh647_flow == 'external_in':
+            return 'E', qty
+        if out_of and moh647_flow == 'external_out':
+            return 'F', qty
+
+        picking_code = self._picking_type_code(move)
+        if into and picking_code == 'incoming':
             return 'B', qty
-        # Customer / patient dispense
         if out_of and loc_out.usage in ('customer', 'production'):
             return 'C', qty
-        picking_type = move.picking_id.picking_type_id if move.picking_id else False
-        if picking_type:
-            if into and picking_type.code == 'incoming':
-                return 'B', qty
-            if out_of and picking_type.code == 'outgoing':
-                return 'C', qty
-            if into and picking_type.code == 'internal':
-                return 'E', qty
-            if out_of and picking_type.code == 'internal':
-                return 'F', qty
-
-        if into and loc_in.usage == 'transit':
-            return 'E', qty
-        if out_of and loc_out.usage == 'transit':
-            return 'F', qty
-        if into:
-            return 'E', qty
-        if out_of:
-            return 'F', qty
+        if out_of and picking_code == 'outgoing':
+            return 'C', qty
         return None, 0.0
 
     def _near_expiry(self, products, location_ids, date_to):
@@ -242,7 +269,7 @@ class AmpathMoh647ReportWizard(models.TransientModel):
             return UNMAPPED
         Move = self.env['stock.move']
         start_qty = self._product_qty_at(
-            products, location_ids, self._dt_start(date_from)
+            products, location_ids, self._dt_start(date_from), include_inventory=False
         )
         total_start = sum(start_qty.values())
         moves = Move.search(
@@ -272,16 +299,15 @@ class AmpathMoh647ReportWizard(models.TransientModel):
                 and self._as_datetime(move_list[move_idx].date) <= day_end
             ):
                 move = move_list[move_idx]
-                bucket, qty = self._classify_move_qty(move, location_ids)
-                # Apply raw location effect for on-hand
+                move_idx += 1
+                if self._is_physical_inventory_move(move):
+                    continue
                 loc_ids = set(location_ids)
                 q = self._move_qty_product_uom(move)
                 if move.location_dest_id.id in loc_ids and move.location_id.id not in loc_ids:
                     on_hand += q
                 elif move.location_id.id in loc_ids and move.location_dest_id.id not in loc_ids:
                     on_hand -= q
-                move_idx += 1
-                _ = bucket
             if on_hand <= 0:
                 days_oos += 1
             day += timedelta(days=1)
@@ -309,7 +335,9 @@ class AmpathMoh647ReportWizard(models.TransientModel):
 
         start_dt = self._dt_start(self.date_from)
         end_dt = self._dt_end(self.date_to)
-        begin = self._product_qty_at(products, location_ids, start_dt)
+        begin = self._product_qty_at(
+            products, location_ids, start_dt, include_inventory=False
+        )
         A = sum(begin.values())
 
         Move = self.env['stock.move']
@@ -338,7 +366,10 @@ class AmpathMoh647ReportWizard(models.TransientModel):
             elif bucket == 'F':
                 F += qty
 
-        G = A + B - C - D + E - F
+        closing = self._product_qty_at(
+            products, location_ids, end_dt, include_inventory=True
+        )
+        G = sum(closing.values())
         H_qty, I_date = self._near_expiry(products, location_ids, self.date_to)
         J = self._days_out_of_stock(products, location_ids, self.date_from, self.date_to)
 

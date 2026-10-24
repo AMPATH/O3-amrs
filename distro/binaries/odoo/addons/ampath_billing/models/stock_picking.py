@@ -31,6 +31,15 @@ class StockPicking(models.Model):
         copy=False,
         help='Supporting documents for this goods receipt (invoice, delivery note, etc.).',
     )
+    x_moh647_flow = fields.Selection(
+        [
+            ('external_in', 'External receipt (E)'),
+            ('external_out', 'External issue (F)'),
+        ],
+        string='MOH 647 flow',
+        copy=False,
+        help='When set, MOH 647 counts this picking as E or F instead of B or C.',
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -158,6 +167,159 @@ class StockPicking(models.Model):
             if available > 0:
                 parts.append('%s (%s)' % (quant.lot_id.name, available))
         return ', '.join(parts[:8]) if parts else _('none')
+
+    def _ampath_set_move_line_qty(self, move_line, quantity):
+        if 'quantity' in move_line._fields:
+            move_line.quantity = quantity
+        elif 'qty_done' in move_line._fields:
+            move_line.qty_done = quantity
+
+    def _ampath_set_move_qty(self, move, quantity):
+        if 'quantity' in move._fields:
+            move.quantity = quantity
+        elif 'quantity_done' in move._fields:
+            move.quantity_done = quantity
+
+    def _ampath_run_validate(self):
+        """Validate picking, completing immediate wizards (backorder / expiry)."""
+        self.ensure_one()
+        result = self.button_validate()
+        if isinstance(result, dict) and result.get('res_model'):
+            wizard = self.env[result['res_model']].with_context(
+                **(result.get('context') or {})
+            ).create({})
+            if hasattr(wizard, 'process'):
+                wizard.process()
+            elif hasattr(wizard, 'process_cancel_backorder'):
+                wizard.process_cancel_backorder()
+        self.invalidate_recordset()
+        return self
+
+    @api.model
+    def _ampath_pick_fefo_lot(self, product, warehouse, quantity=None):
+        if not product or not warehouse:
+            return self.env['stock.lot']
+        Quant = self.env['stock.quant']
+        Lot = self.env['stock.lot']
+        has_expiry = 'expiration_date' in Lot._fields
+        quants = Quant.search(
+            [
+                ('product_id', '=', product.id),
+                ('location_id', 'child_of', warehouse.lot_stock_id.id),
+                ('lot_id', '!=', False),
+                ('quantity', '>', 0),
+            ]
+        )
+        quants = quants.filtered(lambda q: (q.quantity - q.reserved_quantity) > 0)
+        if not quants:
+            return Lot
+        far_future = fields.Datetime.to_datetime('2099-12-31 23:59:59')
+        now = fields.Datetime.now()
+
+        def _fefo_key(quant):
+            if has_expiry:
+                return (
+                    quant.lot_id.expiration_date or far_future,
+                    quant.in_date or now,
+                    quant.id,
+                )
+            return (quant.in_date or now, quant.id)
+
+        if quantity:
+            fulfilling = quants.filtered(
+                lambda q: (q.quantity - q.reserved_quantity) >= quantity
+            )
+            if fulfilling:
+                quants = fulfilling
+        return quants.sorted(_fefo_key)[:1].lot_id
+
+    @api.model
+    def _ampath_create_and_validate_picking(
+        self,
+        picking_type,
+        location_id,
+        location_dest_id,
+        origin,
+        company,
+        lines,
+        partner=None,
+        moh647_flow=False,
+    ):
+        """Create and validate a picking.
+
+        ``lines`` is a list of dicts: product, quantity, lot (optional recordset).
+        """
+        if not picking_type:
+            raise UserError(_('No picking type configured for this warehouse.'))
+        Picking = self.sudo()
+        Move = self.env['stock.move'].sudo()
+        vals = {
+            'picking_type_id': picking_type.id,
+            'location_id': location_id,
+            'location_dest_id': location_dest_id,
+            'origin': origin,
+            'company_id': company.id,
+        }
+        if partner:
+            vals['partner_id'] = partner.id
+        if moh647_flow:
+            vals['x_moh647_flow'] = moh647_flow
+        picking = Picking.create(vals)
+        created_moves = []
+        for line in lines:
+            product = line['product']
+            quantity = line['quantity']
+            move = Move.create(
+                {
+                    'name': product.display_name,
+                    'product_id': product.id,
+                    'product_uom_qty': quantity,
+                    'product_uom': product.uom_id.id,
+                    'picking_id': picking.id,
+                    'picking_type_id': picking_type.id,
+                    'location_id': location_id,
+                    'location_dest_id': location_dest_id,
+                    'company_id': company.id,
+                }
+            )
+            created_moves.append(move)
+        picking.action_confirm()
+        picking.action_assign()
+        for line, move in zip(lines, created_moves):
+            quantity = line['quantity']
+            lot = line.get('lot')
+            if lot:
+                for move_line in picking.move_line_ids.filtered(
+                    lambda ml: ml.product_id == move.product_id
+                ):
+                    move_line.lot_id = lot.id
+                    picking._ampath_set_move_line_qty(move_line, quantity)
+            else:
+                move_lines = picking.move_line_ids.filtered(
+                    lambda ml: ml.product_id == move.product_id
+                )
+                if move_lines:
+                    picking._ampath_set_move_line_qty(move_lines[0], quantity)
+                else:
+                    picking._ampath_set_move_qty(move, quantity)
+            if 'picked' in move._fields:
+                move.picked = True
+        picking._ampath_run_validate()
+        if picking.state != 'done':
+            raise UserError(
+                _('Could not validate stock picking %s (state: %s).')
+                % (picking.name, picking.state)
+            )
+        return picking
+
+
+class StockLocation(models.Model):
+    _inherit = 'stock.location'
+
+    x_ampath_external_transit = fields.Boolean(
+        string='AMPATH external-facility transit',
+        help='Source/destination for inter-facility receipts and issues (MOH 647 E/F).',
+    )
 
 
 class StockMove(models.Model):

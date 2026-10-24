@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_ampath_department_issue" model="ir.sequence">
+        <field name="name">Department issue (S11)</field>
+        <field name="code">ampath.department.issue</field>
+        <field name="prefix">S11/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_ampath_facility_exchange_receipt" model="ir.sequence">
+        <field name="name">External receipt (E)</field>
+        <field name="code">ampath.facility.exchange.receipt</field>
+        <field name="prefix">EXT-IN/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_ampath_facility_exchange_issue" model="ir.sequence">
+        <field name="name">External issue (F)</field>
+        <field name="code">ampath.facility.exchange.issue</field>
+        <field name="prefix">EXT-OUT/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="issue_department_lab" model="ampath.issue.department">
+        <field name="name">Lab</field>
+    </record>
+    <record id="issue_department_theatre" model="ampath.issue.department">
+        <field name="name">Theatre</field>
+    </record>
+    <record id="issue_department_maternity" model="ampath.issue.department">
+        <field name="name">Maternity</field>
+    </record>
+    <record id="issue_department_pharmacy_ward" model="ampath.issue.department">
+        <field name="name">Pharmacy ward</field>
+    </record>
+    <record id="issue_department_radiology" model="ampath.issue.department">
+        <field name="name">Radiology</field>
+    </record>
+    <record id="issue_department_mch" model="ampath.issue.department">
+        <field name="name">MCH</field>
+    </record>
+</odoo>

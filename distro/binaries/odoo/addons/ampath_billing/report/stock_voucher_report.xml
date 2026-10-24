@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_department_issue" model="ir.actions.report">
+        <field name="name">Department issue voucher</field>
+        <field name="model">ampath.department.issue</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ampath_billing.report_department_issue_document</field>
+        <field name="report_file">ampath_billing.report_department_issue_document</field>
+        <field name="print_report_name">'S11-%s' % (object.name)</field>
+    </record>
+
+    <template id="report_department_issue_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h3>Counter Requisition and Issue Voucher</h3>
+                        <p>
+                            <strong>Voucher:</strong> <span t-field="doc.name"/><br/>
+                            <strong>Facility:</strong> <span t-field="doc.company_id"/><br/>
+                            <strong>Issue point:</strong> <span t-field="doc.warehouse_id"/><br/>
+                            <strong>Point of use:</strong> <span t-field="doc.department_id"/><br/>
+                            <strong>Date:</strong> <span t-field="doc.date"/><br/>
+                            <strong>Account No.:</strong> <span t-field="doc.account_no"/>
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Item</th>
+                                    <th>UoM</th>
+                                    <th>Qty required</th>
+                                    <th>Qty issued</th>
+                                    <th>Value</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids" t-as="line">
+                                    <td><span t-field="line.default_code"/></td>
+                                    <td><span t-field="line.product_id"/></td>
+                                    <td><span t-field="line.product_uom_id"/></td>
+                                    <td><span t-field="line.qty_required"/></td>
+                                    <td><span t-field="line.qty_issued"/></td>
+                                    <td><span t-field="line.value"/></td>
+                                    <td><span t-field="line.remarks"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p t-if="doc.remarks"><strong>Remarks:</strong> <span t-field="doc.remarks"/></p>
+                        <p>
+                            Requisitioning officer: <span t-field="doc.requisitioning_officer"/>
+                            (<span t-field="doc.requisitioning_designation"/>)<br/>
+                            Issued by: <span t-field="doc.issued_by"/><br/>
+                            Received by: <span t-field="doc.received_by"/>
+                            (<span t-field="doc.received_designation"/>)
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_facility_exchange" model="ir.actions.report">
+        <field name="name">External transfer voucher</field>
+        <field name="model">ampath.facility.exchange</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ampath_billing.report_facility_exchange_document</field>
+        <field name="report_file">ampath_billing.report_facility_exchange_document</field>
+        <field name="print_report_name">'%s' % (object.name)</field>
+    </record>
+
+    <template id="report_facility_exchange_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h3>
+                            <t t-if="doc.exchange_type == 'receipt'">External receipt (from other facility)</t>
+                            <t t-else="">External issue (to other facility)</t>
+                        </h3>
+                        <p>
+                            <strong>Number:</strong> <span t-field="doc.name"/><br/>
+                            <strong>Facility:</strong> <span t-field="doc.company_id"/><br/>
+                            <strong>Warehouse:</strong> <span t-field="doc.warehouse_id"/><br/>
+                            <strong>Other facility:</strong> <span t-field="doc.facility_id"/><br/>
+                            <strong>Date:</strong> <span t-field="doc.date"/><br/>
+                            <strong>Reference:</strong> <span t-field="doc.reference"/>
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Item</th>
+                                    <th>UoM</th>
+                                    <th>Qty</th>
+                                    <th>Lot</th>
+                                    <th>Value</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids" t-as="line">
+                                    <td><span t-field="line.default_code"/></td>
+                                    <td><span t-field="line.product_id"/></td>
+                                    <td><span t-field="line.product_uom_id"/></td>
+                                    <td><span t-field="line.qty"/></td>
+                                    <td><span t-field="line.lot_id"/></td>
+                                    <td><span t-field="line.value"/></td>
+                                    <td><span t-field="line.remarks"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p t-if="doc.remarks"><strong>Remarks:</strong> <span t-field="doc.remarks"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

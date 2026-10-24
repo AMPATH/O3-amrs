@@ -37,6 +37,8 @@ POST /ampath/inventory/dispense
         openmrs_drug_uuid, quantity, company_external_id (required)
         openmrs_order_id, patient_external_id, lot_name, lot_id, uom_name (optional)
         Prefer lot_name (Odoo stock.lot name). lot_id remains for legacy callers.
+        When lot is omitted and several SKUs share the drug UUID, the earliest
+        expiry in-stock lot at the warehouse is chosen (FEFO).
 
 POST /ampath/inventory/reverse
     Cancel or return stock for a prior dispense keyed by openmrs_order_id.
@@ -46,7 +48,7 @@ POST /ampath/inventory/reverse
 import json
 import logging
 
-from odoo import http
+from odoo import fields, http
 from odoo.http import request
 from odoo.tools.float_utils import float_compare
 
@@ -523,6 +525,50 @@ class InventoryController(http.Controller):
 
         return None, None, None
 
+    def _pick_fefo_lot(self, env, products, warehouse, quantity=None):
+        """Pick the earliest-expiring in-stock lot among products at warehouse.
+
+        Prefers lots that can fulfill ``quantity`` when that is supplied.
+        Returns ``(lot, product)`` or ``(None, None)``.
+        """
+        if not products or not warehouse:
+            return None, None
+        Quant = env['stock.quant'].sudo()
+        Lot = env['stock.lot'].sudo()
+        has_expiry = 'expiration_date' in Lot._fields
+        quants = Quant.search([
+            ('product_id', 'in', products.ids),
+            ('location_id', 'child_of', warehouse.lot_stock_id.id),
+            ('lot_id', '!=', False),
+            ('quantity', '>', 0),
+        ])
+        quants = quants.filtered(
+            lambda q: (q.quantity - q.reserved_quantity) > 0
+        )
+        if not quants:
+            return None, None
+        far_future = fields.Datetime.to_datetime('2099-12-31 23:59:59')
+        now = fields.Datetime.now()
+
+        def _fefo_key(quant):
+            if has_expiry:
+                return (
+                    quant.lot_id.expiration_date or far_future,
+                    quant.in_date or now,
+                    quant.id,
+                )
+            return (quant.in_date or now, quant.id)
+
+        if quantity:
+            fulfilling = quants.filtered(
+                lambda q: (q.quantity - q.reserved_quantity) >= quantity
+            )
+            if fulfilling:
+                quants = fulfilling
+        quants = quants.sorted(_fefo_key)
+        quant = quants[0]
+        return quant.lot_id, quant.product_id
+
     @http.route(
         '/ampath/inventory/stock',
         type='http',
@@ -702,12 +748,28 @@ class InventoryController(http.Controller):
         if lot_error:
             return lot_error
 
+        if not lot:
+            lot, lot_product = self._pick_fefo_lot(
+                env, products, warehouse, quantity=quantity
+            )
+            if lot:
+                _logger.info(
+                    'FEFO auto-picked lot %s product %s for drug %s warehouse %s',
+                    lot.name,
+                    lot_product.default_code or lot_product.display_name,
+                    openmrs_drug_uuid,
+                    warehouse.display_name,
+                )
+
         product = lot_product or products[0]
         if not lot and len(products) > 1:
+            sku_list = ', '.join(
+                p.default_code or p.display_name for p in products
+            )
             return self._json_response({
                 'error': (
-                    'lot_name (or lot_id) is required when multiple SKUs exist for this drug. '
-                    'Use GET /ampath/inventory/batches to choose a batch.'
+                    f'No in-stock lot at warehouse {warehouse.display_name} '
+                    f'for this drug. SKUs: {sku_list}'
                 ),
             }, status=400)
 

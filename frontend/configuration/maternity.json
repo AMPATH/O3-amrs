@@ -31,8 +31,18 @@
                 "hasFilter": false,
                 "headerTitle": "maternityAdmission",
                 "displayText": "maternityAdmission",
-                "encounterType": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1a3",
+                "encounterType": "1bf4f1f6-8965-4fb4-a7f0-29d31fefb1ac",
                 "columns": [
+                  {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
                   {
                     "id": "actions",
                     "title": "actionsTitle",
