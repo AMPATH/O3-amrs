@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ampath_department_issue_tree" model="ir.ui.view">
+        <field name="name">ampath.department.issue.tree</field>
+        <field name="model">ampath.department.issue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="department_id"/>
+                <field name="warehouse_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_ampath_department_issue_form" model="ir.ui.view">
+        <field name="name">ampath.department.issue.form</field>
+        <field name="model">ampath.department.issue</field>
+        <field name="arch" type="xml">
+            <form string="Department issue">
+                <header>
+                    <button name="action_validate" type="object" string="Validate"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"/>
+                    <button name="%(ampath_billing.action_report_department_issue)d"
+                            type="action" string="Print" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="warehouse_id"/>
+                            <field name="department_id"/>
+                            <field name="date"/>
+                            <field name="account_no"/>
+                        </group>
+                        <group>
+                            <field name="requisitioning_officer"/>
+                            <field name="requisitioning_designation"/>
+                            <field name="issued_by"/>
+                            <field name="received_by"/>
+                            <field name="received_designation"/>
+                            <field name="picking_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="remarks" placeholder="Remarks"/>
+                    <field name="line_ids" readonly="state != 'draft'">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="default_code" optional="show"/>
+                            <field name="product_uom_id"/>
+                            <field name="qty_required"/>
+                            <field name="qty_issued"/>
+                            <field name="lot_id"/>
+                            <field name="value"/>
+                            <field name="remarks"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ampath_department_issue" model="ir.actions.act_window">
+        <field name="name">Department Issues</field>
+        <field name="res_model">ampath.department.issue</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Issue stock to a department (S11).</p>
+            <p>Validated issues deduct pharmacy stock and count as MOH 647 Quantity Issued (C).</p>
+        </field>
+    </record>
+
+    <record id="view_ampath_facility_exchange_tree" model="ir.ui.view">
+        <field name="name">ampath.facility.exchange.tree</field>
+        <field name="model">ampath.facility.exchange</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="exchange_type"/>
+                <field name="date"/>
+                <field name="facility_id"/>
+                <field name="warehouse_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_ampath_facility_exchange_form" model="ir.ui.view">
+        <field name="name">ampath.facility.exchange.form</field>
+        <field name="model">ampath.facility.exchange</field>
+        <field name="arch" type="xml">
+            <form string="External transfer">
+                <header>
+                    <button name="action_validate" type="object" string="Validate"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"/>
+                    <button name="%(ampath_billing.action_report_facility_exchange)d"
+                            type="action" string="Print" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="exchange_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="warehouse_id"/>
+                            <field name="facility_id"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="reference"/>
+                            <field name="picking_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="remarks" placeholder="Remarks"/>
+                    <field name="line_ids" readonly="state != 'draft'">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="default_code" optional="show"/>
+                            <field name="product_uom_id"/>
+                            <field name="qty"/>
+                            <field name="lot_id"/>
+                            <field name="value"/>
+                            <field name="remarks"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ampath_facility_exchange_receipt" model="ir.actions.act_window">
+        <field name="name">External Receipts</field>
+        <field name="res_model">ampath.facility.exchange</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('exchange_type', '=', 'receipt')]</field>
+        <field name="context">{'default_exchange_type': 'receipt'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Record stock obtained from another facility.</p>
+            <p>Counts as MOH 647 positive adjustment (E), not a vendor receipt.</p>
+        </field>
+    </record>
+
+    <record id="action_ampath_facility_exchange_issue" model="ir.actions.act_window">
+        <field name="name">External Issues</field>
+        <field name="res_model">ampath.facility.exchange</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('exchange_type', '=', 'issue')]</field>
+        <field name="context">{'default_exchange_type': 'issue'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Issue stock to another facility.</p>
+            <p>Counts as MOH 647 negative adjustment (F), not a patient issue.</p>
+        </field>
+    </record>
+
+    <record id="view_ampath_issue_department_tree" model="ir.ui.view">
+        <field name="name">ampath.issue.department.tree</field>
+        <field name="model">ampath.issue.department</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_ampath_issue_department" model="ir.actions.act_window">
+        <field name="name">Issue Departments</field>
+        <field name="res_model">ampath.issue.department</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="view_ampath_external_facility_tree" model="ir.ui.view">
+        <field name="name">ampath.external.facility.tree</field>
+        <field name="model">ampath.external.facility</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_ampath_external_facility" model="ir.actions.act_window">
+        <field name="name">Other Facilities</field>
+        <field name="res_model">ampath.external.facility</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_ampath_stock_vouchers"
+              name="Stock vouchers"
+              parent="stock.menu_stock_root"
+              sequence="85"
+              groups="stock.group_stock_user"/>
+    <menuitem id="menu_ampath_department_issue"
+              name="Department Issues"
+              parent="menu_ampath_stock_vouchers"
+              action="action_ampath_department_issue"
+              sequence="10"/>
+    <menuitem id="menu_ampath_facility_exchange_receipt"
+              name="External Receipts"
+              parent="menu_ampath_stock_vouchers"
+              action="action_ampath_facility_exchange_receipt"
+              sequence="20"/>
+    <menuitem id="menu_ampath_facility_exchange_issue"
+              name="External Issues"
+              parent="menu_ampath_stock_vouchers"
+              action="action_ampath_facility_exchange_issue"
+              sequence="30"/>
+    <menuitem id="menu_ampath_issue_department"
+              name="Issue Departments"
+              parent="menu_ampath_stock_vouchers"
+              action="action_ampath_issue_department"
+              sequence="40"
+              groups="stock.group_stock_manager"/>
+    <menuitem id="menu_ampath_external_facility"
+              name="Other Facilities"
+              parent="menu_ampath_stock_vouchers"
+              action="action_ampath_external_facility"
+              sequence="50"
+              groups="stock.group_stock_manager"/>
+</odoo>

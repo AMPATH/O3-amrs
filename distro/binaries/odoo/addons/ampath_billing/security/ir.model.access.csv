@@ -9,3 +9,11 @@ access_ampath_moh647_tracer_user,ampath.moh647.tracer user,model_ampath_moh647_t
 access_ampath_moh647_tracer_manager,ampath.moh647.tracer manager,model_ampath_moh647_tracer,stock.group_stock_manager,1,1,1,1
 access_ampath_moh647_tracer_product_user,ampath.moh647.tracer.product user,model_ampath_moh647_tracer_product,stock.group_stock_user,1,1,1,1
 access_ampath_moh647_report_wizard_user,ampath.moh647.report.wizard user,model_ampath_moh647_report_wizard,stock.group_stock_user,1,1,1,1
+access_ampath_issue_department_user,ampath.issue.department user,model_ampath_issue_department,stock.group_stock_user,1,1,1,0
+access_ampath_issue_department_manager,ampath.issue.department manager,model_ampath_issue_department,stock.group_stock_manager,1,1,1,1
+access_ampath_department_issue_user,ampath.department.issue user,model_ampath_department_issue,stock.group_stock_user,1,1,1,1
+access_ampath_department_issue_line_user,ampath.department.issue.line user,model_ampath_department_issue_line,stock.group_stock_user,1,1,1,1
+access_ampath_external_facility_user,ampath.external.facility user,model_ampath_external_facility,stock.group_stock_user,1,1,1,0
+access_ampath_external_facility_manager,ampath.external.facility manager,model_ampath_external_facility,stock.group_stock_manager,1,1,1,1
+access_ampath_facility_exchange_user,ampath.facility.exchange user,model_ampath_facility_exchange,stock.group_stock_user,1,1,1,1
+access_ampath_facility_exchange_line_user,ampath.facility.exchange.line user,model_ampath_facility_exchange_line,stock.group_stock_user,1,1,1,1

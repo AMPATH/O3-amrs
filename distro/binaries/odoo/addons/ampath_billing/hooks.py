@@ -118,9 +118,36 @@ def configure_internal_transfer_lots(env):
     _logger.info('ampath_billing: configured Internal Transfers to use existing lots')
 
 
+def ensure_external_transit_locations(env):
+    Location = env['stock.location'].sudo()
+    for company in env['res.company'].sudo().search([]):
+        existing = Location.search(
+            [
+                ('company_id', '=', company.id),
+                ('x_ampath_external_transit', '=', True),
+            ],
+            limit=1,
+        )
+        if existing:
+            continue
+        Location.create(
+            {
+                'name': 'External facilities',
+                'usage': 'transit',
+                'company_id': company.id,
+                'x_ampath_external_transit': True,
+            }
+        )
+        _logger.info(
+            'ampath_billing: created external-facility transit location for %s',
+            company.name,
+        )
+
+
 def post_init_hook(env):
     if not isinstance(env, api.Environment):
         env = api.Environment(env, SUPERUSER_ID, {})
     _apply_base_company_branding(env)
     apply_moh647_default_mappings(env)
     configure_internal_transfer_lots(env)
+    ensure_external_transit_locations(env)
