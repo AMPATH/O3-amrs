@@ -1,0 +1,2 @@
+Uuid,Role name,Description,Inherited roles,Privileges,_order:1100
+b3d7e91c-4a2f-5c18-8e6d-0a1c2e3f4b50,FHIR Proxy Access,Read Odoo ChargeItemDefinition and InventoryItem via fhirproxy (order-basket stock/price),,Get ChargeItemDefinition; Get InventoryItem,

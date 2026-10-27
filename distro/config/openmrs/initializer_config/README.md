@@ -8,6 +8,9 @@ Place files **directly** under the domain folders (same layout as AMRS content):
 | `concepts/hie_product_catalogue_sets.csv` |
 | `conceptsources/hie_product_catalogue.csv` |
 | `globalproperties/hie-drugorder-properties.xml` |
+| `privileges/privileges_fhirproxy.csv` |
+| `globalproperties/fhirproxy-privileges.xml` |
+| `roles/roles_fhirproxy.csv` (additive `FHIR Proxy Access` role only — does not replace Inventory Provider Access) |
 
 Fixed UUIDs (UUID5 DNS namespace):
 

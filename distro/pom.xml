@@ -55,6 +55,7 @@
     <!-- Stock Management and Billing -->
     <stockmanagement.version>3.0.0</stockmanagement.version>
     <billing.version>2.4.0</billing.version>
+    <fhirproxy.version>1.0.0</fhirproxy.version>
     <!-- Content Packages -->
     <reference-content.version>1.5.0-SNAPSHOT</reference-content.version>
     <amrs-content.version>1.0.0-SNAPSHOT</amrs-content.version>
@@ -232,6 +233,12 @@
       <groupId>org.openmrs.module</groupId>
       <artifactId>billing-omod</artifactId>
       <version>${billing.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openmrs.module</groupId>
+      <artifactId>fhirproxy-omod</artifactId>
+      <version>${fhirproxy.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

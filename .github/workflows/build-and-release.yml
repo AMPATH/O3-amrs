@@ -31,6 +31,7 @@ env:
   ODOO_IMAGE: odoo
   EIP_ODOO_OPENMRS_IMAGE: eip-odoo-openmrs
   EIP_ODOO_OPENMRS_AMPATH_IMAGE: eip-odoo-openmrs-ampath
+  FHIR_ODOO_IMAGE: fhir-odoo
 
 jobs:
   build-and-release:
@@ -213,3 +214,17 @@ jobs:
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.EIP_ODOO_OPENMRS_AMPATH_IMAGE }}:${{ steps.vars.outputs.SHORT_SHA }}
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.EIP_ODOO_OPENMRS_AMPATH_IMAGE }}:${{ env.BRANCH_IMAGE_TAG }}
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.EIP_ODOO_OPENMRS_AMPATH_IMAGE }}:${{ env.RELEASE_VERSION }}
+
+      - name: Build and push fhir-odoo image (list_price ChargeItemDefinition)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./fhir-odoo-docker
+          file: ./fhir-odoo-docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            FHIR_ODOO_REF=1.1.0
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.FHIR_ODOO_IMAGE }}:${{ steps.vars.outputs.SHORT_SHA }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.FHIR_ODOO_IMAGE }}:${{ env.BRANCH_IMAGE_TAG }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.FHIR_ODOO_IMAGE }}:${{ env.RELEASE_VERSION }}
