@@ -1,9 +1,16 @@
-# Attach EIP to the OpenMRS compose network so hostnames `backend` and `db` resolve.
-# Usage (after OpenMRS is up):
+# Attach EIP and fhir-odoo to the OpenMRS compose network so hostnames `backend`,
+# `db`, and `fhir-odoo` resolve (order-basket stock/price via fhirproxy).
+# After OpenMRS is up:
 #   docker compose -f docker-compose-odoo.yml -f docker-compose-odoo.local.yml -f docker-compose-eip-openmrs-network.yml --env-file .env up -d
+# On the OpenMRS stack, set EXTERNAL_FHIR_API_ENABLED=true and the same ODOO_USER /
+# ODOO_PASSWORD as this file so fhirproxy can authenticate.
 
 services:
   eip-odoo-openmrs:
+    networks:
+      - default
+      - openmrs
+  fhir-odoo:
     networks:
       - default
       - openmrs
