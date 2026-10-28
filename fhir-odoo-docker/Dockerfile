@@ -1,25 +1,24 @@
-# Patched fhir-odoo: ChargeItemDefinition uses Odoo sales list_price (not cost).
-# Build from ozone-his/fhir-odoo sources — mekomsolutions/fhir-odoo is a runtime JAR image.
-# The same edit is recorded in patches/use-list-price.patch.
-ARG FHIR_ODOO_REF=1.1.0
+# AMPATH fhir-odoo:
+# - ChargeItemDefinition uses sales list_price (not cost standard_price)
+# - InventoryItem/ChargeItemDefinition resolve HIE SKUs via x_openmrs_drug_uuid
+# - InventoryItem?location=<OpenMRS location UUID> scopes qty to that company's warehouse
+FROM mekomsolutions/fhir-odoo
 
-FROM maven:3.9-eclipse-temurin-17 AS build
-ARG FHIR_ODOO_REF
-WORKDIR /src
-RUN curl -fsSL "https://github.com/ozone-his/fhir-odoo/archive/refs/tags/${FHIR_ODOO_REF}.tar.gz" \
-    | tar xz --strip-components=1
-RUN set -eux; \
-    MAPPER=fhir-odoo-mapper/src/main/java/com/ozonehis/fhir/odoo/mappers/ChargeItemDefinitionMapper.java; \
-    TEST=fhir-odoo-mapper/src/test/java/com/ozonehis/fhir/odoo/mappers/ChargeItemDefinitionMapperTest.java; \
-    grep -q 'getStandardPrice()' "$MAPPER"; \
-    sed -i 's/product\.getStandardPrice()/product.getListPrice()/g' "$MAPPER" "$TEST"; \
-    grep -q 'getListPrice()' "$MAPPER"; \
-    ! grep -q 'getStandardPrice()' "$MAPPER"
-RUN mvn -q -DskipTests --batch-mode --no-transfer-progress package
-RUN cp fhir-odoo-app/target/fhir-odoo-app-*.jar /tmp/fhir-odoo.jar
-
-FROM eclipse-temurin:17-jre
+USER root
 WORKDIR /app
-COPY --from=build /tmp/fhir-odoo.jar /app/fhir-odoo.jar
+
+COPY overlays/ /tmp/overlays/
+
+# Overlay patched sources onto the upstream tree that remains in this image, then rebuild.
+RUN set -eux; \
+    cp -a /tmp/overlays/. /app/; \
+    MAPPER=fhir-odoo-mapper/src/main/java/com/ozonehis/fhir/odoo/mappers/ChargeItemDefinitionMapper.java; \
+    grep -q 'getListPrice()' "$MAPPER"; \
+    grep -q 'x_openmrs_drug_uuid' fhir-odoo-mapper/src/main/java/com/ozonehis/fhir/odoo/model/Product.java; \
+    grep -q 'searchByOpenmrsDrugUuid' fhir-odoo/src/main/java/com/ozonehis/fhir/odoo/api/ProductService.java; \
+    grep -q 'name = "location"' fhir-odoo/src/main/java/com/ozonehis/fhir/odoo/inventoryItem/InventoryItemResourceProvider.java; \
+    mvn -q -DskipTests --batch-mode package; \
+    cp fhir-odoo-app/target/fhir-odoo-app-*.jar /app/fhir-odoo.jar
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/fhir-odoo.jar"]
+ENTRYPOINT ["java", "-jar", "fhir-odoo.jar"]

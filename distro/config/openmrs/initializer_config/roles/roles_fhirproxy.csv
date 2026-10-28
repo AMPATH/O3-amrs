@@ -1,2 +1,2 @@
 Uuid,Role name,Description,Inherited roles,Privileges,_order:1100
-b3d7e91c-4a2f-5c18-8e6d-0a1c2e3f4b50,FHIR Proxy Access,Read Odoo ChargeItemDefinition and InventoryItem via fhirproxy (order-basket stock/price),,Get ChargeItemDefinition; Get InventoryItem,
+8ee2f2ac-467f-11ed-8109-00155dcc3fc0,Inventory Provider Access,This Role enables a provider to view inventory items and access quantities available,,App: stockmanagement.stockItems; Get Concepts; Get Locations; Get Users; App: stockmanagement.stockSources; App: stockmanagement.stockOperationType; Task: stockmanagement.party.read; Task: stockmanagement.stockItems.dispense.qty; Get ChargeItemDefinition; Get InventoryItem,

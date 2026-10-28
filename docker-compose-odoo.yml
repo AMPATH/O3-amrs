@@ -120,14 +120,12 @@ services:
       - ODOO_PORT=8069
       - ODOO_DATABASE=${ODOO_DATABASE:-odoo}
       - EIP_ODOO_DRUGS_CATEGORY_EXT_ID=${EIP_ODOO_DRUGS_CATEGORY_EXT_ID:-categ_products_drug_orders}
-    # ChargeItemDefinition uses sales list_price (not cost). CI publishes
-    # ghcr.io/ampath/o3-amrs-fhir-odoo:{latest|claims-workflow|<sha>}.
-    image: ${FHIR_ODOO_IMAGE:-ghcr.io/ampath/o3-amrs-fhir-odoo:latest}
+    # Built locally as ghcr.io/ampath/o3-amrs-fhir-odoo:local: list_price, HIE drug-UUID
+    # lookup (x_openmrs_drug_uuid), optional InventoryItem?location= warehouse qty.
+    image: ${FHIR_ODOO_IMAGE:-ghcr.io/ampath/o3-amrs-fhir-odoo:local}
     build:
       context: ./fhir-odoo-docker
       dockerfile: Dockerfile
-      args:
-        FHIR_ODOO_REF: ${FHIR_ODOO_REF:-1.1.0}
     ports:
       - "${FHIR_ODOO_PUBLIC_PORT:-8083}:8080"
     restart: unless-stopped

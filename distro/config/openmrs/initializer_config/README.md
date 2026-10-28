@@ -10,7 +10,7 @@ Place files **directly** under the domain folders (same layout as AMRS content):
 | `globalproperties/hie-drugorder-properties.xml` |
 | `privileges/privileges_fhirproxy.csv` |
 | `globalproperties/fhirproxy-privileges.xml` |
-| `roles/roles_fhirproxy.csv` (additive `FHIR Proxy Access` role only — does not replace Inventory Provider Access) |
+| `roles/roles_fhirproxy.csv` |
 
 Fixed UUIDs (UUID5 DNS namespace):
 

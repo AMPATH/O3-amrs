@@ -60,12 +60,10 @@ services:
       LUCENE_MATCH_TYPE: ${LUCENE_MATCH_TYPE:-START}
       DOCUMENT_MAX_SIZE_MB: ${DOCUMENT_MAX_SIZE_MB:-7}
       TZ: Africa/Nairobi
-      # FHIR Proxy → fhir-odoo. Leave disabled unless Odoo is on the same Docker network
-      # (set EXTERNAL_FHIR_API_ENABLED=true and ODOO_USER/ODOO_PASSWORD in the OpenMRS .env).
-      EXTERNAL_FHIR_API_ENABLED: ${EXTERNAL_FHIR_API_ENABLED:-false}
+      # FHIR Proxy → fhir-odoo (stock/price for O3 order basket). Requires docker-compose-odoo.yml.
       EXTERNAL_FHIR_API_URL: ${EXTERNAL_FHIR_API_URL:-http://fhir-odoo:8080/odoo/fhir/R4}
-      EXTERNAL_FHIR_API_USERNAME: ${ODOO_USER:-}
-      EXTERNAL_FHIR_API_PASSWORD: ${ODOO_PASSWORD:-}
+      EXTERNAL_FHIR_API_USERNAME: ${ODOO_USER:-admin}
+      EXTERNAL_FHIR_API_PASSWORD: ${ODOO_PASSWORD:-admin}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs"]
       timeout: 5s
