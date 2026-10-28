@@ -215,7 +215,7 @@ jobs:
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.EIP_ODOO_OPENMRS_AMPATH_IMAGE }}:${{ env.BRANCH_IMAGE_TAG }}
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.REPO_NAME }}-${{ env.EIP_ODOO_OPENMRS_AMPATH_IMAGE }}:${{ env.RELEASE_VERSION }}
 
-      - name: Build and push fhir-odoo image (list_price ChargeItemDefinition)
+      - name: Build and push fhir-odoo image (list_price + HIE InventoryItem)
         uses: docker/build-push-action@v6
         with:
           context: ./fhir-odoo-docker
