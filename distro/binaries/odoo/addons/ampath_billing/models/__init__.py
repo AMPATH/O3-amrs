@@ -9,3 +9,5 @@ from . import product_product
 from . import product_template
 from . import stock_picking
 from . import moh647_tracer
+from . import department_issue
+from . import facility_exchange
