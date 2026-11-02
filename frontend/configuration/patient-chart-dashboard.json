@@ -492,7 +492,7 @@
             "slot": "cervical-cancer-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "cervicalCancer": "Cancer"
+                "cervicalCancer": "Cancer screening and Treatment"
               }
             }
           },
