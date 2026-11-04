@@ -17,12 +17,16 @@ ARG MVN_ARGS="install"
 
 COPY pom.xml ./
 COPY distro distro
+COPY modules/*.omod ./modules/
 
 RUN --mount=type=secret,id=m2settings,target=/usr/share/maven/ref/settings-docker.xml if [[ "$MVN_ARGS" != "deploy" || "$(arch)" = "x86_64" ]]; then mvn $MVN_ARGS_SETTINGS $MVN_ARGS; else mvn $MVN_ARGS_SETTINGS install; fi
 
 RUN cp ./distro/target/sdk-distro/web/openmrs_core/openmrs.war /openmrs/distribution/openmrs_core/
 RUN cp ./distro/target/sdk-distro/web/openmrs-distro.properties /openmrs/distribution/
 RUN cp -R ./distro/target/sdk-distro/web/openmrs_modules /openmrs/distribution/openmrs_modules/
+# Prefer local modules/ overlays (e.g. billing SNAPSHOT, amrsextensions); drop Maven billing so versions do not collide
+RUN rm -f /openmrs/distribution/openmrs_modules/billing-*.omod \
+ && cp -R ./modules/*.omod /openmrs/distribution/openmrs_modules/
 RUN cp -R ./distro/target/sdk-distro/web/openmrs_owas /openmrs/distribution/openmrs_owas/
 RUN cp -R ./distro/target/sdk-distro/web/openmrs_config /openmrs/distribution/openmrs_config/
 
@@ -36,12 +40,15 @@ ARG MVN_ARGS="install"
 
 COPY pom.xml .
 COPY sites/$MVN_PROJECT sites/$MVN_PROJECT
+COPY modules/*.omod ./modules/
 
 RUN --mount=type=secret,id=m2settings,target=/usr/share/maven/ref/settings-docker.xml if [[ "$MVN_ARGS" != "deploy" || "$(arch)" = "x86_64" ]]; then mvn $MVN_ARGS_SETTINGS $MVN_ARGS; else mvn $MVN_ARGS_SETTINGS install; fi
 
 RUN cp ./sites/$MVN_PROJECT/target/sdk-distro/web/openmrs_core/openmrs.war /openmrs/distribution/openmrs_core/
 RUN cp ./sites/$MVN_PROJECT/target/sdk-distro/web/openmrs-distro.properties /openmrs/distribution/
 RUN cp -R ./sites/$MVN_PROJECT/target/sdk-distro/web/openmrs_modules /openmrs/distribution/openmrs_modules/
+RUN rm -f /openmrs/distribution/openmrs_modules/billing-*.omod \
+ && cp -R ./modules/*.omod /openmrs/distribution/openmrs_modules/
 RUN cp -R ./sites/$MVN_PROJECT/target/sdk-distro/web/openmrs_owas /openmrs/distribution/openmrs_owas/
 RUN cp -R ./sites/$MVN_PROJECT/target/sdk-distro/web/openmrs_config /openmrs/distribution/openmrs_config/
 
