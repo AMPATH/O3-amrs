@@ -112,9 +112,17 @@ def parse_excel(xlsx: Path) -> list[dict]:
         raise SystemExit('Requires openpyxl: pip install openpyxl') from exc
 
     wb = openpyxl.load_workbook(xlsx, read_only=True, data_only=True)
-    if 'Ordering Tool' not in wb.sheetnames:
-        raise SystemExit(f'Sheet "Ordering Tool" not found in {xlsx}')
-    ws = wb['Ordering Tool']
+    sheet_name = None
+    for candidate in ('Ordering Tool', 'Sales Items'):
+        if candidate in wb.sheetnames:
+            sheet_name = candidate
+            break
+    if sheet_name is None:
+        raise SystemExit(
+            f'Neither "Ordering Tool" nor "Sales Items" found in {xlsx}; '
+            f'sheets={wb.sheetnames}'
+        )
+    ws = wb[sheet_name]
 
     products: list[dict] = []
     current_section = 'UNKNOWN'
@@ -128,18 +136,22 @@ def parse_excel(xlsx: Path) -> list[dict]:
         pack_size = row[5] if len(row) > 5 else None
         price = row[6] if len(row) > 6 else None
 
-        if not code or not str(code).strip():
-            continue
-        code_s = str(code).strip()
+        code_s = str(code).strip() if code not in (None, '') else ''
+        name_s = str(name).strip() if name not in (None, '') else ''
+        category_s = str(category).strip() if category not in (None, '') else ''
 
-        if name is None and category is None:
+        # Section headers: health-centres tool puts the section title in the name
+        # column with no product code; hospitals tool may put it in the code column.
+        if not code_s and name_s and not category_s:
+            if not name_s.upper().startswith('TOTAL'):
+                current_section = name_s.upper()
+            continue
+        if not code_s:
+            continue
+        if not name_s and not category_s:
             if not code_s.upper().startswith('TOTAL'):
                 current_section = code_s.upper()
             continue
-        if name is None:
-            continue
-
-        name_s = str(name).strip()
         if not name_s:
             continue
 
@@ -150,7 +162,7 @@ def parse_excel(xlsx: Path) -> list[dict]:
                 'name': name_s,
                 'match_name': match_name,
                 'is_tracer': is_tracer,
-                'category': str(category).strip() if category else '',
+                'category': category_s,
                 'pack_size': str(pack_size).strip() if pack_size else '',
                 'price': float_or_str(price),
                 'section': current_section,
