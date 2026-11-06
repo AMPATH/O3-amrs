@@ -30,7 +30,9 @@ RUN cp /openmrs_distro/distro/target/sdk-distro/web/openmrs_core/openmrs.war /op
 
 RUN cp /openmrs_distro/distro/target/sdk-distro/web/openmrs-distro.properties /openmrs/distribution/
 RUN cp -R /openmrs_distro/distro/target/sdk-distro/web/openmrs_modules /openmrs/distribution/openmrs_modules/
-RUN cp -R /openmrs_distro/modules/*.omod /openmrs/distribution/openmrs_modules/
+# Prefer local modules/ overlays; drop Maven billing so versions do not collide
+RUN rm -f /openmrs/distribution/openmrs_modules/billing-*.omod \
+ && cp -R /openmrs_distro/modules/*.omod /openmrs/distribution/openmrs_modules/
 RUN cp -R /openmrs_distro/distro/target/sdk-distro/web/openmrs_owas /openmrs/distribution/openmrs_owas/
 RUN cp -R /openmrs_distro/distro/target/sdk-distro/web/openmrs_config /openmrs/distribution/openmrs_config/
 
