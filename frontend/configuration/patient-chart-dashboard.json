@@ -363,16 +363,14 @@
       "mnch-group-slot": {
         "add": [
           "dashboard#nutrition",
-          "dashboard#anc",
-          "dashboard#pnc",
+          "dashboard#mnch-clinical",
           "dashboard#immunisation",
           "dashboard#cwc-nutrition",
           "dashboard#family-planning"
         ],
         "order": [
           "dashboard#nutrition",
-          "dashboard#anc",
-          "dashboard#pnc",
+          "dashboard#mnch-clinical",
           "dashboard#immunisation",
           "dashboard#cwc-nutrition",
           "dashboard#family-planning"
@@ -391,29 +389,16 @@
               }
             }
           },
-          "dashboard#anc": {
+          "dashboard#mnch-clinical": {
             "Display conditions": {
               "privileges": ["O3 View ANC Patient Chart Section Details"]
             },
-            "title": "anc",
-            "path": "anc",
-            "slot": "anc-dashboard-slot",
+            "title": "mnchClinical",
+            "path": "mnch-clinical",
+            "slot": "mnch-clinical-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "anc": "ANC"
-              }
-            }
-          },
-          "dashboard#pnc": {
-            "Display conditions": {
-              "privileges": ["O3 View PNC Patient Chart Section Details"]
-            },
-            "title": "pnc",
-            "path": "pnc",
-            "slot": "pnc-dashboard-slot",
-            "Translation overrides": {
-              "en": {
-                "pnc": "PNC"
+                "mnchClinical": "MNCH Clinical Encounter"
               }
             }
           },
@@ -492,7 +477,7 @@
             "slot": "cervical-cancer-dashboard-slot",
             "Translation overrides": {
               "en": {
-                "cervicalCancer": "Cancer screening and Treatment"
+                "cervicalCancer": "Cancer screening"
               }
             }
           },
