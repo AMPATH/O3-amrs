@@ -47,7 +47,8 @@
 
   <build>
     <plugins>
-      <!-- Unpack Ozone distro from Mekom Nexus (same as openmrs-distro-his / Ozone maven-parent) -->
+      <!-- Unpack Ozone distro from Mekom Nexus (same as openmrs-distro-his / Ozone maven-parent),
+           then the Odoo initializer addon into binaries/odoo/addons (merge with distro addons) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -62,6 +63,19 @@
             <configuration>
               <outputDirectory>${project.build.directory}/ozone-distro</outputDirectory>
               <includeArtifactIds>ozone-distro</includeArtifactIds>
+              <includeScope>provided</includeScope>
+            </configuration>
+          </execution>
+          <!-- Must run after copy-ozone-odoo-assets (generate-resources), which overwrites binaries/odoo -->
+          <execution>
+            <id>unpack-odoo-initializer</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/odoo-build/binaries/odoo/addons</outputDirectory>
+              <includeArtifactIds>odoo-initializer</includeArtifactIds>
               <includeScope>provided</includeScope>
             </configuration>
           </execution>
@@ -119,27 +133,6 @@
         </executions>
       </plugin>
 
-      <!-- Unpack Odoo initializer addon into binaries/odoo/addons (merge with distro addons) -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <id>unpack-odoo-initializer</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/odoo-build/binaries/odoo/addons</outputDirectory>
-              <includeArtifactIds>odoo-initializer</includeArtifactIds>
-              <includeScope>provided</includeScope>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Copy Dockerfiles into build context -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -171,7 +164,7 @@
         </executions>
       </plugin>
 
-      <!-- Build PostgreSQL image (use -Dskip.docker.build=true to skip) -->
+      <!-- Build PostgreSQL, Odoo and EIP images (use -Dskip.docker.build=true to skip) -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -199,15 +192,6 @@
               <workingDirectory>${project.build.directory}/odoo-build</workingDirectory>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <!-- Build Odoo image (use -Dskip.docker.build=true to skip) -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
           <execution>
             <id>docker-build-odoo</id>
             <phase>package</phase>

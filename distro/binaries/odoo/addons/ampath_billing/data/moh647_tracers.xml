@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Medicines 1–37 -->
+    <record id="moh647_tracer_01" model="ampath.moh647.tracer">
+        <field name="sequence">1</field>
+        <field name="section">medicines</field>
+        <field name="name">Adrenaline Injection 1mg/ml</field>
+        <field name="unit_of_issue">Ampoule</field>
+    </record>
+    <record id="moh647_tracer_02" model="ampath.moh647.tracer">
+        <field name="sequence">2</field>
+        <field name="section">medicines</field>
+        <field name="name">Albendazole Tab. 400mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_03" model="ampath.moh647.tracer">
+        <field name="sequence">3</field>
+        <field name="section">medicines</field>
+        <field name="name">Amlodipine 5mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_04" model="ampath.moh647.tracer">
+        <field name="sequence">4</field>
+        <field name="section">medicines</field>
+        <field name="name">Amoxicillin Capsules, 500mg</field>
+        <field name="unit_of_issue">Capsule</field>
+    </record>
+    <record id="moh647_tracer_05" model="ampath.moh647.tracer">
+        <field name="sequence">5</field>
+        <field name="section">medicines</field>
+        <field name="name">Amoxicillin Dispersible Tablets, 250mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_06" model="ampath.moh647.tracer">
+        <field name="sequence">6</field>
+        <field name="section">medicines</field>
+        <field name="name">Atorvastatin 20mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_07" model="ampath.moh647.tracer">
+        <field name="sequence">7</field>
+        <field name="section">medicines</field>
+        <field name="name">Benzyl penicillin Injection 1 MU</field>
+        <field name="unit_of_issue">Vial</field>
+    </record>
+    <record id="moh647_tracer_08" model="ampath.moh647.tracer">
+        <field name="sequence">8</field>
+        <field name="section">medicines</field>
+        <field name="name">Carbamazepine 200mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_09" model="ampath.moh647.tracer">
+        <field name="sequence">9</field>
+        <field name="section">medicines</field>
+        <field name="name">Ceftriaxone 1 gram injection</field>
+        <field name="unit_of_issue">Vial</field>
+    </record>
+    <record id="moh647_tracer_10" model="ampath.moh647.tracer">
+        <field name="sequence">10</field>
+        <field name="section">medicines</field>
+        <field name="name">Cetirizine 10mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_11" model="ampath.moh647.tracer">
+        <field name="sequence">11</field>
+        <field name="section">medicines</field>
+        <field name="name">Chlorhexidine Gel 4% (7.1% as Digluconate)</field>
+        <field name="unit_of_issue">Tube</field>
+    </record>
+    <record id="moh647_tracer_12" model="ampath.moh647.tracer">
+        <field name="sequence">12</field>
+        <field name="section">medicines</field>
+        <field name="name">Chlorpheniramine oral liquid 2mg/5mL</field>
+        <field name="unit_of_issue">Bottle</field>
+    </record>
+    <record id="moh647_tracer_13" model="ampath.moh647.tracer">
+        <field name="sequence">13</field>
+        <field name="section">medicines</field>
+        <field name="name">Fluoxetine 20mg tablets</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_14" model="ampath.moh647.tracer">
+        <field name="sequence">14</field>
+        <field name="section">medicines</field>
+        <field name="name">Gentamicin Injection, 80mg/2ml</field>
+        <field name="unit_of_issue">Ampoule</field>
+    </record>
+    <record id="moh647_tracer_15" model="ampath.moh647.tracer">
+        <field name="sequence">15</field>
+        <field name="section">medicines</field>
+        <field name="name">Gliclazide 40mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_16" model="ampath.moh647.tracer">
+        <field name="sequence">16</field>
+        <field name="section">medicines</field>
+        <field name="name">Haloperidol 5mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_17" model="ampath.moh647.tracer">
+        <field name="sequence">17</field>
+        <field name="section">medicines</field>
+        <field name="name">Hydrocortisone Injection 100mg</field>
+        <field name="unit_of_issue">Vial</field>
+    </record>
+    <record id="moh647_tracer_18" model="ampath.moh647.tracer">
+        <field name="sequence">18</field>
+        <field name="section">medicines</field>
+        <field name="name">Hydroxyurea 500mg</field>
+        <field name="unit_of_issue">Capsule</field>
+    </record>
+    <record id="moh647_tracer_19" model="ampath.moh647.tracer">
+        <field name="sequence">19</field>
+        <field name="section">medicines</field>
+        <field name="name">Insulin, Premix (short acting + intermediate acting) Human [30 regular + 70 NPH] Injection</field>
+        <field name="unit_of_issue">Vial</field>
+    </record>
+    <record id="moh647_tracer_20" model="ampath.moh647.tracer">
+        <field name="sequence">20</field>
+        <field name="section">medicines</field>
+        <field name="name">Lignocaine 2% Injection</field>
+        <field name="unit_of_issue">Vial</field>
+    </record>
+    <record id="moh647_tracer_21" model="ampath.moh647.tracer">
+        <field name="sequence">21</field>
+        <field name="section">medicines</field>
+        <field name="name">Losartan 50mg/Hydrochlorothiazide 12.5mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_22" model="ampath.moh647.tracer">
+        <field name="sequence">22</field>
+        <field name="section">medicines</field>
+        <field name="name">Magnesium sulphate injection 500mg/ml (50%)</field>
+        <field name="unit_of_issue">Ampoule</field>
+    </record>
+    <record id="moh647_tracer_23" model="ampath.moh647.tracer">
+        <field name="sequence">23</field>
+        <field name="section">medicines</field>
+        <field name="name">Metformin 500mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_24" model="ampath.moh647.tracer">
+        <field name="sequence">24</field>
+        <field name="section">medicines</field>
+        <field name="name">Metronidazole Tablet, 200mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_25" model="ampath.moh647.tracer">
+        <field name="sequence">25</field>
+        <field name="section">medicines</field>
+        <field name="name">Midazolam Injection 5mg/ml</field>
+        <field name="unit_of_issue">Ampoule</field>
+    </record>
+    <record id="moh647_tracer_26" model="ampath.moh647.tracer">
+        <field name="sequence">26</field>
+        <field name="section">medicines</field>
+        <field name="name">Nystatin oral suspension 100 000 IU/ml</field>
+        <field name="unit_of_issue">Bottle</field>
+    </record>
+    <record id="moh647_tracer_27" model="ampath.moh647.tracer">
+        <field name="sequence">27</field>
+        <field name="section">medicines</field>
+        <field name="name">Omeprazole 20mg caps</field>
+        <field name="unit_of_issue">Capsule</field>
+    </record>
+    <record id="moh647_tracer_28" model="ampath.moh647.tracer">
+        <field name="sequence">28</field>
+        <field name="section">medicines</field>
+        <field name="name">ORS Co-Pack (4 sachets of low osmolarity ORS (500ml formulation) + 10 tablets of dispersible zinc sulphate tablets 20mg)</field>
+        <field name="unit_of_issue">Co-Pack</field>
+    </record>
+    <record id="moh647_tracer_29" model="ampath.moh647.tracer">
+        <field name="sequence">29</field>
+        <field name="section">medicines</field>
+        <field name="name">Oxytocin 10 IU/ml</field>
+        <field name="unit_of_issue">Ampoule</field>
+    </record>
+    <record id="moh647_tracer_30" model="ampath.moh647.tracer">
+        <field name="sequence">30</field>
+        <field name="section">medicines</field>
+        <field name="name">Paracetamol Syrup/Suspension, 120mg/5ml</field>
+        <field name="unit_of_issue">Bottle</field>
+    </record>
+    <record id="moh647_tracer_31" model="ampath.moh647.tracer">
+        <field name="sequence">31</field>
+        <field name="section">medicines</field>
+        <field name="name">Paracetamol Tablets, 500mg</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_32" model="ampath.moh647.tracer">
+        <field name="sequence">32</field>
+        <field name="section">medicines</field>
+        <field name="name">Penicillin V 250mg tablets</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_33" model="ampath.moh647.tracer">
+        <field name="sequence">33</field>
+        <field name="section">medicines</field>
+        <field name="name">Salbutamol Nebulizing Solution - 5mg/ml</field>
+        <field name="unit_of_issue">Ampoule</field>
+    </record>
+    <record id="moh647_tracer_34" model="ampath.moh647.tracer">
+        <field name="sequence">34</field>
+        <field name="section">medicines</field>
+        <field name="name">Sodium chloride, 0.9% (Isotonic)</field>
+        <field name="unit_of_issue">Bottle</field>
+    </record>
+    <record id="moh647_tracer_35" model="ampath.moh647.tracer">
+        <field name="sequence">35</field>
+        <field name="section">medicines</field>
+        <field name="name">Sodium hypochlorite solution 4-6%</field>
+        <field name="unit_of_issue">Jerrican</field>
+    </record>
+    <record id="moh647_tracer_36" model="ampath.moh647.tracer">
+        <field name="sequence">36</field>
+        <field name="section">medicines</field>
+        <field name="name">Soluble Insulin (Short Acting) 100 IU/ml</field>
+        <field name="unit_of_issue">Vial</field>
+    </record>
+    <record id="moh647_tracer_37" model="ampath.moh647.tracer">
+        <field name="sequence">37</field>
+        <field name="section">medicines</field>
+        <field name="name">Tetracycline Eye Ointment, 1%</field>
+        <field name="unit_of_issue">Tube</field>
+    </record>
+
+    <!-- Medical Supplies 38–65 -->
+    <record id="moh647_tracer_38" model="ampath.moh647.tracer">
+        <field name="sequence">38</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Autoclaving Tape, 3/4&quot;</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_39" model="ampath.moh647.tracer">
+        <field name="sequence">39</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Bandage, Cotton, L/Woven BP (5 cm x 4.5m)</field>
+        <field name="unit_of_issue">Roll</field>
+    </record>
+    <record id="moh647_tracer_40" model="ampath.moh647.tracer">
+        <field name="sequence">40</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Bin Liners (yellow) 30ml/50ml</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_41" model="ampath.moh647.tracer">
+        <field name="sequence">41</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Catheter, Foley's, 18FG 30mL 2-way</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_42" model="ampath.moh647.tracer">
+        <field name="sequence">42</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Cord Clamp</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_43" model="ampath.moh647.tracer">
+        <field name="sequence">43</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Cotton Gauze Plain, 36&quot; x 100yds</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_44" model="ampath.moh647.tracer">
+        <field name="sequence">44</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Cotton Wool, Absorbent</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_45" model="ampath.moh647.tracer">
+        <field name="sequence">45</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Gloves, Latex, Examination, Medium</field>
+        <field name="unit_of_issue">Pair</field>
+    </record>
+    <record id="moh647_tracer_46" model="ampath.moh647.tracer">
+        <field name="sequence">46</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Gloves, Surgical, Size 7.5 (Sterile)</field>
+        <field name="unit_of_issue">Pair</field>
+    </record>
+    <record id="moh647_tracer_47" model="ampath.moh647.tracer">
+        <field name="sequence">47</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Insulin syringes, 1ml</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_48" model="ampath.moh647.tracer">
+        <field name="sequence">48</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">IV cannula, 18G</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_49" model="ampath.moh647.tracer">
+        <field name="sequence">49</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">IV cannula, 20G</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_50" model="ampath.moh647.tracer">
+        <field name="sequence">50</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">IV infusion Giving Set with Air Inlet</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_51" model="ampath.moh647.tracer">
+        <field name="sequence">51</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Maternity Pad, 26cm x 9cm x 1cm</field>
+        <field name="unit_of_issue">Pack of 10s</field>
+    </record>
+    <record id="moh647_tracer_52" model="ampath.moh647.tracer">
+        <field name="sequence">52</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Nasal Prongs for Oxygen Delivery, Adult Size</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_53" model="ampath.moh647.tracer">
+        <field name="sequence">53</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Nasal Prongs for Oxygen Delivery, Pediatric Size</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_54" model="ampath.moh647.tracer">
+        <field name="sequence">54</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">NG Feeding tube, Size 12</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_55" model="ampath.moh647.tracer">
+        <field name="sequence">55</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Safety Boxes (WHO Specifications) (5L)</field>
+        <field name="unit_of_issue">5 litres</field>
+    </record>
+    <record id="moh647_tracer_56" model="ampath.moh647.tracer">
+        <field name="sequence">56</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Solusets for Fluids</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_57" model="ampath.moh647.tracer">
+        <field name="sequence">57</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Suction Catheter with Regulatory Valve, 16 FG</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_58" model="ampath.moh647.tracer">
+        <field name="sequence">58</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Surgical Blade, Size 23</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_59" model="ampath.moh647.tracer">
+        <field name="sequence">59</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Suture Nylon No.2/0, 3/8 Circle, 45mm, 100cm, RCN</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_60" model="ampath.moh647.tracer">
+        <field name="sequence">60</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Suture Polyglactin 2/0 75cm On 40mm A½ Circle RBN</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_61" model="ampath.moh647.tracer">
+        <field name="sequence">61</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Syringe 2mL + needle 23G x 1&quot;</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_62" model="ampath.moh647.tracer">
+        <field name="sequence">62</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Syringe 5mL + needle 21G x 1.5&quot;</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_63" model="ampath.moh647.tracer">
+        <field name="sequence">63</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Syringe AD, 0.05ml</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_64" model="ampath.moh647.tracer">
+        <field name="sequence">64</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Syringe AD, 0.5ml</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_65" model="ampath.moh647.tracer">
+        <field name="sequence">65</field>
+        <field name="section">medical_supplies</field>
+        <field name="name">Zinc Oxide Strapping, 7.5cm x 4.5m</field>
+        <field name="unit_of_issue">Roll</field>
+    </record>
+
+    <!-- Radiology 66–67 -->
+    <record id="moh647_tracer_66" model="ampath.moh647.tracer">
+        <field name="sequence">66</field>
+        <field name="section">radiology</field>
+        <field name="name">Drystar DT5 B Films 25 x 30cm</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+    <record id="moh647_tracer_67" model="ampath.moh647.tracer">
+        <field name="sequence">67</field>
+        <field name="section">radiology</field>
+        <field name="name">Dryview DVE Laser Imaging Film .25 x 30cm (10 x 12 inch) Carestream</field>
+        <field name="unit_of_issue">Piece</field>
+    </record>
+
+    <!-- Lab 68–82 -->
+    <record id="moh647_tracer_68" model="ampath.moh647.tracer">
+        <field name="sequence">68</field>
+        <field name="section">lab</field>
+        <field name="name">Anti-Human Globulin</field>
+        <field name="unit_of_issue">10mls bottle</field>
+    </record>
+    <record id="moh647_tracer_69" model="ampath.moh647.tracer">
+        <field name="sequence">69</field>
+        <field name="section">lab</field>
+        <field name="name">Anti-Human Globulin Bovine Albumin</field>
+        <field name="unit_of_issue">10mls bottle</field>
+    </record>
+    <record id="moh647_tracer_70" model="ampath.moh647.tracer">
+        <field name="sequence">70</field>
+        <field name="section">lab</field>
+        <field name="name">Blood Grouping Serum Anti A</field>
+        <field name="unit_of_issue">10mls bottle</field>
+    </record>
+    <record id="moh647_tracer_71" model="ampath.moh647.tracer">
+        <field name="sequence">71</field>
+        <field name="section">lab</field>
+        <field name="name">Blood Grouping Serum Anti B</field>
+        <field name="unit_of_issue">10mls bottle</field>
+    </record>
+    <record id="moh647_tracer_72" model="ampath.moh647.tracer">
+        <field name="sequence">72</field>
+        <field name="section">lab</field>
+        <field name="name">Blood Grouping Serum Anti D</field>
+        <field name="unit_of_issue">10mls bottle</field>
+    </record>
+    <record id="moh647_tracer_73" model="ampath.moh647.tracer">
+        <field name="sequence">73</field>
+        <field name="section">lab</field>
+        <field name="name">Distilled water</field>
+        <field name="unit_of_issue">5 litres</field>
+    </record>
+    <record id="moh647_tracer_74" model="ampath.moh647.tracer">
+        <field name="sequence">74</field>
+        <field name="section">lab</field>
+        <field name="name">Formaldehyde - 40%</field>
+        <field name="unit_of_issue">2.5 litres</field>
+    </record>
+    <record id="moh647_tracer_75" model="ampath.moh647.tracer">
+        <field name="sequence">75</field>
+        <field name="section">lab</field>
+        <field name="name">Glucose Test Strips</field>
+        <field name="unit_of_issue">25 Tests</field>
+    </record>
+    <record id="moh647_tracer_76" model="ampath.moh647.tracer">
+        <field name="sequence">76</field>
+        <field name="section">lab</field>
+        <field name="name">Glycerol</field>
+        <field name="unit_of_issue">2.5 litres</field>
+    </record>
+    <record id="moh647_tracer_77" model="ampath.moh647.tracer">
+        <field name="sequence">77</field>
+        <field name="section">lab</field>
+        <field name="name">H. Pylori Strips</field>
+        <field name="unit_of_issue">Strips</field>
+    </record>
+    <record id="moh647_tracer_78" model="ampath.moh647.tracer">
+        <field name="sequence">78</field>
+        <field name="section">lab</field>
+        <field name="name">Haemoglobin Cuvettes [Diaspect, Mission, Hemoque 15 ml]</field>
+        <field name="unit_of_issue">Pieces</field>
+    </record>
+    <record id="moh647_tracer_79" model="ampath.moh647.tracer">
+        <field name="sequence">79</field>
+        <field name="section">lab</field>
+        <field name="name">Lugol's iodine 3.5%</field>
+        <field name="unit_of_issue">500ml Bottle</field>
+    </record>
+    <record id="moh647_tracer_80" model="ampath.moh647.tracer">
+        <field name="sequence">80</field>
+        <field name="section">lab</field>
+        <field name="name">Pregnancy Test Kit</field>
+        <field name="unit_of_issue">Kit</field>
+    </record>
+    <record id="moh647_tracer_81" model="ampath.moh647.tracer">
+        <field name="sequence">81</field>
+        <field name="section">lab</field>
+        <field name="name">Syphilis (VDRL) Test Kit</field>
+        <field name="unit_of_issue">Kit</field>
+    </record>
+    <record id="moh647_tracer_82" model="ampath.moh647.tracer">
+        <field name="sequence">82</field>
+        <field name="section">lab</field>
+        <field name="name">Urinalysis 10 parameter test strips</field>
+        <field name="unit_of_issue">Strips</field>
+    </record>
+
+    <!-- Nutrition 83–85 -->
+    <record id="moh647_tracer_83" model="ampath.moh647.tracer">
+        <field name="sequence">83</field>
+        <field name="section">nutrition</field>
+        <field name="name">Iron and Folic acid supplementation</field>
+        <field name="unit_of_issue">Tablet</field>
+    </record>
+    <record id="moh647_tracer_84" model="ampath.moh647.tracer">
+        <field name="sequence">84</field>
+        <field name="section">nutrition</field>
+        <field name="name">Ready to use therapeutic food (RUTF)</field>
+        <field name="unit_of_issue">Sachet</field>
+    </record>
+    <record id="moh647_tracer_85" model="ampath.moh647.tracer">
+        <field name="sequence">85</field>
+        <field name="section">nutrition</field>
+        <field name="name">Vitamin A 100,000 IU</field>
+        <field name="unit_of_issue">Capsule</field>
+    </record>
+</odoo>
