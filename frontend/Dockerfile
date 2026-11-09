@@ -4,7 +4,7 @@
 #--------------------------------------------
 FROM --platform=$BUILDPLATFORM node:22-alpine as dev
 
-ARG APP_SHELL_VERSION=latest
+ARG APP_SHELL_VERSION=next
 # Root-cause pin for the CSS escaping regression: postcss-selector-parser
 # 7.2.0 (published 2026-11-08) adds one extra backslash when re-serializing
 # CSS-module class names whose hashes end in '+' / '=', producing dead
