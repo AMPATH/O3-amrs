@@ -23,7 +23,7 @@ RUN npx --legacy-peer-deps openmrs@${APP_SHELL_VERSION:-latest} build --build-co
 # top-level app CSS at the time of writing). That silently breaks styling of
 # hashed-class components (e.g. the login location picker). Normalize the
 # escaping in every built stylesheet; no-op once upstream is fixed.
-RUN find ./spa -name '*.css' -exec sed -i 's/\\\\\\=/\\=/g' {} + \
+RUN find ./spa -name '*.css' -exec sed -i 's/\\\\\\/\\/g' {} + \
   && find ./spa -name '*.css.gz' -delete \
   && find ./spa -name '*.css.br' -delete
 RUN if [ ! -f ./spa/index.html ]; then echo 'Build failed. Please check the logs above for details. This may have happened because of an update to a library that OpenMRS depends on.'; ls -al ./spa; exit 1; fi
