@@ -1,0 +1,47 @@
+{
+  "@openmrs/esm-patient-chart-app": {
+    "extensionSlots": {
+      "mnch-clinical-dashboard-slot": {
+        "add": ["encounter-list"],
+        "configure": {
+          "encounter-list": {
+            "tabDefinitions": [
+              {
+                "tabName": "mnchClinicalEncounter",
+                "hasFilter": false,
+                "headerTitle": "mnchClinicalEncounter",
+                "displayText": "mnchClinicalEncounter",
+                "encounterType": "c6d09e05-1f25-4164-8860-9f32c5a02df0",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC MNCH Clinical Encounter Form v1.2",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC MNCH Clinical Encounter Form v1.2",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "b75bfd1d-3513-3001-9886-fa875eb8b862"}]
+              }
+            ],
+            "Translation overrides": {
+              "en": {
+                "mnchClinicalEncounter": "MNCH Clinical Encounter"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
