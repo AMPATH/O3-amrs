@@ -18,12 +18,12 @@ COPY ./configuration/*.json configuration
 RUN npx --legacy-peer-deps openmrs@${APP_SHELL_VERSION:-latest} assemble --manifest --mode config --config spa-assemble-config.json --config-file configuration/*.json --target ./spa
 RUN npx --legacy-peer-deps openmrs@${APP_SHELL_VERSION:-latest} build --build-config spa-build-config.json --target ./spa
 # Workaround for a build-toolchain regression (rspack CSS minifier used by the
-# openmrs CLI): CSS-module selectors ending in '=' / '==' get over-escaped to
-# \\\= instead of \= , producing dead selectors (844 broken rules in the
-# top-level app CSS at the time of writing). That silently breaks styling of
+# openmrs CLI): special chars in CSS-module selectors ('=', '+', ...) get
+# over-escaped (\\\= / \\\+ instead of \= / \+), producing dead rules (900+ in
+# the top-level app CSS at the time of writing). That silently breaks styling of
 # hashed-class components (e.g. the login location picker). Normalize the
 # escaping in every built stylesheet; no-op once upstream is fixed.
-RUN find ./spa -name '*.css' -exec sed -i 's/\\\\\\=/\\=/g' {} + \
+RUN find ./spa -name '*.css' -exec sed -i 's/\\\\\\/\\/g' {} + \
   && find ./spa -name '*.css.gz' -delete \
   && find ./spa -name '*.css.br' -delete
 RUN if [ ! -f ./spa/index.html ]; then echo 'Build failed. Please check the logs above for details. This may have happened because of an update to a library that OpenMRS depends on.'; ls -al ./spa; exit 1; fi
