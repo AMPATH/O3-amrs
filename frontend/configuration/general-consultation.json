@@ -20,12 +20,12 @@
                                         "title": "actionsTitle",
                                         "actionOptions": [
                                             {
-                                                "formName": "POC Clinical Encounter Form v1.2",
+                                                "formName": "POC Clinical Encounter Form v1.4",
                                                 "label": "viewDetails",
                                                 "mode": "view"
                                             },
                                             {
-                                                "formName": "POC Clinical Encounter Form v1.2",
+                                                "formName": "POC Clinical Encounter Form v1.4",
                                                 "label": "editForm",
                                                 "mode": "edit"
                                             }
@@ -37,7 +37,7 @@
                                 },
                                 "formList": [
                                     {
-                                        "uuid": "b2fc8cbf-d70f-3113-8ed6-d90601ff73fa"
+                                        "uuid": "55b4ccf5-5845-3249-ac20-73871d187065"
                                     }
                                 ]
                             },

@@ -11,19 +11,19 @@
                 "hasFilter": false,
                 "headerTitle": "tbTreatment",
                 "displayText": "tbTreatment",
-                "encounterType": "5c6813bd-b1f5-308b-b074-d9fb44626af4",
+                "encounterType": "dcb0b791-d16a-4adf-9435-f471e96ec373",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
                       {
-                        "formName": "TB Treatment Form",
+                        "formName": "POC TB Treatment Form v1.1",
                         "label": "viewDetails",
                         "mode": "view"
                       },
                       {
-                        "formName": "TB Treatment Form",
+                        "formName": "POC TB Treatment Form v1.1",
                         "label": "editForm",
                         "mode": "edit"
                       }
@@ -31,7 +31,7 @@
                   }
                 ],
                 "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "5c6813bd-b1f5-308b-b074-d9fb44626af4"}]
+                "formList": [{"uuid": "ac92c53c-1616-3639-af84-db340dd57bba"}]
               },
               {
                 "tabName": "preAuthorization",
