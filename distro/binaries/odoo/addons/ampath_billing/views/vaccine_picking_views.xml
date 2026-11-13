@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ampath_vaccine_picking_tree" model="ir.ui.view">
+        <field name="name">ampath.vaccine.picking.tree</field>
+        <field name="model">ampath.vaccine.picking</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="movement_type"/>
+                <field name="source_dest"/>
+                <field name="warehouse_id"/>
+                <field name="vaccine_store_id"/>
+                <field name="location_dest_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_ampath_vaccine_picking_form" model="ir.ui.view">
+        <field name="name">ampath.vaccine.picking.form</field>
+        <field name="model">ampath.vaccine.picking</field>
+        <field name="arch" type="xml">
+            <form string="Vaccine picking">
+                <header>
+                    <button name="action_validate" type="object" string="Validate"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"/>
+                    <button name="%(ampath_billing.action_report_vaccine_picking)d"
+                            type="action" string="Print" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="movement_type"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="warehouse_id"/>
+                            <field name="vaccine_store_id"/>
+                            <field name="location_dest_id"
+                                     invisible="movement_type != 'issue'"
+                                     required="movement_type == 'issue'"/>
+                            <field name="date"/>
+                            <field name="source_dest"/>
+                        </group>
+                        <group>
+                            <field name="last_order_date"/>
+                            <field name="next_order_date"/>
+                            <field name="requisitioning_officer"/>
+                            <field name="requisitioning_designation"/>
+                            <field name="issued_by"/>
+                            <field name="received_by"/>
+                            <field name="received_designation"/>
+                            <field name="stock_picking_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="remarks" placeholder="Remarks"/>
+                    <field name="line_ids" readonly="state != 'draft'">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="default_code" optional="show"/>
+                            <field name="product_uom_id"/>
+                            <field name="qty"/>
+                            <field name="lot_id"/>
+                            <field name="expiry_date" optional="show"/>
+                            <field name="vvm_stage"/>
+                            <field name="value" optional="hide"/>
+                            <field name="remarks"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ampath_vaccine_picking" model="ir.actions.act_window">
+        <field name="name">Vaccine Pickings</field>
+        <field name="res_model">ampath.vaccine.picking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Record vaccine store receipts, issues to MCH, and losses.</p>
+            <p>Validated pickings update the Vaccine Store ledger and feed MOH 710 C.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_ampath_vaccine_picking"
+              name="Vaccine Pickings"
+              parent="menu_ampath_stock_vouchers"
+              action="action_ampath_vaccine_picking"
+              sequence="40"/>
+</odoo>
