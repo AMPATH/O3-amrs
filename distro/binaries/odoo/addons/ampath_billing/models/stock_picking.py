@@ -40,6 +40,16 @@ class StockPicking(models.Model):
         copy=False,
         help='When set, MOH 647 counts this picking as E or F instead of B or C.',
     )
+    x_moh710_flow = fields.Selection(
+        [
+            ('vaccine_in', 'Vaccine receipt'),
+            ('vaccine_out', 'Vaccine issue'),
+            ('vaccine_loss', 'Vaccine loss'),
+        ],
+        string='MOH 710 flow',
+        copy=False,
+        help='Vaccine picking voucher flow; excluded from MOH 647 B/C.',
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -196,16 +206,17 @@ class StockPicking(models.Model):
         return self
 
     @api.model
-    def _ampath_pick_fefo_lot(self, product, warehouse, quantity=None):
-        if not product or not warehouse:
+    def _ampath_pick_fefo_lot(self, product, warehouse, quantity=None, location=None):
+        if not product or (not warehouse and not location):
             return self.env['stock.lot']
         Quant = self.env['stock.quant']
         Lot = self.env['stock.lot']
         has_expiry = 'expiration_date' in Lot._fields
+        root = location or warehouse.lot_stock_id
         quants = Quant.search(
             [
                 ('product_id', '=', product.id),
-                ('location_id', 'child_of', warehouse.lot_stock_id.id),
+                ('location_id', 'child_of', root.id),
                 ('lot_id', '!=', False),
                 ('quantity', '>', 0),
             ]
@@ -244,6 +255,7 @@ class StockPicking(models.Model):
         lines,
         partner=None,
         moh647_flow=False,
+        moh710_flow=False,
     ):
         """Create and validate a picking.
 
@@ -264,6 +276,8 @@ class StockPicking(models.Model):
             vals['partner_id'] = partner.id
         if moh647_flow:
             vals['x_moh647_flow'] = moh647_flow
+        if moh710_flow:
+            vals['x_moh710_flow'] = moh710_flow
         picking = Picking.create(vals)
         created_moves = []
         for line in lines:
@@ -319,6 +333,10 @@ class StockLocation(models.Model):
     x_ampath_external_transit = fields.Boolean(
         string='AMPATH external-facility transit',
         help='Source/destination for inter-facility receipts and issues (MOH 647 E/F).',
+    )
+    x_ampath_vaccine_store = fields.Boolean(
+        string='AMPATH vaccine store',
+        help='Facility vaccine store for NVIP ledger / MOH 710 C (issues to MCH).',
     )
 
 

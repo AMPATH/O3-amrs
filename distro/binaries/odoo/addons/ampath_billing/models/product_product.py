@@ -36,3 +36,17 @@ class ProductProduct(models.Model):
         help='DHA / SHA catalogue code. Pre-authorization applies when this field is non-empty. '
              'Leave empty so the product stays on the PHC path.',
     )
+    x_ampath_vaccine = fields.Boolean(
+        string='Vaccine / antigen',
+        copy=False,
+        help='Include this product on Vaccine Pickings (NVIP / MOH 710 C).',
+    )
+
+
+class ProductCategory(models.Model):
+    _inherit = 'product.category'
+
+    x_ampath_vaccine_category = fields.Boolean(
+        string='Vaccine category',
+        help='Products in this category appear on Vaccine Pickings lines.',
+    )

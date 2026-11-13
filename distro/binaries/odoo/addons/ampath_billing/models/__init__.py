@@ -11,3 +11,4 @@ from . import stock_picking
 from . import moh647_tracer
 from . import department_issue
 from . import facility_exchange
+from . import vaccine_picking

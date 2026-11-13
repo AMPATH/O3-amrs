@@ -70,6 +70,93 @@
         <field name="print_report_name">'%s' % (object.name)</field>
     </record>
 
+    <record id="action_report_vaccine_picking" model="ir.actions.report">
+        <field name="name">Vaccine picking voucher</field>
+        <field name="model">ampath.vaccine.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ampath_billing.report_vaccine_picking_document</field>
+        <field name="report_file">ampath_billing.report_vaccine_picking_document</field>
+        <field name="print_report_name">'VP-%s' % (object.name)</field>
+    </record>
+
+    <template id="report_vaccine_picking_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h3>Vaccine Ordering / Picking Voucher</h3>
+                        <p>
+                            <strong>Voucher:</strong> <span t-field="doc.name"/><br/>
+                            <strong>Facility:</strong> <span t-field="doc.company_id"/><br/>
+                            <strong>Movement:</strong> <span t-field="doc.movement_type"/><br/>
+                            <strong>Vaccine store:</strong> <span t-field="doc.vaccine_store_id"/><br/>
+                            <strong>Destination:</strong> <span t-field="doc.location_dest_id"/><br/>
+                            <strong>Source / Destination:</strong> <span t-field="doc.source_dest"/><br/>
+                            <strong>Date:</strong> <span t-field="doc.date"/><br/>
+                            <strong>Last order:</strong> <span t-field="doc.last_order_date"/>
+                            &#160; <strong>Next order:</strong> <span t-field="doc.next_order_date"/>
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Antigen / Diluent</th>
+                                    <th>UoM</th>
+                                    <th>Amount in doses</th>
+                                    <th>Lot/Batch</th>
+                                    <th>Expiry</th>
+                                    <th>VVM</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids" t-as="line">
+                                    <td><span t-field="line.default_code"/></td>
+                                    <td><span t-field="line.product_id"/></td>
+                                    <td><span t-field="line.product_uom_id"/></td>
+                                    <td><span t-field="line.qty"/></td>
+                                    <td><span t-field="line.lot_id"/></td>
+                                    <td><span t-field="line.expiry_date"/></td>
+                                    <td><span t-field="line.vvm_stage"/></td>
+                                    <td><span t-field="line.remarks"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p t-if="doc.remarks"><strong>Remarks:</strong> <span t-field="doc.remarks"/></p>
+                        <p>
+                            Officer requesting: <span t-field="doc.requisitioning_officer"/>
+                            (<span t-field="doc.requisitioning_designation"/>)<br/>
+                            Issued by: <span t-field="doc.issued_by"/><br/>
+                            Received by: <span t-field="doc.received_by"/>
+                            (<span t-field="doc.received_designation"/>)
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_vaccine_ledger" model="ir.actions.report">
+        <field name="name">Vaccine Stock Ledger</field>
+        <field name="model">ampath.vaccine.ledger.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ampath_billing.report_vaccine_ledger_document</field>
+        <field name="report_file">ampath_billing.report_vaccine_ledger_document</field>
+        <field name="print_report_name">object.report_pdf_name or 'Vaccine-Stock-Ledger'</field>
+    </record>
+
+    <template id="report_vaccine_ledger_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <t t-out="doc.preview_html"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
     <template id="report_facility_exchange_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
