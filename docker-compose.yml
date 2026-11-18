@@ -60,6 +60,8 @@ services:
       LUCENE_MATCH_TYPE: ${LUCENE_MATCH_TYPE:-START}
       DOCUMENT_MAX_SIZE_MB: ${DOCUMENT_MAX_SIZE_MB:-7}
       TZ: Africa/Nairobi
+      # CVE-2026-114938 (Java4Shell). Interim until the Corretto image is patched. Applies on next container recreate.
+      JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
       # FHIR Proxy → fhir-odoo (stock/price for O3 order basket). Requires docker-compose-odoo.yml.
       EXTERNAL_FHIR_API_URL: ${EXTERNAL_FHIR_API_URL:-http://fhir-odoo:8080/odoo/fhir/R4}
       EXTERNAL_FHIR_API_USERNAME: ${ODOO_USER:-admin}
@@ -83,6 +85,8 @@ services:
       - bootstrap.memory_lock=true
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
+      # CVE-2026-114938 (Java4Shell) on the bundled JDK. Interim until the Elasticsearch image ships a fixed JDK.
+      - JAVA_TOOL_OPTIONS=-XX:-UseBASE64Intrinsics
     ulimits:
       memlock:
         soft: -1

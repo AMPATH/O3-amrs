@@ -112,6 +112,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # After JDK 17 is on PATH. Java 8 rejects this flag, so it is not set on the Java 8 build job.
+      - name: Mitigate CVE-2026-114938 for subsequent JVM launches
+        run: echo 'JAVA_TOOL_OPTIONS=-XX:-UseBASE64Intrinsics' >> "$GITHUB_ENV"
+
       - uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: |

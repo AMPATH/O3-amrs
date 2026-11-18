@@ -21,4 +21,6 @@ RUN set -eux; \
     cp fhir-odoo-app/target/fhir-odoo-app-*.jar /app/fhir-odoo.jar
 
 EXPOSE 8080
+# CVE-2026-114938 (Java4Shell): Temurin 17 reads this at JVM start. Do not switch this to -XX:UseAVX=2 (breaks arm64).
+ENV JAVA_TOOL_OPTIONS="-XX:-UseBASE64Intrinsics"
 ENTRYPOINT ["java", "-jar", "fhir-odoo.jar"]

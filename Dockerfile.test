@@ -42,6 +42,8 @@ RUN mvn $MVN_ARGS_SETTINGS clean
 ### Run Stage
 # Replace '2.7.x' with the exact version of openmrs-core built for production (if available)
 FROM openmrs/openmrs-core:2.8.x-amazoncorretto-21
+# CVE-2026-114938 (Java4Shell): turn off the AVX-512 Base64 decoder. Recognized on arm64; do not switch this to -XX:UseAVX=2.
+ENV JAVA_TOOL_OPTIONS="-XX:-UseBASE64Intrinsics"
 
 # Do not copy the war if using the correct openmrs-core image version
 COPY --from=dev /openmrs/distribution/openmrs_core/openmrs.war /openmrs/distribution/openmrs_core/

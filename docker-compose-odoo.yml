@@ -116,6 +116,8 @@ services:
       odoo:
         condition: service_started
     environment:
+      # CVE-2026-114938 (Java4Shell) on Temurin 17. Interim until the base image ships a fixed JDK.
+      - JAVA_TOOL_OPTIONS=-XX:-UseBASE64Intrinsics
       - ODOO_HOST=http://odoo
       - ODOO_PORT=8069
       - ODOO_DATABASE=${ODOO_DATABASE:-odoo}
@@ -140,6 +142,8 @@ services:
       odoo:
         condition: service_started
     environment:
+      # CVE-2026-114938 (Java4Shell) on Corretto 17. Interim until the EIP client image ships a fixed JDK.
+      - JAVA_TOOL_OPTIONS=-XX:-UseBASE64Intrinsics
       - EIP_DB_NAME_ODOO=${EIP_DB_NAME_ODOO:-openmrs_eip_mgt_odoo}
       - EIP_DB_USER_ODOO=${EIP_DB_USER_ODOO:-openmrs_eip_mgt_odoo}
       - EIP_DB_PASSWORD_ODOO=${EIP_DB_PASSWORD_ODOO:-password}
