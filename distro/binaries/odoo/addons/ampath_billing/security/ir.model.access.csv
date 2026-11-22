@@ -17,3 +17,6 @@ access_ampath_external_facility_user,ampath.external.facility user,model_ampath_
 access_ampath_external_facility_manager,ampath.external.facility manager,model_ampath_external_facility,stock.group_stock_manager,1,1,1,1
 access_ampath_facility_exchange_user,ampath.facility.exchange user,model_ampath_facility_exchange,stock.group_stock_user,1,1,1,1
 access_ampath_facility_exchange_line_user,ampath.facility.exchange.line user,model_ampath_facility_exchange_line,stock.group_stock_user,1,1,1,1
+access_ampath_vaccine_picking_user,ampath.vaccine.picking user,model_ampath_vaccine_picking,stock.group_stock_user,1,1,1,1
+access_ampath_vaccine_picking_line_user,ampath.vaccine.picking.line user,model_ampath_vaccine_picking_line,stock.group_stock_user,1,1,1,1
+access_ampath_vaccine_ledger_wizard_user,ampath.vaccine.ledger.wizard user,model_ampath_vaccine_ledger_wizard,stock.group_stock_user,1,1,1,1

@@ -12,6 +12,7 @@
                 <field name="x_drug_strength"/>
                 <field name="x_hie_manufacturer"/>
                 <field name="x_intervention_code"/>
+                <field name="x_ampath_vaccine"/>
             </xpath>
         </field>
     </record>
@@ -27,6 +28,17 @@
                 <field name="x_drug_strength"/>
                 <field name="x_hie_manufacturer"/>
                 <field name="x_intervention_code"/>
+                <field name="x_ampath_vaccine"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_category_form_vaccine" model="ir.ui.view">
+        <field name="name">product.category.form.vaccine</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="x_ampath_vaccine_category"/>
             </xpath>
         </field>
     </record>

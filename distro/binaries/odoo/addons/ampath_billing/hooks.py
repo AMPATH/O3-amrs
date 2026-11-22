@@ -144,6 +144,175 @@ def ensure_external_transit_locations(env):
         )
 
 
+DEPARTMENT_LOCATION_NAMES = (
+    'Lab',
+    'Theatre',
+    'Maternity',
+    'Pharmacy ward',
+    'Radiology',
+    'MCH',
+)
+
+
+def ensure_department_locations(env):
+    """Create Departments/<name> internal locations under each warehouse."""
+    Location = env['stock.location'].sudo()
+    Warehouse = env['stock.warehouse'].sudo()
+    created = 0
+    for warehouse in Warehouse.search([]):
+        parent = warehouse.view_location_id
+        if not parent:
+            continue
+        company = warehouse.company_id
+        departments = Location.search(
+            [
+                ('name', '=', 'Departments'),
+                ('location_id', '=', parent.id),
+                ('company_id', '=', company.id),
+                ('usage', '=', 'view'),
+            ],
+            limit=1,
+        )
+        if not departments:
+            departments = Location.create(
+                {
+                    'name': 'Departments',
+                    'usage': 'view',
+                    'location_id': parent.id,
+                    'company_id': company.id,
+                }
+            )
+            created += 1
+        for name in DEPARTMENT_LOCATION_NAMES:
+            existing = Location.search(
+                [
+                    ('name', '=', name),
+                    ('location_id', '=', departments.id),
+                    ('company_id', '=', company.id),
+                ],
+                limit=1,
+            )
+            if existing:
+                continue
+            Location.create(
+                {
+                    'name': name,
+                    'usage': 'internal',
+                    'location_id': departments.id,
+                    'company_id': company.id,
+                }
+            )
+            created += 1
+    _logger.info(
+        'ampath_billing: ensured department locations (created=%s)',
+        created,
+    )
+
+
+VACCINE_PRODUCT_NAME_FRAGMENTS = (
+    'BCG',
+    'OPV',
+    'Measles',
+    'Rubella',
+    'Rotavirus',
+    'Rota',
+    'DPT-HepB',
+    'Pentavalent',
+    'Pneumococcal',
+    'PCV',
+    'TD Vaccine',
+    'Tetanus',
+    'Diphtheria',
+    'IPV',
+    'HPV',
+    'Typhoid',
+    'TCV',
+    'Janssen',
+    'J&J',
+    'Pfizer',
+    'Biontech',
+    'Yellow Fever',
+    'BCG Diluent',
+    'OPV Dropper',
+    'MR Diluent',
+    'Rota vaccine dropper',
+)
+
+
+def ensure_vaccine_store_locations(env):
+    """Create a Vaccine Store internal location under each warehouse view."""
+    Location = env['stock.location'].sudo()
+    Warehouse = env['stock.warehouse'].sudo()
+    created = 0
+    for warehouse in Warehouse.search([]):
+        parent = warehouse.view_location_id
+        if not parent:
+            continue
+        company = warehouse.company_id
+        existing = Location.search(
+            [
+                ('x_ampath_vaccine_store', '=', True),
+                ('location_id', 'child_of', parent.id),
+                ('company_id', '=', company.id),
+            ],
+            limit=1,
+        )
+        if existing:
+            continue
+        Location.create(
+            {
+                'name': 'Vaccine Store',
+                'usage': 'internal',
+                'location_id': parent.id,
+                'company_id': company.id,
+                'x_ampath_vaccine_store': True,
+            }
+        )
+        created += 1
+    _logger.info(
+        'ampath_billing: ensured vaccine store locations (created=%s)',
+        created,
+    )
+
+
+def ensure_vaccine_product_category(env):
+    Category = env['product.category'].sudo()
+    categ = Category.search([('x_ampath_vaccine_category', '=', True)], limit=1)
+    if not categ:
+        categ = Category.create(
+            {
+                'name': 'Vaccines',
+                'x_ampath_vaccine_category': True,
+            }
+        )
+        _logger.info('ampath_billing: created Vaccines product category')
+    return categ
+
+
+def tag_vaccine_products(env):
+    """Mark Annex 7–like products as vaccines and put them in Vaccines category."""
+    Product = env['product.product'].sudo()
+    categ = ensure_vaccine_product_category(env)
+    tagged = 0
+    for fragment in VACCINE_PRODUCT_NAME_FRAGMENTS:
+        products = Product.search(
+            [
+                ('type', '=', 'product'),
+                ('x_ampath_vaccine', '=', False),
+                '|',
+                ('name', 'ilike', fragment),
+                ('default_code', 'ilike', fragment),
+            ]
+        )
+        for product in products:
+            vals = {'x_ampath_vaccine': True}
+            if product.categ_id != categ:
+                vals['categ_id'] = categ.id
+            product.write(vals)
+            tagged += 1
+    _logger.info('ampath_billing: tagged vaccine products count=%s', tagged)
+
+
 def post_init_hook(env):
     if not isinstance(env, api.Environment):
         env = api.Environment(env, SUPERUSER_ID, {})
@@ -151,3 +320,6 @@ def post_init_hook(env):
     apply_moh647_default_mappings(env)
     configure_internal_transfer_lots(env)
     ensure_external_transit_locations(env)
+    ensure_department_locations(env)
+    ensure_vaccine_store_locations(env)
+    tag_vaccine_products(env)

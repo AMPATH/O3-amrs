@@ -33,6 +33,8 @@ services:
     depends_on:
       - db
     environment:
+      # CVE-2026-114938 (Java4Shell). Interim until the Corretto image is patched.
+      JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
       OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
       OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
       OMRS_CONFIG_CREATE_TABLES: "true"

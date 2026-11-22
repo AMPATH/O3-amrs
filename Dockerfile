@@ -59,6 +59,8 @@ FROM ${BUILD_TYPE}_dev AS dev
 ### Run Stage
 FROM openmrs/openmrs-core:2.8.x-amazoncorretto-17
 ENV TZ=Africa/Nairobi
+# CVE-2026-114938 (Java4Shell): turn off the AVX-512 Base64 decoder. Recognized on arm64; do not switch this to -XX:UseAVX=2.
+ENV JAVA_TOOL_OPTIONS="-XX:-UseBASE64Intrinsics"
 
 COPY --from=dev /openmrs/distribution/openmrs_core/openmrs.war /openmrs/distribution/openmrs_core/
 COPY --from=dev /openmrs/distribution/openmrs-distro.properties /openmrs/distribution/

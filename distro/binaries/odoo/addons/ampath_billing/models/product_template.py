@@ -41,6 +41,12 @@ class ProductTemplate(models.Model):
         inverse='_set_x_intervention_code',
         help='Stored on the product variant; shown here when the template has a single variant.',
     )
+    x_ampath_vaccine = fields.Boolean(
+        string='Vaccine / antigen',
+        compute='_compute_x_ampath_vaccine',
+        inverse='_set_x_ampath_vaccine',
+        help='Stored on the product variant; include on Vaccine Pickings.',
+    )
 
     @api.depends('product_variant_ids.x_concept_source')
     def _compute_x_concept_source(self):
@@ -83,3 +89,10 @@ class ProductTemplate(models.Model):
 
     def _set_x_intervention_code(self):
         self._set_product_variant_field('x_intervention_code')
+
+    @api.depends('product_variant_ids.x_ampath_vaccine')
+    def _compute_x_ampath_vaccine(self):
+        self._compute_template_field_from_variant_field('x_ampath_vaccine')
+
+    def _set_x_ampath_vaccine(self):
+        self._set_product_variant_field('x_ampath_vaccine')

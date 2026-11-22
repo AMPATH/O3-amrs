@@ -34,67 +34,6 @@
                 "formList": [{"uuid": "84121b5e-2241-363a-b0cd-dd050d015556"}]
               },
               {
-                "tabName": "admission",
-                "hasFilter": false,
-                "headerTitle": "admission",
-                "displayText": "admission",
-                "encounterType": "b062e97b-71fb-4c80-9f7d-72076475884a",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {
-                        "formName": "POC Ward Admission Form v1.0",
-                        "label": "viewDetails",
-                        "mode": "view"
-                      },
-                      {
-                        "formName": "POC Ward Admission Form v1.0",
-                        "label": "editForm",
-                        "mode": "edit"
-                      }
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "5232d2c3-a302-3a3e-a322-52885c1994e3"}]
-              },
-              {
-                "tabName": "doctorsReviewNotes",
-                "hasFilter": false,
-                "headerTitle": "doctorsReviewNotes",
-                "displayText": "doctorsReviewNotes",
-                "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
-                "columns": [
-                  {
-                    "id": "encounterDate",
-                    "title": "encounterDateTitle",
-                    "type": "encounterDatetime"
-                  },
-                  {
-                    "id": "provider",
-                    "title": "providerTitle",
-                    "type": "provider"
-                  },
-                  {
-                    "id": "notes",
-                    "title": "notesTitle",
-                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
-                  },
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {"formName": "POC Clinical Review Notes v1.0", "label": "viewDetails", "mode": "view"},
-                      {"formName": "POC Clinical Review Notes v1.0", "label": "editForm", "mode": "edit"}
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "c16f33ed-b491-3d26-a39d-d2bd6460a693"}]
-              },
-              {
                 "tabName": "cadex",
                 "hasFilter": false,
                 "headerTitle": "cadex",
@@ -134,52 +73,6 @@
                 "formList": [{"uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"}]
               },
               {
-                "tabName": "vitals",
-                "hasFilter": false,
-                "headerTitle": "vitals",
-                "displayText": "vitals",
-                "encounterType": "8a43b09b-2d9f-487c-a1c3-d6bf220671a7",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {"formName": "AMPATH POC Vitals Form v1.0", "package": "hiv-care-treatment", "label": "viewDetails", "mode": "view"},
-                      {"formName": "AMPATH POC Vitals Form v1.0", "package": "hiv-care-treatment", "label": "editForm", "mode": "edit"}
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "86eb8839-6c4a-3300-b95d-fdac06e4a408"}]
-              },
-              {
-                "tabName": "preAnaesthesiaChecklist",
-                "hasFilter": false,
-                "headerTitle": "preAnaesthesiaChecklist",
-                "displayText": "preAnaesthesiaChecklist",
-                "encounterType": "ee8233da-c8fb-48f1-8652-76ce3c040090",
-                "columns": [
-                  {
-                    "id": "actions",
-                    "title": "actionsTitle",
-                    "actionOptions": [
-                      {
-                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
-                        "label": "viewDetails",
-                        "mode": "view"
-                      },
-                      {
-                        "formName": "POC Pre-Anaesthesia Checklist v1.0",
-                        "label": "editForm",
-                        "mode": "edit"
-                      }
-                    ]
-                  }
-                ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "b040ee33-00fc-37a5-b2c0-28ae3975dd5b"}]
-              },
-              {
                 "tabName": "treatmentSheet",
                 "hasFilter": false,
                 "headerTitle": "treatmentSheet",
@@ -205,17 +98,132 @@
                 ],
                 "launchOptions": {"displayText": "add"},
                 "formList": [{"uuid": "828022dc-3324-3b19-ae70-f878561bb1b6"}]
+              },
+              {
+                "tabName": "doctorsReviewNotes",
+                "hasFilter": false,
+                "headerTitle": "doctorsReviewNotes",
+                "displayText": "doctorsReviewNotes",
+                "encounterType": "b3a31699-deef-43e1-8389-7d6893bf3f5f",
+                "columns": [
+                  {
+                    "id": "encounterDate",
+                    "title": "encounterDateTitle",
+                    "type": "encounterDatetime"
+                  },
+                  {
+                    "id": "provider",
+                    "title": "providerTitle",
+                    "type": "provider"
+                  },
+                  {
+                    "id": "notes",
+                    "title": "notesTitle",
+                    "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                  },
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {"formName": "POC Clinical Review Notes v1.0", "label": "viewDetails", "mode": "view"},
+                      {"formName": "POC Clinical Review Notes v1.0", "label": "editForm", "mode": "edit"}
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "c16f33ed-b491-3d26-a39d-d2bd6460a693"}]
+              },
+              {
+                "tabName": "counselling",
+                "hasFilter": false,
+                "headerTitle": "counselling",
+                "displayText": "counselling",
+                "encounterType": "ed11de61-7988-4bea-a604-58e5f96569ee",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Counselling Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Counselling Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "8cb15cf0-bc8b-3f2e-8830-3f134301032f"}]
+              },
+              {
+                "tabName": "continuationSheet",
+                "hasFilter": false,
+                "headerTitle": "continuationSheet",
+                "displayText": "continuationSheet",
+                "encounterType": "e46ff3c5-0a10-4304-bb04-e1a6ae31053a",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Continuation Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Continuation Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "4147fa0d-bb6c-3680-a6bc-46fe6f0f04a5"}]
+              },
+              {
+                "tabName": "discharge",
+                "hasFilter": false,
+                "headerTitle": "discharge",
+                "displayText": "discharge",
+                "encounterType": "7649d97d-ac9f-444d-877c-7468ef286e7e",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC Inpatient Discharge Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC Inpatient Discharge Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": {"displayText": "add"},
+                "formList": [{"uuid": "b4218b80-22da-3299-af36-c865fdf07696"}]
               }
             ],
             "Translation overrides": {
               "en": {
                 "clinicalAddendum": "Clinical Addendum",
-                "admission": "Ward Admission",
-                "doctorsReviewNotes": "Clinical review notes",
                 "cadex": "Cardex",
-                "vitals": "Vitals",
-                "preAnaesthesiaChecklist": "Pre-Anaesthesia Checklist",
                 "treatmentSheet": "Treatment Sheet",
+                "doctorsReviewNotes": "Clinical Review Notes",
+                "counselling": "Counselling Form",
+                "continuationSheet": "Continuation Sheet",
+                "discharge": "Discharge Form",
                 "admissionDateTitle": "Admission Date",
                 "encounterDateTitle": "Encounter Date",
                 "providerTitle": "Provider",

@@ -17,6 +17,9 @@ services:
   backend:
     image: backend
     restart: "unless-stopped"
+    environment:
+      # CVE-2026-114938 (Java4Shell). Interim until the Corretto image is patched.
+      JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics"
 
   db:
     image: db

@@ -40,4 +40,16 @@
     <record id="issue_department_mch" model="ampath.issue.department">
         <field name="name">MCH</field>
     </record>
+
+    <record id="seq_ampath_vaccine_picking" model="ir.sequence">
+        <field name="name">Vaccine picking</field>
+        <field name="code">ampath.vaccine.picking</field>
+        <field name="prefix">VP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="product_category_vaccines" model="product.category">
+        <field name="name">Vaccines</field>
+        <field name="x_ampath_vaccine_category">True</field>
+    </record>
 </odoo>

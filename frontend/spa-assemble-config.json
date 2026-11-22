@@ -53,7 +53,7 @@
     "@ampath/esm-patient-medical-supply-orders-app": "next",
     "@ampath/ampath-esm-billing-admin-app": "next",
     "@ampath/ampath-esm-medical-supply-app": "next",
-    "@openmrs/esm-patient-procedures-app": "latest",
+    "@openmrs/esm-patient-procedures-app": "next",
     "@ampath/esm-admin-app": "next"
   },
   "excludedFrontendModules": []

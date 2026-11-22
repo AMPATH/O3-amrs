@@ -220,6 +220,15 @@ class AmpathMoh647ReportWizard(models.TransientModel):
         if out_of and moh647_flow == 'external_out':
             return 'F', qty
 
+        # Vaccine pickings (MOH 710) must not feed MOH 647 B/C.
+        picking = move.picking_id
+        if (
+            picking
+            and 'x_moh710_flow' in picking._fields
+            and picking.x_moh710_flow
+        ):
+            return None, 0.0
+
         picking_code = self._picking_type_code(move)
         if into and picking_code == 'incoming':
             return 'B', qty

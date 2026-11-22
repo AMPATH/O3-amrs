@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Java 8 is outside CVE-2026-114938. Do not set -XX:-UseBASE64Intrinsics here; this JDK does not recognize it and will not start.
     strategy:
         matrix:
           java: [ '8' ]

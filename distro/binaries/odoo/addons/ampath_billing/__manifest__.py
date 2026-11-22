@@ -1,6 +1,6 @@
 {
     'name': 'AMPATH Billing',
-    'version': '1.0.84',
+    'version': '1.0.87',
     'summary': 'Billing and inventory APIs for AMPATH',
     'category': 'Healthcare/Accounting',
     'author': 'AMPATH',
@@ -18,8 +18,10 @@
         'report/moh647_report.xml',
         'report/stock_voucher_report.xml',
         'views/stock_voucher_views.xml',
+        'views/vaccine_picking_views.xml',
         'wizards/views/prescription_print_wizard_views.xml',
         'wizards/views/moh647_report_wizard_views.xml',
+        'wizards/views/vaccine_ledger_wizard_views.xml',
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
         'views/product_template_views.xml',
