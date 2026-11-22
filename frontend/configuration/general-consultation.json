@@ -155,4 +155,162 @@
       }
     }
   }
+    "@openmrs/esm-patient-chart-app": {
+        "extensionSlots": {
+            "general-opd-consultation-dashboard-slot": {
+                "add": [
+                    "encounter-list"
+                ],
+                "configure": {
+                    "encounter-list": {
+                        "tabDefinitions": [
+                            {
+                                "tabName": "Consultation Form",
+                                "hasFilter": false,
+                                "headerTitle": "consultationForm",
+                                "displayText": "consultationForm",
+                                "encounterType": "81166f83-1ee6-486e-8f56-aca528fc0fc0",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Clinical Encounter Form v1.4",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Clinical Encounter Form v1.4",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "55b4ccf5-5845-3249-ac20-73871d187065"
+                                    }
+                                ]
+                            },
+                            {
+                                "tabName": "cardex",
+                                "hasFilter": false,
+                                "headerTitle": "cardex",
+                                "displayText": "cardex",
+                                "encounterType": "64e0f9f4-5f25-4098-bbca-ba8db6ce1696",
+                                "columns": [
+                                    {
+                                        "id": "encounterDate",
+                                        "title": "encounterDateTitle",
+                                        "type": "encounterDatetime"
+                                    },
+                                    {
+                                        "id": "provider",
+                                        "title": "providerTitle",
+                                        "type": "provider"
+                                    },
+                                    {
+                                        "id": "notes",
+                                        "title": "notesTitle",
+                                        "concept": "23f710cc-7f9c-4255-9b6b-c3e240215dba"
+                                    },
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "AMPATH POC Cardex Form v1.0",
+                                                "package": "hiv-care-treatment",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "AMPATH POC Cardex Form v1.0",
+                                                "package": "hiv-care-treatment",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "73f5380c-b5d8-3c4a-aea2-ffab091c7d98"
+                                    }
+                                ]
+                            },
+                            {
+                                "tabName": "preAuthorization",
+                                "hasFilter": false,
+                                "headerTitle": "preAuthorization",
+                                "displayText": "preAuthorization",
+                                "encounterType": "18b10189-a89f-430d-83e9-14663fef258c",
+                                "columns": [
+                                    {
+                                        "id": "actions",
+                                        "title": "actionsTitle",
+                                        "actionOptions": [
+                                            {
+                                                "formName": "POC Pre-authorization Form v1.0",
+                                                "label": "viewDetails",
+                                                "mode": "view"
+                                            },
+                                            {
+                                                "formName": "POC Pre-authorization Form v1.0",
+                                                "label": "editForm",
+                                                "mode": "edit"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "launchOptions": {
+                                    "displayText": "add"
+                                },
+                                "formList": [
+                                    {
+                                        "uuid": "cce578f6-b3e2-3077-91ab-9016cf0f4fa5"
+                                    }
+                                ]
+                            }
+                        ],
+                        "Translation overrides": {
+                            "en": {
+                                "timeline": "Timeline",
+                                "clinicalNotes": "Clinical Notes",
+                                "proceduresOrders": "Procedures & Orders",
+                                "labResults": "Lab Results",
+                                "prescription": "Prescription",
+                                "managementPlan": "Management Plan",
+                                "forms": "Forms",
+                                "programManagement": "Program Management",
+                                "cardex": "Cardex",
+                                "preAuthorization": "Pre-authorization",
+                                "patientRecords": "Patient Records",
+                                "reasonForVisitTitle": "Reason for Visit",
+                                "chiefComplaintTitle": "Chief Complaint",
+                                "currentVisitTypeTitle": "Current Visit Type",
+                                "reviewOfMedicalHistoryTitle": "Review of Medical History",
+                                "bloodTransfusionEverTitle": "Blood Transfusion, Ever",
+                                "previouslyHospitalizedTitle": "Previously Hospitalized",
+                                "historyOfSurgeriesTitle": "History of Surgeries",
+                                "referralForTodaysVisitTitle": "Referral for Today's Visit",
+                                "herbalMedicationConsumptionTitle": "Herbal Medication Consumption",
+                                "patientReportedSideEffectTitle": "Patient Reported Side Effect",
+                                "infantFeedingMethodTitle": "Infant Feeding Method",
+                                "reviewOfSystemsDevelopmentalTitle": "Review of Systems, Developmental"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
