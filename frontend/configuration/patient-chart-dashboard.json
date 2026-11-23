@@ -323,14 +323,8 @@
         }
       },
       "prevention-services-group-slot": {
-        "add": [
-          "dashboard#hts",
-          "dashboard#prep"
-        ],
-        "order": [
-          "dashboard#hts",
-          "dashboard#prep"
-        ],
+        "add": ["dashboard#hts", "dashboard#prep"],
+        "order": ["dashboard#hts", "dashboard#prep"],
         "configure": {
           "dashboard#hts": {
             "Display conditions": {
@@ -362,6 +356,8 @@
       },
       "mnch-group-slot": {
         "add": [
+          "dashboard#anc",
+          "dashboard#pnc",
           "dashboard#nutrition",
           "dashboard#mnch-clinical",
           "dashboard#immunisation",
@@ -369,6 +365,8 @@
           "dashboard#family-planning"
         ],
         "order": [
+          "dashboard#anc",
+          "dashboard#pnc",
           "dashboard#nutrition",
           "dashboard#mnch-clinical",
           "dashboard#immunisation",
@@ -378,7 +376,9 @@
         "configure": {
           "dashboard#nutrition": {
             "Display conditions": {
-              "privileges": ["O3 View MNCH Nutrition Patient Chart Section Details"]
+              "privileges": [
+                "O3 View MNCH Nutrition Patient Chart Section Details"
+              ]
             },
             "title": "nutrition",
             "path": "nutrition",
@@ -404,7 +404,9 @@
           },
           "dashboard#immunisation": {
             "Display conditions": {
-              "privileges": ["O3 View CWC Immunisation Patient Chart Section Details"]
+              "privileges": [
+                "O3 View CWC Immunisation Patient Chart Section Details"
+              ]
             },
             "title": "cwcImmunization",
             "path": "immunisation",
@@ -417,7 +419,9 @@
           },
           "dashboard#cwc-nutrition": {
             "Display conditions": {
-              "privileges": ["O3 View CWC Nutrition Patient Chart Section Details"]
+              "privileges": [
+                "O3 View CWC Nutrition Patient Chart Section Details"
+              ]
             },
             "title": "cwcNutrition",
             "path": "cwc-nutrition",
@@ -430,7 +434,9 @@
           },
           "dashboard#family-planning": {
             "Display conditions": {
-              "privileges": ["O3 View Family Planning Patient Chart Section Details"]
+              "privileges": [
+                "O3 View Family Planning Patient Chart Section Details"
+              ]
             },
             "title": "familyPlanning",
             "path": "family-planning",
