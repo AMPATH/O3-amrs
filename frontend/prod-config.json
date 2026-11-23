@@ -646,8 +646,8 @@
     "consultationBillableServiceNames": [
       "CONSULTATION",
       "KESSES CONSULTATION",
-      "Consultation A",
-      "Consultation B"
+      "Consultation  A",
+      "Consultation  B"
     ]
   },
   "@ampath/esm-hie-registry-manager-app": {
