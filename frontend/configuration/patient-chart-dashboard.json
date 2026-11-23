@@ -359,7 +359,6 @@
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#nutrition",
-          "dashboard#mnch-clinical",
           "dashboard#immunisation",
           "dashboard#cwc-nutrition",
           "dashboard#family-planning"
@@ -368,7 +367,6 @@
           "dashboard#anc",
           "dashboard#pnc",
           "dashboard#nutrition",
-          "dashboard#mnch-clinical",
           "dashboard#immunisation",
           "dashboard#cwc-nutrition",
           "dashboard#family-planning"
@@ -380,7 +378,7 @@
                 "O3 View MNCH Nutrition Patient Chart Section Details"
               ]
             },
-            "title": "anc",
+            "title": "ANC",
             "path": "anc",
             "slot": "anc-dashboard-slot",
             "Translation overrides": {
@@ -395,7 +393,7 @@
                 "O3 View MNCH Nutrition Patient Chart Section Details"
               ]
             },
-            "title": "pnc",
+            "title": "PNC",
             "path": "pnc",
             "slot": "pnc-dashboard-slot",
             "Translation overrides": {
