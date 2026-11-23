@@ -374,6 +374,36 @@
           "dashboard#family-planning"
         ],
         "configure": {
+          "dashboard#anc": {
+            "Display conditions": {
+              "privileges": [
+                "O3 View MNCH Nutrition Patient Chart Section Details"
+              ]
+            },
+            "title": "anc",
+            "path": "anc",
+            "slot": "anc-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "nutrition": "ANC"
+              }
+            }
+          },
+          "dashboard#pnc": {
+            "Display conditions": {
+              "privileges": [
+                "O3 View MNCH Nutrition Patient Chart Section Details"
+              ]
+            },
+            "title": "pnc",
+            "path": "pnc",
+            "slot": "pnc-dashboard-slot",
+            "Translation overrides": {
+              "en": {
+                "nutrition": "PNC"
+              }
+            }
+          },
           "dashboard#nutrition": {
             "Display conditions": {
               "privileges": [
