@@ -7,23 +7,23 @@
           "encounter-list": {
             "tabDefinitions": [
               {
-                "tabName": "mnchClinicalEncounter",
+                "tabName": "ancInitial",
                 "hasFilter": false,
-                "headerTitle": "mnchClinicalEncounter",
-                "displayText": "mnchClinicalEncounter",
-                "encounterType": "c6d09e05-1f25-4164-8860-9f32c5a02df0",
+                "headerTitle": "ancInitial",
+                "displayText": "ancInitial",
+                "encounterType": "f5702679-6a16-43bd-8629-4b44c7a78ff1",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
                       {
-                        "formName": "POC MNCH Clinical Encounter Form v1.2",
+                        "formName": "POC ANC Initial Encounter Form v 1.0",
                         "label": "viewDetails",
                         "mode": "view"
                       },
                       {
-                        "formName": "POC MNCH Clinical Encounter Form v1.2",
+                        "formName": "POC ANC Initial Encounter Form v 1.0",
                         "label": "editForm",
                         "mode": "edit"
                       }
