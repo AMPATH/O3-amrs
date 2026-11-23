@@ -7,31 +7,112 @@
           "encounter-list": {
             "tabDefinitions": [
               {
-                "tabName": "mnchClinicalEncounter",
+                "tabName": "ancInitial",
                 "hasFilter": false,
-                "headerTitle": "mnchClinicalEncounter",
-                "displayText": "mnchClinicalEncounter",
-                "encounterType": "c6d09e05-1f25-4164-8860-9f32c5a02df0",
+                "headerTitle": "ancInitial",
+                "displayText": "ancInitial",
+                "encounterType": "f5702679-6a16-43bd-8629-4b44c7a78ff1",
                 "columns": [
                   {
                     "id": "actions",
                     "title": "actionsTitle",
                     "actionOptions": [
                       {
-                        "formName": "POC MNCH Clinical Encounter Form v1.2",
+                        "formName": "POC ANC Initial Encounter Form v 1.0",
                         "label": "viewDetails",
                         "mode": "view"
                       },
                       {
-                        "formName": "POC MNCH Clinical Encounter Form v1.2",
+                        "formName": "POC ANC Initial Encounter Form v 1.0",
                         "label": "editForm",
                         "mode": "edit"
                       }
                     ]
                   }
                 ],
-                "launchOptions": {"displayText": "add"},
-                "formList": [{"uuid": "b75bfd1d-3513-3001-9886-fa875eb8b862"}]
+                "launchOptions": { "displayText": "add" },
+                "formList": [{ "uuid": "885ea751-a210-392f-be9c-d2abf78511e2" }]
+              },
+              {
+                "tabName": "ancReturn",
+                "hasFilter": false,
+                "headerTitle": "ancReturn",
+                "displayText": "ancReturn",
+                "encounterType": "226bfc6b-728d-41ab-90c5-e101af46d06d",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC ANC Return Form v1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC ANC Return Form v1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": { "displayText": "add" },
+                "formList": [{ "uuid": "1cd8dc61-9b92-37c1-9186-0a1b0114d64e" }]
+              },
+              {
+                "tabName": "pncInitial",
+                "hasFilter": false,
+                "headerTitle": "pncInitial",
+                "displayText": "pncInitial",
+                "encounterType": "ded4ecf7-8129-4a9e-8aa3-a21a7adb7759",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC PNC Initial Visit Form v 1.0",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC PNC Initial Visit Form v 1.0",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": { "displayText": "add" },
+                "formList": [{ "uuid": "7f6f8c71-84b4-3730-8daf-28e887970519" }]
+              },
+              {
+                "tabName": "pncReturn",
+                "hasFilter": false,
+                "headerTitle": "pncReturn",
+                "displayText": "pncReturn",
+                "encounterType": "db215741-de99-424a-a109-1f23eb3b680b",
+                "columns": [
+                  {
+                    "id": "actions",
+                    "title": "actionsTitle",
+                    "actionOptions": [
+                      {
+                        "formName": "POC PNC Return Visit Form v 1.1",
+                        "label": "viewDetails",
+                        "mode": "view"
+                      },
+                      {
+                        "formName": "POC PNC Return Visit Form v 1.1",
+                        "label": "editForm",
+                        "mode": "edit"
+                      }
+                    ]
+                  }
+                ],
+                "launchOptions": { "displayText": "add" },
+                "formList": [{ "uuid": "d4439939-5642-3d65-8c15-df9a590f2e4f" }]
               }
             ],
             "Translation overrides": {
