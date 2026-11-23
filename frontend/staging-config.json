@@ -637,7 +637,13 @@
       "6abe1031-f43b-4437-b48a-decc93cff0af"
     ],
     "cashPaymentModeUuid": "63eff7a4-6f82-43c4-a333-dbcc58fe9f74",
-    "emergencyConceptUuid": "f99eedd1-b709-4cd6-8e22-462a59fdf399"
+    "emergencyConceptUuid": "f99eedd1-b709-4cd6-8e22-462a59fdf399",
+    "consultationBillableServiceNames": [
+      "CONSULTATION",
+      "KESSES CONSULTATION",
+      "Consultation A",
+      "Consultation B"
+    ]
   },
   "@ampath/esm-hie-registry-manager-app": {
     "hieBaseUrl": "/hie",
