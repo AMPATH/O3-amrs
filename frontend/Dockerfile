@@ -4,7 +4,14 @@
 #--------------------------------------------
 FROM --platform=$BUILDPLATFORM node:22-alpine as dev
 
-ARG APP_SHELL_VERSION=latest
+ARG APP_SHELL_VERSION=next
+# Root-cause pin for the CSS escaping regression: postcss-selector-parser
+# 7.2.0 (published 2026-11-08) adds one extra backslash when re-serializing
+# CSS-module class names whose hashes end in '+' / '=', producing dead
+# selectors (.class\\\+ instead of .class\+) and broken styling. 7.1.8 is
+# the last known-good release; drop this override once the css-loader ->
+# postcss-modules chain ships a release that handles 7.2.x correctly.
+ARG POSTCSS_SELECTOR_PARSER_VERSION=7.1.8
 
 RUN mkdir -p /app
 WORKDIR /app
@@ -15,14 +22,15 @@ COPY spa-build-config.json .
 ARG CACHE_BUST
 RUN mkdir -p configuration
 COPY ./configuration/*.json configuration
-RUN npx --legacy-peer-deps openmrs@${APP_SHELL_VERSION:-latest} assemble --manifest --mode config --config spa-assemble-config.json --config-file configuration/*.json --target ./spa
-RUN npx --legacy-peer-deps openmrs@${APP_SHELL_VERSION:-latest} build --build-config spa-build-config.json --target ./spa
-# Workaround for a build-toolchain regression (rspack CSS minifier used by the
-# openmrs CLI): special chars in CSS-module selectors ('=', '+', ...) get
-# over-escaped (\\\= / \\\+ instead of \= / \+), producing dead rules (900+ in
-# the top-level app CSS at the time of writing). That silently breaks styling of
-# hashed-class components (e.g. the login location picker). Normalize the
-# escaping in every built stylesheet; no-op once upstream is fixed.
+# Install the CLI locally (instead of npx) so the npm override reliably
+# pins the transitive postcss-selector-parser version used by the build.
+RUN printf '{"name":"frontend-build","private":true,"dependencies":{"openmrs":"%s"},"overrides":{"postcss-selector-parser":"%s"}}\n' "${APP_SHELL_VERSION}" "${POSTCSS_SELECTOR_PARSER_VERSION}" > package.json \
+  && npm install --legacy-peer-deps --no-audit --no-fund
+RUN ./node_modules/.bin/openmrs assemble --manifest --mode config --config spa-assemble-config.json --config-file configuration/*.json --target ./spa
+RUN ./node_modules/.bin/openmrs build --build-config spa-build-config.json --target ./spa
+# Guardrail (no-op while the override above is in effect): normalize any
+# over-escaped selector backslashes in the built stylesheets and drop the
+# stale precompressed variants.
 RUN find ./spa -name '*.css' -exec sed -i 's/\\\\\\/\\/g' {} + \
   && find ./spa -name '*.css.gz' -delete \
   && find ./spa -name '*.css.br' -delete
